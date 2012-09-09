@@ -1,0 +1,26 @@
+strerror_r instead of strerror as first one is threadsafe
+Need to change printf to cin and cout
+dispatcher signal handler
+change syntax to c++;
+learn to use sql in c++
+json
+
+
+TO-DO:
+1.Daemonise Supervisor and scheduling of it.
+-Upstart test - done
+-Daeminie process - not working
+
+
+2.Supervise the supervisor via handling all the signals and think something of two exception signals. - Password , best handing procedures.
+3.Search and Test for any case when SIGCHILD not generated.
+4.Json - Basic Done
+5.SQL - GOING ON
+6.UNIX Domain Sockets
+7.Error handling of Supervisor - Going On
+8.Vidisha's segmentation fault error
+9.No need of #include then error
+10.No need of access.o in supervisor in makefile's supervisor target - DONE
+11.Handel Bind Ports error - DONE
+12.Handel Binary Files. - Done
+

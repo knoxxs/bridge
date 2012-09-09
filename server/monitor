@@ -1,0 +1,64 @@
+init
+ps (can use if not using wait)
+top
+waitpid loop
+wait
+waitpid loop inside signal handler -  Check the "fate" of the process with macros in the manual page, especially WIFSIGNALED().
+kill -0 pid
+ptrace
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+BASH: A simple script to check if a process is running
+Scripting is very, very useful.  Don’t make the same mistake I did and wait 5 years into you career to start learning!  In the example below, I’m using the ‘ps -aux’ command piped into grep to determine if a process is still running.  for my example I’m using Firefox, but intend to use this with a Asterisk phone system.  Every minute cron will launch my script to see if Asterisk is still running.  If it is, it will do nothing.  If it isn’t, then it will attempt to restart asterisk and notify the Administrator.  I hope this example helps someone!
+
+——————————————————————————————–
+
+#!/bin/bash
+
+#set -x
+
+#
+# Variables Section
+#==============================================================
+# list process to monitor in the variable below.
+
+PROGRAM1=”asterisk”
+
+# varible checks to see if $PROGRAM1
+# is running.
+
+APPCHK=$(ps aux | grep -c $PROGRAM1)
+
+#
+#
+# $Company & $SITE variables are for populating the alert email
+COMPANY=”VoiceIP Solutions”
+SITE=”Seattle”
+
+# $SUPPORTSTAFF is the recipient of our alert email
+
+SUPPORTSTAFF=”savelono@gmail.com”
+
+#==================================================================
+
+# The ‘if’ statement below checks to see if the process is running
+# with the ‘ps’ command.  If the value is returned as a ’0′ then
+# an email will be sent and the process will be safely restarted.
+#
+
+if [ $APPCHK = '0' ];
+
+then
+
+echo mail -s “Asterisk PBX at $COMPANY $SITE may be down” $SUPPORTSTAFF < /dev/null
+
+else
+
+echo “$PROGRAM1 is running $APPCHK processes” >> asterisk-check.log
+
+fi
+
+echo $APPCHK
+
+exit
+
