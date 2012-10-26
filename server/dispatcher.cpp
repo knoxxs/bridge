@@ -1,10 +1,10 @@
 #include "access.h"
-
+//#include "psql.h"
 
 void* SocketHandler(void* lp);
 int listenBind(struct addrinfo *ai);
 int clearPort();
-void login();
+void login(int fd);
 //get sockaddr , IPv4 or IPv6:
 
 void *get_in_addr(struct sockaddr *sa) {
@@ -15,7 +15,7 @@ void *get_in_addr(struct sockaddr *sa) {
 }
 
 int main(int argv, char** argc) {
-    printf(PORT);
+    //printf(PORT);
     struct sockaddr_in my_addr;
 
     int listener; // listening the socket descriptor
@@ -99,50 +99,59 @@ void* SocketHandler(void* lp) {
 	
 	logp(1,"New thread created succesfully");
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
-    char buffer[6];
-    int buffer_len = 6;
-    int bytecount;
-    memset(buffer, 0, buffer_len);
-    if ((bytecount = recv(fd, buffer, buffer_len, 0)) == -1) {
-        fprintf(stderr, "Error receiving data %d\n", errno);
-        //goto FINISH;
-    }
-    printf("Received bytes %d\nReceived string \"%s\"\n", bytecount, buffer);
-    //strcat(buffer, "SERVER");
+    // char buffer[6];
+    // int buffer_len = 6;
+    // int bytecount;
+    // memset(buffer, 0, buffer_len);
+    // if ((bytecount = recv(fd, buffer, buffer_len, 0)) == -1) {
+    //     fprintf(stderr, "Error receiving data %d\n", errno);
+    //     //goto FINISH;
+    // }
+    // printf("Received bytes %d\nReceived string \"%s\"\n", bytecount, buffer);
+    // //strcat(buffer, "SERVER");
 	
-    if ((bytecount = send(fd, buffer, strlen(buffer), 0)) == -1) {
-        fprintf(stderr, "Error sending data %d\n", errno);
-        //goto FINISH;
-    }
-    printf("Sent bytes %d\n", bytecount);
+    // if ((bytecount = send(fd, buffer, strlen(buffer), 0)) == -1) {
+    //     fprintf(stderr, "Error sending data %d\n", errno);
+    //     //goto FINISH;
+    // }
+    // printf("Sent bytes %d\n", bytecount);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    char choice;
+    char choice[1];
     int choice_len = sizeof(choice);
     int recvdBytes;
     if ((recvdBytes = recv(fd, choice, choice_len, 0)) == -1) {
         fprintf(stderr, "Error receiving data %d\n", errno);
     }
     //TODO - need to check if connection get closed.
-    switch(choice)
+    switch(choice[0])
     {
-        case a:
-            login();
+        case 'a':
+            login(fd);
             break;
-        default:
     }
 	return ((void*)0);
 }
 
 void login(int fd)
 {   
-    char loginInfo[25];
-    int loginInfo_len = sizeof(loginInfo);
+    char loginInfo[24];
+    int loginInfo_len = sizeof(loginInfo) - 1;
     int recvdBytes;
     if ((recvdBytes = recv(fd, loginInfo, loginInfo_len, 0)) == -1) {
         fprintf(stderr, "Error receiving data %d\n", errno);
     }
+    loginInfo[23] = '\0';
+    printf("Hello Hello rcv(%d)\n%s \n",recvdBytes,loginInfo);
     
+    // PGconn *conn = NULL;
+    // //conn = ConnectDB("postgres","123321","bridge","127.0.0.1","5432");
+    // conn = ConnectDB("postgres","123321","bridge","127.0.0.1","5432");
+
+    // if (conn != NULL) {
+    //     login(conn, "11111000", "abcd");
+    //     CloseConn(conn);
+    // }
 }
 
 int clearPort()

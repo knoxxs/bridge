@@ -26,7 +26,10 @@ public class client {
         String fromServer;
         String fromUser;
 
-       out.println("sdgfdg");
+        out.write('a');
+        out.write("11111000abcd\0012345678",0,12);
+
+       //out.println("sdgfdg");
         
        /* while ((fromServer = in.readLine()) != null) {
             System.out.println("Server: " + fromServer);

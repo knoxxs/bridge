@@ -1,4 +1,4 @@
-supervisor:supervisor.o ./bin/dispatcher accessories.o
+supervisor:supervisor.o accessories.o dispatcher
 	gcc -o ./bin/supervisor  supervisor.o accessories.o
 
 supervisor.o:supervisor.c accessories.h
@@ -18,17 +18,21 @@ recvfdsock.o:recvfdsock.c accessories.h
 recvfdsock:recvfdsock.o accessories.o
 	gcc -o ./bin/recvfdsock recvfdsock.o accessories.o
 
-dispatcher:dispatcher.o access.o
+dispatcher:dispatcher.o access.o psql.o
 	g++ -o ./bin/dispatcher dispatcher.o access.o -pthread
 
-dispatcher.o:dispatcher.cpp  access.cpp access.h
-	g++ -c dispatcher.cpp
+dispatcher.o:dispatcher.cpp  access.cpp access.h psql.cpp psql.h
+	g++ -c dispatcher.cpp 
 
 accessories.o: accessories.c accessories.h
 	gcc -c accessories.c
 
 access.o:access.cpp access.h
 	g++ -c access.cpp
+
+psql.o:psql.cpp psql.h
+	g++ -c psql.cpp -I /usr/include/postgresql -lpq
+
 
 cleanAll:cleanO clean~
 	

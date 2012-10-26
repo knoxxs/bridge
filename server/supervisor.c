@@ -61,7 +61,7 @@ int main() {
 	*/
 
 	//with log file
-	int logfile_fileno = open("~/bridge/SuperLog",O_RDWR|O_CREAT|O_APPEND,S_IRUSR|S_IWUSR|S_IRGRP);
+	int logfile_fileno = open("~/Projects/bridge/SuperLog",O_RDWR|O_CREAT|O_APPEND,S_IRUSR|S_IWUSR|S_IRGRP);
 
 	if (logfile_fileno == -1) {
     	//die("failed to open logfile (errno=%d)",errno);
