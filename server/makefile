@@ -19,10 +19,10 @@ recvfdsock:recvfdsock.o accessories.o
 	gcc -o ./bin/recvfdsock recvfdsock.o accessories.o
 
 dispatcher:dispatcher.o access.o psql.o
-	g++ -o ./bin/dispatcher dispatcher.o access.o -pthread
+	g++ dispatcher.o access.o psql.o -pthread -I /usr/include/postgresql -lpq -o ./bin/dispatcher
 
-dispatcher.o:dispatcher.cpp  access.cpp access.h psql.cpp psql.h
-	g++ -c dispatcher.cpp 
+dispatcher.o:dispatcher.cpp
+	g++ -I /usr/include/postgresql -lpq -c dispatcher.cpp
 
 accessories.o: accessories.c accessories.h
 	gcc -c accessories.c

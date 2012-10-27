@@ -1,4 +1,5 @@
 #include "psql.h"
+#include <iostream>
 
 void CloseConn(PGconn *conn)
 {
@@ -27,7 +28,7 @@ PGconn *ConnectDB(string user="postgres",string password="123321",string dbname=
 }
 
 
-void login(PGconn *conn, string username, string password)
+void login_check(PGconn *conn, string username, string password)
 {
   string query = "SELECT * FROM login where plid='" + username + "'";
 
@@ -43,21 +44,7 @@ void login(PGconn *conn, string username, string password)
       //wrong username
     }
     else
-    {
-      //Must be 2 so no need to check
-      //int col_num = PQnfields(res); // number of columns in the output of the query
-      // for(int i=0;i<row_num;i++)
-      // {
-      //     for(int j=0;j<col_num;j++)
-      //     {
-      //         query_temp[i][j] = PQgetvalue(res,i,j);
-      //         cout<<query_temp[i][j]<<endl;
-      //         //cout<<a[i][j]<<endl;
-      //     }
-      // }
-      //no need to check username //PQgetvalue(res,0,0);
-      
-      //string ActualPass(cstring);
+    {      
       cout<<PQgetvalue(res,0,1)<<endl;
       if( !(string(PQgetvalue(res,0,1)).compare(password)) )//return 0 on equality
       {

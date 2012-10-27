@@ -1,5 +1,5 @@
 #include "access.h"
-//#include "psql.h"
+#include "psql.h"
 
 void* SocketHandler(void* lp);
 int listenBind(struct addrinfo *ai);
@@ -135,23 +135,25 @@ void* SocketHandler(void* lp) {
 
 void login(int fd)
 {   
-    char loginInfo[24];
-    int loginInfo_len = sizeof(loginInfo) - 1;
+    char loginInfo[25], username[9], password[16];
+    int loginInfo_len = sizeof(loginInfo);
     int recvdBytes;
     if ((recvdBytes = recv(fd, loginInfo, loginInfo_len, 0)) == -1) {
         fprintf(stderr, "Error receiving data %d\n", errno);
     }
-    loginInfo[23] = '\0';
+
     printf("Hello Hello rcv(%d)\n%s \n",recvdBytes,loginInfo);
     
-    // PGconn *conn = NULL;
-    // //conn = ConnectDB("postgres","123321","bridge","127.0.0.1","5432");
-    // conn = ConnectDB("postgres","123321","bridge","127.0.0.1","5432");
+    sscanf(loginInfo, "%s%s",username, password);
 
-    // if (conn != NULL) {
-    //     login(conn, "11111000", "abcd");
-    //     CloseConn(conn);
-    // }
+    PGconn *conn = NULL;
+    
+    conn = ConnectDB("postgres","123321","bridge","127.0.0.1","5432");
+
+    if (conn != NULL) {
+        login_check(conn, username, password);
+        CloseConn(conn);
+    }
 }
 
 int clearPort()

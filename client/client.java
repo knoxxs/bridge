@@ -27,7 +27,9 @@ public class client {
         String fromUser;
 
         out.write('a');
-        out.write("11111000abcd\0012345678",0,12);
+        out.write("11111000\0",0,9);
+        out.write("abcd\0",0,5);
+        out.write("01234567899",0,11);
 
        //out.println("sdgfdg");
         
