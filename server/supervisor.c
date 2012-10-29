@@ -93,6 +93,9 @@ int main() {
 	sigact_struct_child.sa_handler = signalHandlerChild;
 	sigact_struct_super.sa_handler = signalHandlerSuper;
 
+	sigact_struct_child.sa_flags |= SA_RESTART;
+	sigact_struct_super.sa_flags |= SA_RESTART;
+
 	//handling signal from child
 	sigaction(SIGCHLD, &sigact_struct_child, NULL);
 
