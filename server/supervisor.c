@@ -8,6 +8,7 @@ int main() {
 
 	pid_t pidToDaemon, retPid;
 
+
 	/* Fork off the parent process */
     pidToDaemon = fork();
     if (pidToDaemon < 0) {
@@ -61,26 +62,28 @@ int main() {
 	*/
 
 	//with log file
-	int logfile_fileno = open("~/Projects/bridge/SuperLog",O_RDWR|O_CREAT|O_APPEND,S_IRUSR|S_IWUSR|S_IRGRP);
-
+	int logfile_fileno = open("/home/abhi/Projects/bridge/SuperLog/log",O_RDWR|O_CREAT|O_APPEND,S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP);
 	if (logfile_fileno == -1) {
     	//die("failed to open logfile (errno=%d)",errno);
 	}
 
 	dup2(logfile_fileno,STDOUT_FILENO);
 	dup2(logfile_fileno,STDERR_FILENO);
-	close(logfile_fileno);
+	
+	write(logfile_fileno, "abhishek1\n",11);
+
+//	close(logfile_fileno);
 
 
 	/* Change the current working directory */
 	//cant use short path "~/bridge/server"
-	if ((chdir("/home/abhi/bridge/server")) < 0) {
+	if ((chdir("/home/abhi/Projects/bridge/server")) < 0) {
         /* Log any failure here */
         errorp("Supervisor- To check FORKING", 1, errno,"UYYYYYY0");
         exit(EXIT_FAILURE);
 	}
 
-
+	write(logfile_fileno, "abhishek2\n",11);
 
 	pid_t supervisor_pid, dispactcher_pid;
 	int dispatcher_status;
@@ -98,6 +101,8 @@ int main() {
 
 	//handling signal from child
 	sigaction(SIGCHLD, &sigact_struct_child, NULL);
+
+	write(logfile_fileno, "abhishek3\n",11);
 
 	//signal handling for super process
 	sigaction(SIGHUP, &sigact_struct_super, NULL); //hangup detected          /term    /1
@@ -129,6 +134,8 @@ int main() {
 
 	supervisor_pid = getpid();
 
+	write(logfile_fileno, "abhishek4\n",11);
+
 	switch( (dispactcher_pid = fork()) )
 	{
 		case -1:
@@ -138,11 +145,15 @@ int main() {
 			}
 		case 0: //dipatcher child
 			{
+					write(logfile_fileno, "abhishek5\n",11);
 				printf("child %d\n",dispactcher_pid);
 				execl("./bin/dispatcher",(const char*) NULL,(char *) 0); // need to change this to exec + e - controll environment
 				_exit(127);
 			}
 	}
+
+
+
 	int i;
 	while(1)
 	{}
