@@ -142,7 +142,7 @@ void login(int fd)
         fprintf(stderr, "Error receiving data %d\n", errno);
     }
 
-    printf("Hello Hello rcv(%d)\n%s \n",recvdBytes,loginInfo);
+    //printf("Hello Hello rcv(%d)\n%s \n",recvdBytes,loginInfo);
     
     sscanf(loginInfo, "%s%s",username, password);
 

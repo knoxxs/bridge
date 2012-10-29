@@ -927,3 +927,39 @@ __DEBUG__  |  Sat Oct 27 15:15:25 2012  |  accepted new connection
 __LOG__    |  Sat Oct 27 15:15:25 2012  |  127.0.0.1: Got new connection
 __LOG__    |  Sat Oct 27 15:15:25 2012  |  Waiting for connections
 __LOG__    |  Sat Oct 27 15:15:25 2012  |  New thread created succesfully
+__DEBUG__  |  Sat Oct 27 15:20:56 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Sat Oct 27 15:20:56 2012  |  socket formed succesfully
+__DEBUG__  |  Sat Oct 27 15:20:56 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Sat Oct 27 15:20:56 2012  |  binding has been done
+__DEBUG__  |  Sat Oct 27 15:20:56 2012  |  memory freed successfully
+__DEBUG__  |  Sat Oct 27 15:20:56 2012  |  socket is listening
+__LOG__    |  Sat Oct 27 15:20:56 2012  |  socket is listening
+__LOG__    |  Sat Oct 27 15:20:56 2012  |  Waiting for connections
+__DEBUG__  |  Sat Oct 27 15:20:58 2012  |  accepted new connection
+__LOG__    |  Sat Oct 27 15:20:58 2012  |  127.0.0.1: Got new connection
+__LOG__    |  Sat Oct 27 15:20:58 2012  |  Waiting for connections
+__LOG__    |  Sat Oct 27 15:20:58 2012  |  New thread created succesfully
+__DEBUG__  |  Sat Oct 27 15:21:46 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Sat Oct 27 15:21:46 2012  |  socket formed succesfully
+__DEBUG__  |  Sat Oct 27 15:21:46 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Sat Oct 27 15:21:46 2012  |  binding has been done
+__DEBUG__  |  Sat Oct 27 15:21:46 2012  |  memory freed successfully
+__DEBUG__  |  Sat Oct 27 15:21:46 2012  |  socket is listening
+__LOG__    |  Sat Oct 27 15:21:46 2012  |  socket is listening
+__LOG__    |  Sat Oct 27 15:21:46 2012  |  Waiting for connections
+__DEBUG__  |  Sat Oct 27 15:21:48 2012  |  accepted new connection
+__LOG__    |  Sat Oct 27 15:21:48 2012  |  127.0.0.1: Got new connection
+__LOG__    |  Sat Oct 27 15:21:48 2012  |  Waiting for connections
+__LOG__    |  Sat Oct 27 15:21:48 2012  |  New thread created succesfully
+__DEBUG__  |  Sat Oct 27 15:22:09 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Sat Oct 27 15:22:09 2012  |  socket formed succesfully
+__DEBUG__  |  Sat Oct 27 15:22:09 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Sat Oct 27 15:22:09 2012  |  binding has been done
+__DEBUG__  |  Sat Oct 27 15:22:09 2012  |  memory freed successfully
+__DEBUG__  |  Sat Oct 27 15:22:09 2012  |  socket is listening
+__LOG__    |  Sat Oct 27 15:22:09 2012  |  socket is listening
+__LOG__    |  Sat Oct 27 15:22:09 2012  |  Waiting for connections
+__DEBUG__  |  Sat Oct 27 15:22:10 2012  |  accepted new connection
+__LOG__    |  Sat Oct 27 15:22:10 2012  |  127.0.0.1: Got new connection
+__LOG__    |  Sat Oct 27 15:22:10 2012  |  Waiting for connections
+__LOG__    |  Sat Oct 27 15:22:10 2012  |  New thread created succesfully

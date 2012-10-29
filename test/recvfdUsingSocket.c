@@ -72,67 +72,62 @@ int main(int argc, char const *argv[])
   return 0;
 }
 
-int recv_fd(int fd, ssize_t (*userfunc)(int, const void *, size_t))
-{
-  int             newfd, nr, status;
-  char            *ptr;
-  char            buf[MAXLINE];
-  struct iovec    iov[1];
-  struct msghdr   msg;
+int recv_fd(int fd, ssize_t (*userfunc)(int, const void *, size_t)) {
+    int             newfd, nr, status;
+    char            *ptr;
+    char            buf[MAXLINE];
+    struct iovec    iov[1];
+    struct msghdr   msg;
 
-  status = -1;
-  for ( ; ; ) 
-  {
-    iov[0].iov_base = buf;
-    iov[0].iov_len  = sizeof(buf);
-    msg.msg_iov     = iov;
-    msg.msg_iovlen  = 1;
-    msg.msg_name    = NULL;
-    msg.msg_namelen = 0;
-    if (cmptr == NULL && (cmptr = malloc(CONTROLLEN)) == NULL)
-      return(-1);
-    msg.msg_control    = cmptr;
-    msg.msg_controllen = CONTROLLEN;
-    printf("aa %d aa\n",fd);
-    nr = recvmsg(fd, &msg, 0);
-    if (nr < 0) 
+    status = -1;
+    for ( ; ; ) 
     {
-      printf("recvmsg errrrror %d %d %s\n",nr,errno,strerror(errno));
-      //perror("recvmsg errrrror");
-    } else if (nr == 0) 
-    {
-      perror("connection closed by server");
-      return(-1);
-    }
-    /*
-    * See if this is the final data with null & status.  Null
-    * is next to last byte of buffer; status byte is last byte.
-    * Zero status means there is a file descriptor to receive.
-    */
-    for (ptr = buf; ptr < &buf[nr]; ) 
-    {
-      if (*ptr++ == 0) 
-      {
-        if (ptr != &buf[nr-1])
-          perror("message format error");
-        status = *ptr & 0xFF;  /* prevent sign extension */
-        if (status == 0) 
-        {
-          if (msg.msg_controllen != CONTROLLEN)
-            perror("status = 0 but no fd");
-          newfd = *(int *)CMSG_DATA(cmptr);
-        } else 
-        {
-          newfd = -status;
+        iov[0].iov_base = buf;
+        iov[0].iov_len  = sizeof(buf);
+        msg.msg_iov     = iov;
+        msg.msg_iovlen  = 1;
+        msg.msg_name    = NULL;
+        msg.msg_namelen = 0;
+        if (cmptr == NULL && (cmptr = malloc(CONTROLLEN)) == NULL)
+            return(-1);
+        msg.msg_control    = cmptr;
+        msg.msg_controllen = CONTROLLEN;
+        printf("aa %d aa\n",fd);
+        nr = recvmsg(fd, &msg, 0);
+        if (nr < 0) {
+            printf("recvmsg errrrror %d %d %s\n",nr,errno,strerror(errno));
+            //perror("recvmsg errrrror");
+        } else if (nr == 0) {
+            perror("connection closed by server");
+            return(-1);
         }
-        nr -= 2;
-      }
+        /*
+        * See if this is the final data with null & status.  Null
+        * is next to last byte of buffer; status byte is last byte.
+        * Zero status means there is a file descriptor to receive.
+        */
+        for (ptr = buf; ptr < &buf[nr]; ) 
+        {
+            if (*ptr++ == 0) 
+            {
+                if (ptr != &buf[nr-1])
+                  perror("message format error");
+                status = *ptr & 0xFF;  /* prevent sign extension */
+                if (status == 0) {
+                    if (msg.msg_controllen != CONTROLLEN)
+                      perror("status = 0 but no fd");
+                    newfd = *(int *)CMSG_DATA(cmptr);
+                } else {
+                    newfd = -status;
+                }
+                nr -= 2;
+            }
+        }
+        if (nr > 0 && (*userfunc)(STDERR_FILENO, buf, nr) != nr)
+            return(-1);
+        if (status >= 0)    /* final data has arrived */
+            return(newfd);  /* descriptor, or -status */
     }
-    if (nr > 0 && (*userfunc)(STDERR_FILENO, buf, nr) != nr)
-      return(-1);
-    if (status >= 0)    /* final data has arrived */
-      return(newfd);  /* descriptor, or -status */
-  }
 }
 
 ssize_t errcheckfunc(int a,const void *b, size_t c)

@@ -4,7 +4,7 @@
 void CloseConn(PGconn *conn)
 {
   PQfinish(conn);
-  getchar();
+  //getchar();
 }
 
 PGconn *ConnectDB(string user="postgres",string password="123321",string dbname="bridge",string hostaddr="127.0.0.1",string port="5432")
