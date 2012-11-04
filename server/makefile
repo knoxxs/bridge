@@ -1,4 +1,4 @@
-supervisor:supervisor.o accessories.o dispatcher
+supervisor:supervisor.o accessories.o dispatcher player
 	gcc -o ./bin/supervisor  supervisor.o accessories.o
 
 supervisor.o:supervisor.c accessories.h
@@ -22,7 +22,7 @@ dispatcher:dispatcher.o access.o psql.o myregex.o
 	g++ dispatcher.o access.o psql.o myregex.o -pthread -I /usr/include/postgresql -lpq -o ./bin/dispatcher
 
 dispatcher.o:dispatcher.cpp
-	g++ -I /usr/include/postgresql -lpq -c dispatcher.cpp
+	g++ -I /usr/include/postgresql -fpermissive -lpq -c dispatcher.cpp
 
 accessories.o: accessories.c accessories.h
 	gcc -c accessories.c
@@ -35,6 +35,15 @@ psql.o:psql.cpp psql.h
 
 myregex.o:myregex.cpp myregex.h
 	g++ -c myregex.cpp -lm
+
+player:player.o access.o player_helper.o
+	g++ player.o access.o player_helper.o -o ./bin/player
+
+player.o:player.cpp
+	g++ -c player.cpp
+
+player_helper.o:player_helper.cpp player_helper.h
+	g++ -c -fpermissive player_helper.cpp
 
 cleanAll:cleanO clean~
 	

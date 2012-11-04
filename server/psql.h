@@ -3,5 +3,5 @@
 using namespace std;
 
 PGconn *ConnectDB(string ,string, string, string, string);
-void login_check(PGconn*, string, string);
+int login_check(PGconn*, string, string);
 void CloseConn(PGconn*);

@@ -28,7 +28,7 @@ PGconn *ConnectDB(string user="postgres",string password="123321",string dbname=
 }
 
 
-void login_check(PGconn *conn, string username, string password)
+int login_check(PGconn *conn, string username, string password)
 {
   string query = "SELECT * FROM login where plid='" + username + "'";
 
@@ -45,14 +45,18 @@ void login_check(PGconn *conn, string username, string password)
     }
     else
     {      
-      cout<<PQgetvalue(res,0,1)<<endl;
+      //cout<<PQgetvalue(res,0,1)<<endl;
+      //cout<<password<<endl;
       if( !(string(PQgetvalue(res,0,1)).compare(password)) )//return 0 on equality
       {
         cout<<"valid user";
+        PQclear(res);
+        return 0;
       }
     }
   }
 
   // Clear result
   PQclear(res);
+  return -1;
 }

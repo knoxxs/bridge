@@ -2,10 +2,113 @@
 #include "psql.h"
 #include "myregex.h"
 
+#define CONTROLLEN  CMSG_LEN(sizeof(int))
+static struct cmsghdr   *cmptr = NULL;  /* malloc'ed first time */ 
+
 void* SocketHandler(void* lp);
 int listenBind(struct addrinfo *ai);
-void login(int fd);
+int login(int fd, char* plid);
 //get sockaddr , IPv4 or IPv6:
+void contactPlayer(char*,int);
+int send_fd(int, int);
+int unixClientSocket();
+int send_err(int, int, const char *);
+
+void contactPlayer(char* plid, int fd_to_send){
+    int socket_fd;
+    printf("in contactPlayer\n");
+    if((fd_to_send = open("vi",O_RDONLY)) < 0)
+        printf("vi open failed");     
+    socket_fd = unixClientSocket();
+    send_fd(socket_fd, fd_to_send);
+}
+
+int unixClientSocket(){
+    logp(1,"started"); 
+
+    struct sockaddr_un address;
+    int  socket_fd;
+
+    if( (socket_fd = socket(PF_UNIX, SOCK_STREAM, 0)) < 0) {
+        printf("socket() failed\n");
+        return 1;
+    }
+
+    /* start with a clean address structure */
+    memset(&address, 0, sizeof(struct sockaddr_un));
+
+    address.sun_family = AF_UNIX;
+    snprintf(address.sun_path, sizeof(address.sun_path)-1, "./demo_socket");
+
+    if(connect(socket_fd, (struct sockaddr *) &address, sizeof(struct sockaddr_un)) != 0) {
+        printf("connect() failed\n");
+        return 1;
+    }
+
+    return socket_fd;
+}
+
+int send_err(int fd, int errcode, const char *msg)
+{
+    int     n;
+
+    if ((n = strlen(msg)) > 0)
+        if (write(fd, msg, n) != n)    /* send the error message */
+            return(-1);
+
+    if (errcode >= 0)
+        errcode = -1;   /* must be negative */
+
+    if (send_fd(fd, errcode) < 0)
+        return(-1);
+
+    return(0);
+}
+
+int send_fd(int fd, int fd_to_send)
+{
+
+    ssize_t temp;
+    struct iovec    iov[1];
+    struct msghdr   msg;
+    char            buf[2]; /* send_fd()/recv_fd() 2-byte protocol */
+
+    iov[0].iov_base = buf;
+    iov[0].iov_len  = 2;
+    msg.msg_iov     = iov;
+    msg.msg_iovlen  = 1;
+    msg.msg_name    = NULL;
+    msg.msg_namelen = 0;
+    if (fd_to_send < 0) {
+        msg.msg_control    = NULL;
+        msg.msg_controllen = 0;
+        buf[1] = -fd_to_send;   /* nonzero status means error */
+        if (buf[1] == 0)
+            buf[1] = 1; /* -256, etc. would screw up protocol */
+    } else {
+        if (cmptr == NULL && (cmptr = malloc(CONTROLLEN)) == NULL)
+            return(-1);
+        cmptr->cmsg_level  = SOL_SOCKET;
+        cmptr->cmsg_type   = SCM_RIGHTS;
+        cmptr->cmsg_len    = CONTROLLEN;
+        msg.msg_control    = cmptr;
+        msg.msg_controllen = CONTROLLEN;
+        printf("msg_controllen(%d)\n",CONTROLLEN );
+        *(int *)CMSG_DATA(cmptr) = fd_to_send;     /* the fd to pass */
+        buf[1] = 0;          /* z ero status means OK */
+    }
+    buf[0] = 0;              /* null byte flag to recv_fd() */
+    printf("before sendmsg \n");
+    temp = sendmsg(fd, &msg, 0);
+    if (temp != 2)
+    {
+        printf("inside sendmsg condition %d\n",temp);
+        return(-1);
+    }
+    printf("after sendmsg %d\n",temp);
+    return(0);
+
+}
 
 void *get_in_addr(struct sockaddr *sa) {
     if (sa->sa_family == AF_INET) {
@@ -13,6 +116,8 @@ void *get_in_addr(struct sockaddr *sa) {
     }
     return &(((struct sockaddr_in6*) sa)->sin6_addr);
 }
+
+int playerProcId;
 
 int main(int argv, char** argc) {
     //printf(PORT);
@@ -60,6 +165,12 @@ int main(int argv, char** argc) {
     //Now lets do the server stuff
 	logp(4,"socket is listening");
 	logp(1,"socket is listening");
+
+    //Finding pid of player process
+    
+
+    playerProcId = processIdFinder("player");
+    printf("Player proc ID is %d\n", playerProcId);
 
     while (1) {
     	
@@ -117,7 +228,7 @@ void* SocketHandler(void* lp) {
     // printf("Sent bytes %d\n", bytecount);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    char choice[1];
+    char choice[1], plid[9];
     int choice_len = sizeof(choice);
     int recvdBytes;
     if ((recvdBytes = recv(fd, choice, choice_len, 0)) == -1) {
@@ -127,32 +238,43 @@ void* SocketHandler(void* lp) {
     switch(choice[0])
     {
         case 'a':
-            login(fd);
+            int blabla;
+            if( (blabla = login(fd, plid)) == 0){
+                contactPlayer( plid, fd);
+            }else{
+                printf("Oh my god\n");
+            }
+            //printf("login ret %d\n",blabla );
             break;
     }
 	return ((void*)0);
 }
 
-void login(int fd)
+int login(int fd, char* plid)
 {   
     char loginInfo[25], username[9], password[16];
     int loginInfo_len = sizeof(loginInfo);
-    int recvdBytes;
+    int recvdBytes, ret;
     if ((recvdBytes = recv(fd, loginInfo, loginInfo_len, 0)) == -1) {
         fprintf(stderr, "Error receiving data %d\n", errno);
     }
 
     //printf("Hello Hello rcv(%d)\n%s \n",recvdBytes,loginInfo);
     
-    sscanf(loginInfo, "%s%s",username, password);
+    sscanf(loginInfo, "%s%s",username, password); //this is wrong as no \n afterusername
+
+    //printf("------%s\n",password );
 
     PGconn *conn = NULL;
     
     conn = ConnectDB("postgres","123321","bridge","127.0.0.1","5432");
 
     if (conn != NULL) {
-        login_check(conn, username, password);
+        ret = login_check(conn, username, password);
+        //printf("received return val fro login_check %d\n",ret);
         CloseConn(conn);
+        strcpy(plid, username);
+        return ret;
     }
 }
 

@@ -27,8 +27,8 @@ public class client {
         String fromUser;
 
         out.write('a');
-        out.write("11111000\0",0,9);
-        out.write("abcd\0",0,5);
+        out.write("11111000\n",0,9);  //need to add \n not \0 as on client side using sscnf not strcpy
+        out.write("abcd\n",0,5);
         out.write("01234567899",0,11);
 
        //out.println("sdgfdg");
