@@ -18,8 +18,8 @@ recvfdsock.o:recvfdsock.c accessories.h
 recvfdsock:recvfdsock.o accessories.o
 	gcc -o ./bin/recvfdsock recvfdsock.o accessories.o
 
-dispatcher:dispatcher.o access.o psql.o
-	g++ dispatcher.o access.o psql.o -pthread -I /usr/include/postgresql -lpq -o ./bin/dispatcher
+dispatcher:dispatcher.o access.o psql.o myregex.o
+	g++ dispatcher.o access.o psql.o myregex.o -pthread -I /usr/include/postgresql -lpq -o ./bin/dispatcher
 
 dispatcher.o:dispatcher.cpp
 	g++ -I /usr/include/postgresql -lpq -c dispatcher.cpp
@@ -33,6 +33,8 @@ access.o:access.cpp access.h
 psql.o:psql.cpp psql.h
 	g++ -c psql.cpp -I /usr/include/postgresql -lpq
 
+myregex.o:myregex.cpp myregex.h
+	g++ -c myregex.cpp -lm
 
 cleanAll:cleanO clean~
 	

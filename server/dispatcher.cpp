@@ -1,9 +1,9 @@
 #include "access.h"
 #include "psql.h"
+#include "myregex.h"
 
 void* SocketHandler(void* lp);
 int listenBind(struct addrinfo *ai);
-int clearPort();
 void login(int fd);
 //get sockaddr , IPv4 or IPv6:
 
@@ -156,65 +156,10 @@ void login(int fd)
     }
 }
 
-int clearPort()
-{
-    char buf_bind_kill[100], id_proc_to_kill[10], msgbuf[100];;
-    FILE *bind_kill_file;
-    regex_t regex;
-    regmatch_t reg_matches[2];
-    int err_ret, proc_id, id_len;
-
-    if ((bind_kill_file = popen("/bin/netstat -nlp | grep 4444","r"))== NULL)
-    {
-        printf("error popen\n");
-        exit(1);
-    }
-    if(fgets(buf_bind_kill,100,bind_kill_file)==NULL)
-        printf("error fgets\n");//error
-
-    fclose(bind_kill_file);
- 
-    /* Compile regular expression */
-    err_ret = regcomp(&regex, "[0-9]+/", REG_EXTENDED);
-    if( err_ret ){ 
-        fprintf(stderr, "Could not compile regex\n");
-        exit(1); 
-    }
-
-    /* Execute regular expression */
-    err_ret = regexec(&regex, buf_bind_kill, (size_t) 2, reg_matches, 0);
-        if( !err_ret ){
-                //puts("Match");
-                //printf("\n %s \n", buf_bind_kill);
-                //printf("%d and %d  ----- %c and %c\n",reg_matches[0].rm_so,reg_matches[0].rm_eo,buf_bind_kill[reg_matches[0].rm_so],buf_bind_kill[reg_matches[0].rm_eo - 1]);
-                id_len = reg_matches[0].rm_eo - reg_matches[0].rm_so-1;
-                strncpy(id_proc_to_kill,buf_bind_kill+reg_matches[0].rm_so, id_len);
-                //printf("%s\n",id_proc_to_kill);
-                //printf("%d\n",strintToInt(id_proc_to_kill,3));
-                proc_id = strintToInt(id_proc_to_kill,id_len);
-                if(!kill( (pid_t) proc_id, SIGKILL))
-                    return 0;
-                else
-                {
-                    printf("kill prob ID - %d errno - %d errmsg - %s id_len - %d\n", proc_id, errno, strerror(errno), id_len);
-                    return -1;
-                }
-        }
-        else if( err_ret == REG_NOMATCH ){
-                puts("No match");
-                return 1;
-        }
-        else{
-                regerror(err_ret, &regex, msgbuf, sizeof(msgbuf));
-                fprintf(stderr, "Regex match failed: %s\n", msgbuf);
-                return -1;
-        }
-    }
-
 int listenBind(struct addrinfo *ai)
 {
     struct addrinfo  *p;
-    int yes = 1;
+    int yes = 1, ret;
     int listener;
 
     for (p = ai; p != NULL; p = p->ai_next) {
@@ -242,25 +187,28 @@ int listenBind(struct addrinfo *ai)
         break;
     }
 
+    printf("In listen bind\n");
+
     //if we got here, it means we didnot get bound
     if (p == NULL) {
         //fprintf(stderr, "selectserver: failed to bind\n");
         errorp("DISPATCHER-bindcheck:", 0, 0, "Unable to bind to port using any IP");
         if (errno == 98) //already in use
-        {
-            if (clearPort() == 0)
-            {
+        {   
+            ret = clearPort("4444");
+            if (ret == 0){
                 //printf("a\n");
                 listener = listenBind(ai);
                 return listener;
             }
-            else if(clearPort() == 1)
-            {    printf("error clearPort b\n");
-                return -1;}
-            else
-                {printf("error clearPort c\n");
-                exit(2);}
+            else{
+                printf("error clearPort c\n");
+                exit(2);
+            }
         }
     }
+
+    printf("In listen bind ___ out\n");
+
     return listener;
 }

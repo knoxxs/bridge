@@ -1176,3 +1176,730 @@ __DEBUG__  |  Wed Oct 31 19:12:53 2012  |  memory freed successfully
 __DEBUG__  |  Wed Oct 31 19:12:53 2012  |  socket is listening
 __LOG__    |  Wed Oct 31 19:12:53 2012  |  socket is listening
 __LOG__    |  Wed Oct 31 19:12:53 2012  |  Waiting for connections
+__DEBUG__  |  Wed Oct 31 20:07:24 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 20:07:24 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:07:24 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 20:07:24 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Wed Oct 31 20:07:24 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:07:24 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 20:07:24 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Wed Oct 31 20:07:24 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Wed Oct 31 20:07:29 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 20:07:29 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:07:29 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 20:07:29 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Wed Oct 31 20:07:29 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:07:29 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 20:07:29 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Wed Oct 31 20:07:29 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Wed Oct 31 20:07:29 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:07:29 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Wed Oct 31 20:07:29 2012  |  binding has been done
+__DEBUG__  |  Wed Oct 31 20:07:29 2012  |  memory freed successfully
+__DEBUG__  |  Wed Oct 31 20:07:29 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 20:07:29 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 20:07:29 2012  |  Waiting for connections
+__DEBUG__  |  Wed Oct 31 20:07:45 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 20:07:45 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:07:45 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Wed Oct 31 20:07:45 2012  |  binding has been done
+__DEBUG__  |  Wed Oct 31 20:07:45 2012  |  memory freed successfully
+__DEBUG__  |  Wed Oct 31 20:07:45 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 20:07:45 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 20:07:45 2012  |  Waiting for connections
+__DEBUG__  |  Wed Oct 31 20:07:54 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 20:07:54 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:07:54 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Wed Oct 31 20:07:54 2012  |  binding has been done
+__DEBUG__  |  Wed Oct 31 20:07:54 2012  |  memory freed successfully
+__DEBUG__  |  Wed Oct 31 20:07:54 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 20:07:54 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 20:07:54 2012  |  Waiting for connections
+__DEBUG__  |  Wed Oct 31 20:08:00 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 20:08:00 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:08:00 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 20:08:00 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Wed Oct 31 20:08:00 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:08:00 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 20:08:00 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Wed Oct 31 20:08:00 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Wed Oct 31 20:08:00 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:08:00 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 20:08:00 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Wed Oct 31 20:08:00 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:08:00 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 20:08:00 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Wed Oct 31 20:08:00 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Wed Oct 31 20:10:39 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 20:10:39 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:10:39 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Wed Oct 31 20:10:39 2012  |  binding has been done
+__DEBUG__  |  Wed Oct 31 20:10:39 2012  |  memory freed successfully
+__DEBUG__  |  Wed Oct 31 20:10:39 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 20:10:39 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 20:10:39 2012  |  Waiting for connections
+__DEBUG__  |  Wed Oct 31 20:12:24 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 20:12:24 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:12:24 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 20:12:24 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Wed Oct 31 20:12:24 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:12:24 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 20:12:24 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Wed Oct 31 20:12:24 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Wed Oct 31 20:12:24 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:12:24 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 20:12:24 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Wed Oct 31 20:12:24 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:12:24 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 20:12:24 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Wed Oct 31 20:12:24 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Wed Oct 31 20:15:00 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 20:15:00 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:15:00 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Wed Oct 31 20:15:00 2012  |  binding has been done
+__DEBUG__  |  Wed Oct 31 20:15:00 2012  |  memory freed successfully
+__DEBUG__  |  Wed Oct 31 20:15:00 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 20:15:00 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 20:15:00 2012  |  Waiting for connections
+__DEBUG__  |  Wed Oct 31 20:15:21 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 20:15:21 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:15:21 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 20:15:21 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Wed Oct 31 20:15:21 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:15:21 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 20:15:21 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Wed Oct 31 20:15:21 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Wed Oct 31 20:15:21 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:15:21 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 20:15:21 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Wed Oct 31 20:15:21 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:15:21 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 20:15:21 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Wed Oct 31 20:15:21 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Wed Oct 31 20:24:03 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 20:24:03 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:24:03 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Wed Oct 31 20:24:03 2012  |  binding has been done
+__DEBUG__  |  Wed Oct 31 20:24:03 2012  |  memory freed successfully
+__DEBUG__  |  Wed Oct 31 20:24:03 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 20:24:03 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 20:24:03 2012  |  Waiting for connections
+__DEBUG__  |  Wed Oct 31 20:24:08 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 20:24:08 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:24:08 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Wed Oct 31 20:24:08 2012  |  binding has been done
+__DEBUG__  |  Wed Oct 31 20:24:08 2012  |  memory freed successfully
+__DEBUG__  |  Wed Oct 31 20:24:08 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 20:24:08 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 20:24:08 2012  |  Waiting for connections
+__DEBUG__  |  Wed Oct 31 20:24:22 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 20:24:22 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:24:22 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 20:24:22 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Wed Oct 31 20:24:22 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:24:22 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 20:24:22 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Wed Oct 31 20:24:22 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Wed Oct 31 20:24:22 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:24:22 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 20:24:22 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Wed Oct 31 20:24:22 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:24:22 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 20:24:22 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Wed Oct 31 20:24:22 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Wed Oct 31 20:26:02 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 20:26:02 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:26:02 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Wed Oct 31 20:26:02 2012  |  binding has been done
+__DEBUG__  |  Wed Oct 31 20:26:02 2012  |  memory freed successfully
+__DEBUG__  |  Wed Oct 31 20:26:02 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 20:26:02 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 20:26:02 2012  |  Waiting for connections
+__DEBUG__  |  Wed Oct 31 20:26:11 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 20:26:11 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:26:11 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 20:26:11 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Wed Oct 31 20:26:11 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:26:11 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 20:26:11 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Wed Oct 31 20:26:11 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Wed Oct 31 20:26:11 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:26:11 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Wed Oct 31 20:26:11 2012  |  binding has been done
+__DEBUG__  |  Wed Oct 31 20:26:11 2012  |  memory freed successfully
+__DEBUG__  |  Wed Oct 31 20:26:11 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 20:26:11 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 20:26:11 2012  |  Waiting for connections
+__DEBUG__  |  Wed Oct 31 20:26:34 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 20:26:34 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:26:34 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Wed Oct 31 20:26:34 2012  |  binding has been done
+__DEBUG__  |  Wed Oct 31 20:26:34 2012  |  memory freed successfully
+__DEBUG__  |  Wed Oct 31 20:26:34 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 20:26:34 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 20:26:34 2012  |  Waiting for connections
+__DEBUG__  |  Wed Oct 31 20:26:43 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 20:26:43 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:26:43 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 20:26:43 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Wed Oct 31 20:26:43 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:26:43 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 20:26:43 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Wed Oct 31 20:26:43 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Wed Oct 31 20:26:43 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:26:43 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Wed Oct 31 20:26:43 2012  |  binding has been done
+__DEBUG__  |  Wed Oct 31 20:26:43 2012  |  memory freed successfully
+__DEBUG__  |  Wed Oct 31 20:26:43 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 20:26:43 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 20:26:43 2012  |  Waiting for connections
+__DEBUG__  |  Wed Oct 31 20:27:19 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 20:27:19 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:27:19 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Wed Oct 31 20:27:19 2012  |  binding has been done
+__DEBUG__  |  Wed Oct 31 20:27:19 2012  |  memory freed successfully
+__DEBUG__  |  Wed Oct 31 20:27:19 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 20:27:19 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 20:27:19 2012  |  Waiting for connections
+__DEBUG__  |  Wed Oct 31 20:27:27 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 20:27:27 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:27:27 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 20:27:27 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Wed Oct 31 20:27:27 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:27:27 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 20:27:27 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Wed Oct 31 20:27:27 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Wed Oct 31 20:27:27 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:27:27 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 20:27:27 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Wed Oct 31 20:27:27 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:27:27 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 20:27:27 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Wed Oct 31 20:27:27 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Wed Oct 31 20:31:34 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 20:31:34 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:31:34 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Wed Oct 31 20:31:34 2012  |  binding has been done
+__DEBUG__  |  Wed Oct 31 20:31:34 2012  |  memory freed successfully
+__DEBUG__  |  Wed Oct 31 20:31:34 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 20:31:34 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 20:31:34 2012  |  Waiting for connections
+__DEBUG__  |  Wed Oct 31 20:31:45 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 20:31:45 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:31:45 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 20:31:45 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Wed Oct 31 20:31:45 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:31:45 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 20:31:45 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Wed Oct 31 20:31:45 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Wed Oct 31 20:31:45 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 20:31:45 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Wed Oct 31 20:31:45 2012  |  binding has been done
+__DEBUG__  |  Wed Oct 31 20:31:45 2012  |  memory freed successfully
+__DEBUG__  |  Wed Oct 31 20:31:45 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 20:31:45 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 20:31:45 2012  |  Waiting for connections
+__DEBUG__  |  Wed Oct 31 20:32:02 2012  |  accepted new connection
+__LOG__    |  Wed Oct 31 20:32:02 2012  |  127.0.0.1: Got new connection
+__LOG__    |  Wed Oct 31 20:32:02 2012  |  Waiting for connections
+__LOG__    |  Wed Oct 31 20:32:02 2012  |  New thread created succesfully
+__DEBUG__  |  Wed Oct 31 21:36:24 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 21:36:24 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 21:36:24 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Wed Oct 31 21:36:24 2012  |  binding has been done
+__DEBUG__  |  Wed Oct 31 21:36:24 2012  |  memory freed successfully
+__DEBUG__  |  Wed Oct 31 21:36:24 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 21:36:24 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 21:36:24 2012  |  Waiting for connections
+__DEBUG__  |  Wed Oct 31 21:36:36 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 21:36:36 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 21:36:36 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 21:36:36 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Wed Oct 31 21:36:36 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 21:36:36 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 21:36:36 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Wed Oct 31 21:36:36 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Wed Oct 31 21:36:36 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 21:36:36 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Wed Oct 31 21:36:36 2012  |  binding has been done
+__DEBUG__  |  Wed Oct 31 21:36:36 2012  |  memory freed successfully
+__DEBUG__  |  Wed Oct 31 21:36:36 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 21:36:36 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 21:36:36 2012  |  Waiting for connections
+__DEBUG__  |  Wed Oct 31 21:37:11 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 21:37:11 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 21:37:11 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Wed Oct 31 21:37:11 2012  |  binding has been done
+__DEBUG__  |  Wed Oct 31 21:37:11 2012  |  memory freed successfully
+__DEBUG__  |  Wed Oct 31 21:37:11 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 21:37:11 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 21:37:11 2012  |  Waiting for connections
+__DEBUG__  |  Wed Oct 31 21:37:20 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 21:37:20 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 21:37:20 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 21:37:20 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Wed Oct 31 21:37:20 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 21:37:20 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 21:37:20 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Wed Oct 31 21:37:20 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Wed Oct 31 21:37:20 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 21:37:20 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 21:37:20 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Wed Oct 31 21:37:20 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 21:37:20 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 21:37:20 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Wed Oct 31 21:37:20 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Wed Oct 31 21:40:04 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 21:40:04 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 21:40:04 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Wed Oct 31 21:40:04 2012  |  binding has been done
+__DEBUG__  |  Wed Oct 31 21:40:04 2012  |  memory freed successfully
+__DEBUG__  |  Wed Oct 31 21:40:04 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 21:40:04 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 21:40:04 2012  |  Waiting for connections
+__DEBUG__  |  Wed Oct 31 21:43:00 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 21:43:00 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 21:43:00 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 21:43:00 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Wed Oct 31 21:43:00 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 21:43:00 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 21:43:00 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Wed Oct 31 21:43:00 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Wed Oct 31 21:43:00 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 21:43:00 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Wed Oct 31 21:43:00 2012  |  binding has been done
+__DEBUG__  |  Wed Oct 31 21:43:00 2012  |  memory freed successfully
+__DEBUG__  |  Wed Oct 31 21:43:00 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 21:43:00 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 21:43:00 2012  |  Waiting for connections
+__DEBUG__  |  Wed Oct 31 21:44:03 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 21:44:03 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 21:44:03 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Wed Oct 31 21:44:03 2012  |  binding has been done
+__DEBUG__  |  Wed Oct 31 21:44:03 2012  |  memory freed successfully
+__DEBUG__  |  Wed Oct 31 21:44:03 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 21:44:03 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 21:44:03 2012  |  Waiting for connections
+__DEBUG__  |  Wed Oct 31 21:44:15 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 21:44:15 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 21:44:15 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 21:44:15 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Wed Oct 31 21:44:15 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 21:44:15 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 21:44:15 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Wed Oct 31 21:44:15 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Wed Oct 31 21:44:15 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 21:44:15 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 21:44:15 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Wed Oct 31 21:44:15 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 21:44:15 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 21:44:15 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Wed Oct 31 21:44:15 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Wed Oct 31 21:44:51 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 21:44:51 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 21:44:51 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Wed Oct 31 21:44:51 2012  |  binding has been done
+__DEBUG__  |  Wed Oct 31 21:44:51 2012  |  memory freed successfully
+__DEBUG__  |  Wed Oct 31 21:44:51 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 21:44:51 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 21:44:51 2012  |  Waiting for connections
+__DEBUG__  |  Wed Oct 31 21:45:03 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 21:45:03 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 21:45:03 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 21:45:03 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Wed Oct 31 21:45:03 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 21:45:03 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 21:45:03 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Wed Oct 31 21:45:03 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Wed Oct 31 21:45:03 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 21:45:03 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 21:45:03 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Wed Oct 31 21:45:03 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 21:45:03 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 21:45:03 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Wed Oct 31 21:45:03 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Wed Oct 31 22:08:35 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 22:08:35 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 22:08:35 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Wed Oct 31 22:08:35 2012  |  binding has been done
+__DEBUG__  |  Wed Oct 31 22:08:35 2012  |  memory freed successfully
+__DEBUG__  |  Wed Oct 31 22:08:35 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 22:08:35 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 22:08:35 2012  |  Waiting for connections
+__DEBUG__  |  Wed Oct 31 22:08:52 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 22:08:52 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 22:08:52 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 22:08:52 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Wed Oct 31 22:08:52 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 22:08:52 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 22:08:52 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Wed Oct 31 22:08:52 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Wed Oct 31 22:08:52 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 22:08:52 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 22:08:52 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Wed Oct 31 22:08:52 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 22:08:52 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 22:08:52 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Wed Oct 31 22:08:52 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Wed Oct 31 22:10:16 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 22:10:16 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 22:10:16 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Wed Oct 31 22:10:16 2012  |  binding has been done
+__DEBUG__  |  Wed Oct 31 22:10:16 2012  |  memory freed successfully
+__DEBUG__  |  Wed Oct 31 22:10:16 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 22:10:16 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 22:10:16 2012  |  Waiting for connections
+__DEBUG__  |  Wed Oct 31 22:10:30 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 22:10:30 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 22:10:30 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 22:10:30 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Wed Oct 31 22:10:30 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 22:10:30 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 22:10:30 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Wed Oct 31 22:10:30 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Wed Oct 31 22:10:30 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 22:10:30 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 22:10:30 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Wed Oct 31 22:10:30 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 22:10:30 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 22:10:30 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Wed Oct 31 22:10:30 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Wed Oct 31 22:10:43 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 22:10:43 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 22:10:43 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Wed Oct 31 22:10:43 2012  |  binding has been done
+__DEBUG__  |  Wed Oct 31 22:10:43 2012  |  memory freed successfully
+__DEBUG__  |  Wed Oct 31 22:10:43 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 22:10:43 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 22:10:43 2012  |  Waiting for connections
+__DEBUG__  |  Wed Oct 31 22:10:51 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 22:10:51 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 22:10:51 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 22:10:51 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Wed Oct 31 22:10:51 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 22:10:51 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 22:10:51 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Wed Oct 31 22:10:51 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Wed Oct 31 22:10:51 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 22:10:51 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 22:10:51 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Wed Oct 31 22:10:51 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 22:10:51 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 22:10:51 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Wed Oct 31 22:10:51 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Wed Oct 31 22:13:12 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 22:13:12 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 22:13:12 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Wed Oct 31 22:13:12 2012  |  binding has been done
+__DEBUG__  |  Wed Oct 31 22:13:12 2012  |  memory freed successfully
+__DEBUG__  |  Wed Oct 31 22:13:12 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 22:13:12 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 22:13:12 2012  |  Waiting for connections
+__DEBUG__  |  Wed Oct 31 22:13:34 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 22:13:34 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 22:13:34 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 22:13:34 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Wed Oct 31 22:13:34 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 22:13:34 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 22:13:34 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Wed Oct 31 22:13:34 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Wed Oct 31 22:13:34 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 22:13:34 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 22:13:34 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Wed Oct 31 22:13:34 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 22:13:34 2012  |  setsockopt formed succesfully
+__ERR__    |  Wed Oct 31 22:13:34 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Wed Oct 31 22:13:34 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Wed Oct 31 22:32:34 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Wed Oct 31 22:32:34 2012  |  socket formed succesfully
+__DEBUG__  |  Wed Oct 31 22:32:34 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Wed Oct 31 22:32:34 2012  |  binding has been done
+__DEBUG__  |  Wed Oct 31 22:32:34 2012  |  memory freed successfully
+__DEBUG__  |  Wed Oct 31 22:32:34 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 22:32:34 2012  |  socket is listening
+__LOG__    |  Wed Oct 31 22:32:34 2012  |  Waiting for connections
+__DEBUG__  |  Sat Nov  3 15:58:24 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Sat Nov  3 15:58:24 2012  |  socket formed succesfully
+__DEBUG__  |  Sat Nov  3 15:58:24 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Sat Nov  3 15:58:24 2012  |  binding has been done
+__DEBUG__  |  Sat Nov  3 15:58:24 2012  |  memory freed successfully
+__DEBUG__  |  Sat Nov  3 15:58:24 2012  |  socket is listening
+__LOG__    |  Sat Nov  3 15:58:24 2012  |  socket is listening
+__LOG__    |  Sat Nov  3 15:58:24 2012  |  Waiting for connections
+__DEBUG__  |  Sun Nov  4 11:19:51 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Sun Nov  4 11:19:51 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:19:51 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Sun Nov  4 11:19:51 2012  |  binding has been done
+__DEBUG__  |  Sun Nov  4 11:19:51 2012  |  memory freed successfully
+__DEBUG__  |  Sun Nov  4 11:19:51 2012  |  socket is listening
+__LOG__    |  Sun Nov  4 11:19:51 2012  |  socket is listening
+__LOG__    |  Sun Nov  4 11:19:51 2012  |  Waiting for connections
+__DEBUG__  |  Sun Nov  4 11:32:09 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Sun Nov  4 11:32:09 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:32:09 2012  |  setsockopt formed succesfully
+__ERR__    |  Sun Nov  4 11:32:09 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Sun Nov  4 11:32:09 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:32:09 2012  |  setsockopt formed succesfully
+__ERR__    |  Sun Nov  4 11:32:09 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Sun Nov  4 11:32:09 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Sun Nov  4 11:32:09 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:32:09 2012  |  setsockopt formed succesfully
+__ERR__    |  Sun Nov  4 11:32:09 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Sun Nov  4 11:32:09 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:32:09 2012  |  setsockopt formed succesfully
+__ERR__    |  Sun Nov  4 11:32:09 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Sun Nov  4 11:32:09 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Sun Nov  4 11:32:14 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Sun Nov  4 11:32:14 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:32:14 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Sun Nov  4 11:32:14 2012  |  binding has been done
+__DEBUG__  |  Sun Nov  4 11:32:14 2012  |  memory freed successfully
+__DEBUG__  |  Sun Nov  4 11:32:14 2012  |  socket is listening
+__LOG__    |  Sun Nov  4 11:32:14 2012  |  socket is listening
+__LOG__    |  Sun Nov  4 11:32:14 2012  |  Waiting for connections
+__DEBUG__  |  Sun Nov  4 11:33:10 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Sun Nov  4 11:33:10 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:33:10 2012  |  setsockopt formed succesfully
+__ERR__    |  Sun Nov  4 11:33:10 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Sun Nov  4 11:33:10 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:33:10 2012  |  setsockopt formed succesfully
+__ERR__    |  Sun Nov  4 11:33:10 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Sun Nov  4 11:33:10 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Sun Nov  4 11:33:10 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:33:10 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Sun Nov  4 11:33:10 2012  |  binding has been done
+__DEBUG__  |  Sun Nov  4 11:33:10 2012  |  memory freed successfully
+__DEBUG__  |  Sun Nov  4 11:33:10 2012  |  socket is listening
+__LOG__    |  Sun Nov  4 11:33:10 2012  |  socket is listening
+__LOG__    |  Sun Nov  4 11:33:10 2012  |  Waiting for connections
+__ERR__    |  Sun Nov  4 11:34:19 2012  |  Where - Supervisor- signalHandlerSuper  |  Error - Caught signal SIGTERM
+__DEBUG__  |  Sun Nov  4 11:34:42 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Sun Nov  4 11:34:42 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:34:42 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Sun Nov  4 11:34:42 2012  |  binding has been done
+__DEBUG__  |  Sun Nov  4 11:34:42 2012  |  memory freed successfully
+__DEBUG__  |  Sun Nov  4 11:34:42 2012  |  socket is listening
+__LOG__    |  Sun Nov  4 11:34:42 2012  |  socket is listening
+__LOG__    |  Sun Nov  4 11:34:42 2012  |  Waiting for connections
+__DEBUG__  |  Sun Nov  4 11:34:51 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Sun Nov  4 11:34:51 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:34:51 2012  |  setsockopt formed succesfully
+__ERR__    |  Sun Nov  4 11:34:51 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Sun Nov  4 11:34:51 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:34:51 2012  |  setsockopt formed succesfully
+__ERR__    |  Sun Nov  4 11:34:51 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Sun Nov  4 11:34:51 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Sun Nov  4 11:34:51 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:34:51 2012  |  setsockopt formed succesfully
+__ERR__    |  Sun Nov  4 11:34:51 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Sun Nov  4 11:34:51 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:34:51 2012  |  setsockopt formed succesfully
+__ERR__    |  Sun Nov  4 11:34:51 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Sun Nov  4 11:34:51 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Sun Nov  4 11:35:50 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Sun Nov  4 11:35:50 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:35:50 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Sun Nov  4 11:35:50 2012  |  binding has been done
+__DEBUG__  |  Sun Nov  4 11:35:50 2012  |  memory freed successfully
+__DEBUG__  |  Sun Nov  4 11:35:50 2012  |  socket is listening
+__LOG__    |  Sun Nov  4 11:35:50 2012  |  socket is listening
+__LOG__    |  Sun Nov  4 11:35:50 2012  |  Waiting for connections
+__DEBUG__  |  Sun Nov  4 11:35:58 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Sun Nov  4 11:35:58 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:35:58 2012  |  setsockopt formed succesfully
+__ERR__    |  Sun Nov  4 11:35:58 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Sun Nov  4 11:35:58 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:35:58 2012  |  setsockopt formed succesfully
+__ERR__    |  Sun Nov  4 11:35:58 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Sun Nov  4 11:35:58 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Sun Nov  4 11:35:58 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:35:58 2012  |  setsockopt formed succesfully
+__ERR__    |  Sun Nov  4 11:35:58 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Sun Nov  4 11:35:58 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:35:58 2012  |  setsockopt formed succesfully
+__ERR__    |  Sun Nov  4 11:35:58 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Sun Nov  4 11:35:58 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Sun Nov  4 11:41:44 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Sun Nov  4 11:41:44 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:41:44 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Sun Nov  4 11:41:44 2012  |  binding has been done
+__DEBUG__  |  Sun Nov  4 11:41:44 2012  |  memory freed successfully
+__DEBUG__  |  Sun Nov  4 11:41:44 2012  |  socket is listening
+__LOG__    |  Sun Nov  4 11:41:44 2012  |  socket is listening
+__LOG__    |  Sun Nov  4 11:41:44 2012  |  Waiting for connections
+__DEBUG__  |  Sun Nov  4 11:41:50 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Sun Nov  4 11:41:50 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:41:50 2012  |  setsockopt formed succesfully
+__ERR__    |  Sun Nov  4 11:41:50 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Sun Nov  4 11:41:50 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:41:50 2012  |  setsockopt formed succesfully
+__ERR__    |  Sun Nov  4 11:41:50 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Sun Nov  4 11:41:50 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Sun Nov  4 11:41:50 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:41:50 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Sun Nov  4 11:41:50 2012  |  binding has been done
+__DEBUG__  |  Sun Nov  4 11:41:50 2012  |  memory freed successfully
+__DEBUG__  |  Sun Nov  4 11:41:50 2012  |  socket is listening
+__LOG__    |  Sun Nov  4 11:41:50 2012  |  socket is listening
+__LOG__    |  Sun Nov  4 11:41:50 2012  |  Waiting for connections
+__DEBUG__  |  Sun Nov  4 11:42:17 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Sun Nov  4 11:42:17 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:42:17 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Sun Nov  4 11:42:17 2012  |  binding has been done
+__DEBUG__  |  Sun Nov  4 11:42:17 2012  |  memory freed successfully
+__DEBUG__  |  Sun Nov  4 11:42:17 2012  |  socket is listening
+__LOG__    |  Sun Nov  4 11:42:17 2012  |  socket is listening
+__LOG__    |  Sun Nov  4 11:42:17 2012  |  Waiting for connections
+__DEBUG__  |  Sun Nov  4 11:42:29 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Sun Nov  4 11:42:29 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:42:29 2012  |  setsockopt formed succesfully
+__ERR__    |  Sun Nov  4 11:42:29 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Sun Nov  4 11:42:29 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:42:29 2012  |  setsockopt formed succesfully
+__ERR__    |  Sun Nov  4 11:42:29 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Sun Nov  4 11:42:29 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Sun Nov  4 11:42:29 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:42:29 2012  |  setsockopt formed succesfully
+__ERR__    |  Sun Nov  4 11:42:29 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Sun Nov  4 11:42:29 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:42:29 2012  |  setsockopt formed succesfully
+__ERR__    |  Sun Nov  4 11:42:29 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Sun Nov  4 11:42:29 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Sun Nov  4 11:48:27 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Sun Nov  4 11:48:27 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:48:27 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Sun Nov  4 11:48:27 2012  |  binding has been done
+__DEBUG__  |  Sun Nov  4 11:48:27 2012  |  memory freed successfully
+__DEBUG__  |  Sun Nov  4 11:48:27 2012  |  socket is listening
+__LOG__    |  Sun Nov  4 11:48:27 2012  |  socket is listening
+__LOG__    |  Sun Nov  4 11:48:27 2012  |  Waiting for connections
+__DEBUG__  |  Sun Nov  4 11:48:40 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Sun Nov  4 11:48:40 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:48:40 2012  |  setsockopt formed succesfully
+__ERR__    |  Sun Nov  4 11:48:40 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Sun Nov  4 11:48:40 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:48:40 2012  |  setsockopt formed succesfully
+__ERR__    |  Sun Nov  4 11:48:40 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Sun Nov  4 11:48:40 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Sun Nov  4 11:48:40 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:48:40 2012  |  setsockopt formed succesfully
+__ERR__    |  Sun Nov  4 11:48:40 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Sun Nov  4 11:48:40 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:48:40 2012  |  setsockopt formed succesfully
+__ERR__    |  Sun Nov  4 11:48:40 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Sun Nov  4 11:48:40 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Sun Nov  4 11:54:54 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Sun Nov  4 11:54:54 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:54:54 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Sun Nov  4 11:54:54 2012  |  binding has been done
+__DEBUG__  |  Sun Nov  4 11:54:54 2012  |  memory freed successfully
+__DEBUG__  |  Sun Nov  4 11:54:54 2012  |  socket is listening
+__LOG__    |  Sun Nov  4 11:54:54 2012  |  socket is listening
+__LOG__    |  Sun Nov  4 11:54:54 2012  |  Waiting for connections
+__DEBUG__  |  Sun Nov  4 11:55:03 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Sun Nov  4 11:55:03 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:55:03 2012  |  setsockopt formed succesfully
+__ERR__    |  Sun Nov  4 11:55:03 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Sun Nov  4 11:55:03 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:55:03 2012  |  setsockopt formed succesfully
+__ERR__    |  Sun Nov  4 11:55:03 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Sun Nov  4 11:55:03 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Sun Nov  4 11:55:03 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:55:03 2012  |  setsockopt formed succesfully
+__ERR__    |  Sun Nov  4 11:55:03 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Sun Nov  4 11:55:03 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 11:55:03 2012  |  setsockopt formed succesfully
+__ERR__    |  Sun Nov  4 11:55:03 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Sun Nov  4 11:55:03 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Sun Nov  4 12:14:56 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Sun Nov  4 12:14:56 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 12:14:56 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Sun Nov  4 12:14:56 2012  |  binding has been done
+__DEBUG__  |  Sun Nov  4 12:14:56 2012  |  memory freed successfully
+__DEBUG__  |  Sun Nov  4 12:14:56 2012  |  socket is listening
+__LOG__    |  Sun Nov  4 12:14:56 2012  |  socket is listening
+__LOG__    |  Sun Nov  4 12:14:56 2012  |  Waiting for connections
+__DEBUG__  |  Sun Nov  4 12:15:10 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Sun Nov  4 12:15:10 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 12:15:10 2012  |  setsockopt formed succesfully
+__ERR__    |  Sun Nov  4 12:15:10 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Sun Nov  4 12:15:10 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 12:15:10 2012  |  setsockopt formed succesfully
+__ERR__    |  Sun Nov  4 12:15:10 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Sun Nov  4 12:15:10 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Sun Nov  4 12:15:12 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 12:15:12 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Sun Nov  4 12:15:12 2012  |  binding has been done
+__DEBUG__  |  Sun Nov  4 12:15:12 2012  |  memory freed successfully
+__DEBUG__  |  Sun Nov  4 12:15:12 2012  |  socket is listening
+__LOG__    |  Sun Nov  4 12:15:12 2012  |  socket is listening
+__LOG__    |  Sun Nov  4 12:15:12 2012  |  Waiting for connections
+__DEBUG__  |  Sun Nov  4 12:19:18 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Sun Nov  4 12:19:18 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 12:19:18 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Sun Nov  4 12:19:18 2012  |  binding has been done
+__DEBUG__  |  Sun Nov  4 12:19:18 2012  |  memory freed successfully
+__DEBUG__  |  Sun Nov  4 12:19:18 2012  |  socket is listening
+__LOG__    |  Sun Nov  4 12:19:18 2012  |  socket is listening
+__LOG__    |  Sun Nov  4 12:19:18 2012  |  Waiting for connections
+__DEBUG__  |  Sun Nov  4 12:19:24 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Sun Nov  4 12:19:24 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 12:19:24 2012  |  setsockopt formed succesfully
+__ERR__    |  Sun Nov  4 12:19:24 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Sun Nov  4 12:19:24 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 12:19:24 2012  |  setsockopt formed succesfully
+__ERR__    |  Sun Nov  4 12:19:24 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Sun Nov  4 12:19:24 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Sun Nov  4 12:19:26 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 12:19:26 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Sun Nov  4 12:19:26 2012  |  binding has been done
+__DEBUG__  |  Sun Nov  4 12:19:26 2012  |  memory freed successfully
+__DEBUG__  |  Sun Nov  4 12:19:26 2012  |  socket is listening
+__LOG__    |  Sun Nov  4 12:19:26 2012  |  socket is listening
+__LOG__    |  Sun Nov  4 12:19:26 2012  |  Waiting for connections
+__DEBUG__  |  Sun Nov  4 12:51:58 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Sun Nov  4 12:51:58 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 12:51:58 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Sun Nov  4 12:51:58 2012  |  binding has been done
+__DEBUG__  |  Sun Nov  4 12:51:58 2012  |  memory freed successfully
+__DEBUG__  |  Sun Nov  4 12:51:58 2012  |  socket is listening
+__LOG__    |  Sun Nov  4 12:51:58 2012  |  socket is listening
+__LOG__    |  Sun Nov  4 12:51:58 2012  |  Waiting for connections
+__DEBUG__  |  Sun Nov  4 12:52:09 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Sun Nov  4 12:52:09 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 12:52:09 2012  |  setsockopt formed succesfully
+__ERR__    |  Sun Nov  4 12:52:09 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Sun Nov  4 12:52:09 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 12:52:09 2012  |  setsockopt formed succesfully
+__ERR__    |  Sun Nov  4 12:52:09 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Sun Nov  4 12:52:09 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Sun Nov  4 12:52:09 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 12:52:09 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Sun Nov  4 12:52:09 2012  |  binding has been done
+__DEBUG__  |  Sun Nov  4 12:52:09 2012  |  memory freed successfully
+__DEBUG__  |  Sun Nov  4 12:52:09 2012  |  socket is listening
+__LOG__    |  Sun Nov  4 12:52:09 2012  |  socket is listening
+__LOG__    |  Sun Nov  4 12:52:09 2012  |  Waiting for connections
+__DEBUG__  |  Sun Nov  4 12:52:22 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Sun Nov  4 12:52:22 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 12:52:22 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Sun Nov  4 12:52:22 2012  |  binding has been done
+__DEBUG__  |  Sun Nov  4 12:52:22 2012  |  memory freed successfully
+__DEBUG__  |  Sun Nov  4 12:52:22 2012  |  socket is listening
+__LOG__    |  Sun Nov  4 12:52:22 2012  |  socket is listening
+__LOG__    |  Sun Nov  4 12:52:22 2012  |  Waiting for connections
+__DEBUG__  |  Sun Nov  4 12:52:28 2012  |  struct addrinfo has been formed succesfully
+__DEBUG__  |  Sun Nov  4 12:52:28 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 12:52:28 2012  |  setsockopt formed succesfully
+__ERR__    |  Sun Nov  4 12:52:28 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__DEBUG__  |  Sun Nov  4 12:52:28 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 12:52:28 2012  |  setsockopt formed succesfully
+__ERR__    |  Sun Nov  4 12:52:28 2012  |  Where - DISPATCHER-bind:  |  Error - Address already in use
+__ERR__    |  Sun Nov  4 12:52:28 2012  |  Where - DISPATCHER-bindcheck:  |  Error - Unable to bind to port using any IP
+__DEBUG__  |  Sun Nov  4 12:52:28 2012  |  socket formed succesfully
+__DEBUG__  |  Sun Nov  4 12:52:28 2012  |  setsockopt formed succesfully
+__DEBUG__  |  Sun Nov  4 12:52:28 2012  |  binding has been done
+__DEBUG__  |  Sun Nov  4 12:52:28 2012  |  memory freed successfully
+__DEBUG__  |  Sun Nov  4 12:52:28 2012  |  socket is listening
+__LOG__    |  Sun Nov  4 12:52:28 2012  |  socket is listening
+__LOG__    |  Sun Nov  4 12:52:28 2012  |  Waiting for connections

@@ -127,14 +127,3 @@ void errorp(char *where, int boolean, int errn,char *what)
 		logp(3,errmsg);	
 	}
 }
-
-int strintToInt(char *str, int len)
-{
-	int iter, pow_iter, num=0;
-	for(iter = 0, pow_iter = len-1; iter < len ; iter++, pow_iter--)
-	{
-		num += (str[iter]-48)* ((int) pow(10,pow_iter));
-	}
-	return num;
-
-}

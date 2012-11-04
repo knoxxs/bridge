@@ -33,6 +33,5 @@ int sendall(int fd, char *buf, int *len);
 int recvall(int fd, char *buf, int *len);
 void logp(int typ, char* msg);
 void errorp(char *where, int boolean, int errn,char *what);
-int strintToInt(char *str, int len);
 
 #endif
