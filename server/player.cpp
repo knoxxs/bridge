@@ -31,17 +31,25 @@ void* playerMain(void* lp){
 
 void connection_handler(int connection_fd){
 	int fd_to_recv, recvdBytes;
-	char msgbuf[50];
-	fd_to_recv = recv_fd(connection_fd ,&errcheckfunc);
+	char msgbuf[50], plid[8], id[9];
+	fd_to_recv = recv_fd(connection_fd ,&errcheckfunc, plid);
+	printf("message received:%d\n",fd_to_recv);
 	
-    printf("message received:%d\n",fd_to_recv);
-	
-    // if((recvdBytes = recv(fd_to_recv, msgbuf, 6, 0)) == -1) {
-    //     fprintf(stderr, "Error receiving data %d\n", errno);
-    // }
-    // msgbuf[6] ='\0';
-    // printf("message received:%s\n",msgbuf);
+	if((recvdBytes = recv(connection_fd, plid, 8, 0)) == -1) {
+        fprintf(stderr, "Error receiving data %d\n", errno);
+    }	
 
+    strcpy(id, plid);
+    id[8] = '\0';
+    printf("plid is:%s\n",id);
+
+
+    if((recvdBytes = recv(fd_to_recv, msgbuf, 6, 0)) == -1) {
+        fprintf(stderr, "Error receiving data %d\n", errno);
+    }
+    msgbuf[6] ='\0';
+    printf("message received:%s\n",msgbuf);
+    
     pthread_t thread_id = 0;
     void *thread_arg;
     int err;

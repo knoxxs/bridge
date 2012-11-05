@@ -10,17 +10,21 @@ int listenBind(struct addrinfo *ai);
 int login(int fd, char* plid);
 //get sockaddr , IPv4 or IPv6:
 void contactPlayer(char*,int);
-int send_fd(int, int);
+int send_fd(int, int, char*);
 int unixClientSocket();
 int send_err(int, int, const char *);
 
 void contactPlayer(char* plid, int fd_to_send){
-    int socket_fd;
+    int socket_fd, recvdBytes;
     printf("in contactPlayer\n");
 //    if((fd_to_send = open("vi",O_RDONLY)) < 0)
 //        printf("vi open failed");     
     socket_fd = unixClientSocket();
-    send_fd(socket_fd, fd_to_send);
+    send_fd(socket_fd, fd_to_send, plid);
+    recvdBytes = send(socket_fd, plid, 8, 0);
+    if (recvdBytes != 8) {
+        errorp("DISPATCHER-contact-Player:", 0, 0, "Unable to send complete plid");
+    }
 }
 
 int unixClientSocket(){
@@ -59,23 +63,27 @@ int send_err(int fd, int errcode, const char *msg)
     if (errcode >= 0)
         errcode = -1;   /* must be negative */
 
-    if (send_fd(fd, errcode) < 0)
+    if (send_fd(fd, errcode, NULL) < 0) //NULL for plid
         return(-1);
 
     return(0);
 }
 
-int send_fd(int fd, int fd_to_send)
+int send_fd(int fd, int fd_to_send, char* plid)
 {
 
     ssize_t temp;
-    struct iovec    iov[1];
+    //struct iovec    iov[2];//second is for sneding plid
+    struct iovec    iov[1];//second is for sneding plid
     struct msghdr   msg;
     char            buf[2]; /* send_fd()/recv_fd() 2-byte protocol */
 
     iov[0].iov_base = buf;
     iov[0].iov_len  = 2;
+    // iov[1].iov_base = plid;
+    // iov[1].iov_len  = 8;
     msg.msg_iov     = iov;
+    // msg.msg_iovlen  = 2;
     msg.msg_iovlen  = 1;
     msg.msg_name    = NULL;
     msg.msg_namelen = 0;

@@ -37,7 +37,7 @@ myregex.o:myregex.cpp myregex.h
 	g++ -c myregex.cpp -lm
 
 player:player.o access.o player_helper.o
-	g++ player.o access.o player_helper.o -o ./bin/player
+	g++ player.o access.o player_helper.o -pthread -o ./bin/player
 
 player.o:player.cpp
 	g++ -c player.cpp

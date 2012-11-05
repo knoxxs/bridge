@@ -5,7 +5,7 @@
 
 
 int unixSocket();
-int recv_fd(int , ssize_t (*userfunc)(int, const void *, size_t));
+int recv_fd(int , ssize_t (*userfunc)(int, const void *, size_t), char*);
 ssize_t errcheckfunc(int, const void *, size_t);
 
 #endif

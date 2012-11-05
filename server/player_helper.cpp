@@ -12,6 +12,7 @@
 #include <netdb.h>
 #include <sys/un.h>
 #include <errno.h>
+#include <pthread.h>
 
 #define MAXLINE 2
 
@@ -53,37 +54,12 @@ int unixSocket(){
 	return socket_fd;
 }
 
-int connection_handler(int connection_fd){
-	int fd_to_recv, recvdBytes;
-	char msgbuf[50];
-	fd_to_recv = recv_fd(connection_fd ,&errcheckfunc);
-	
-    printf("message received:%d\n",fd_to_recv);
-	
-    // if((recvdBytes = recv(fd_to_recv, msgbuf, 6, 0)) == -1) {
-    //     fprintf(stderr, "Error receiving data %d\n", errno);
-    // }
-    // msgbuf[6] ='\0';
-    // printf("message received:%s\n",msgbuf);
 
-    pthread_t thread_id = 0;
-    void *thread_arg;
-    int err;
-
-    thread_arg=(void *)fd_to_recv;
-    if((err = pthread_create(&thread_id, NULL, SocketHandler,thread_arg ))!=0) {
-        errorp("PLAYER-pthrad_create:", 1, err, NULL);
-    }
-    if ((err = pthread_detach(thread_id)) != 0) {
-        errorp("PLAYER-pthread_detach:", 1, err, NULL);
-    }
-
-}
-
-int recv_fd(int fd, ssize_t (*userfunc)(int, const void *, size_t)) {
+int recv_fd(int fd, ssize_t (*userfunc)(int, const void *, size_t), char *plid) {
     int             newfd, nr, status;
     char            *ptr;
     char            buf[MAXLINE];
+    //struct iovec    iov[2];
     struct iovec    iov[1];
     struct msghdr   msg;
 
@@ -92,7 +68,10 @@ int recv_fd(int fd, ssize_t (*userfunc)(int, const void *, size_t)) {
     {
         iov[0].iov_base = buf;
         iov[0].iov_len  = sizeof(buf);
+        //iov[1].iov_base = plid;
+        //iov[1].iov_len  = 8;
         msg.msg_iov     = iov;
+        //msg.msg_iovlen  = 2;
         msg.msg_iovlen  = 1;
         msg.msg_name    = NULL;
         msg.msg_namelen = 0;
