@@ -21,7 +21,6 @@
  
 static struct cmsghdr   *cmptr = NULL;      /* malloc'ed first time */
 
-
 int unixSocket(){
 	struct sockaddr_un address;
 	int socket_fd;
