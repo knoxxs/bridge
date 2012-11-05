@@ -53,16 +53,30 @@ int unixSocket(){
 	return socket_fd;
 }
 
-void connection_handler(int connection_fd){
-	int fd_to_recv;
+int connection_handler(int connection_fd){
+	int fd_to_recv, recvdBytes;
 	char msgbuf[50];
 	fd_to_recv = recv_fd(connection_fd ,&errcheckfunc);
-	// if(read(fd_to_recv,msgbuf,5) < 0)
-	// printf("message read failed");
-	printf("message received:%d\n",fd_to_recv);
-	if(read(fd_to_recv,msgbuf,5) < 0)
-    	printf("message read failed");
-    printf("message received:%s\n",msgbuf);
+	
+    printf("message received:%d\n",fd_to_recv);
+	
+    // if((recvdBytes = recv(fd_to_recv, msgbuf, 6, 0)) == -1) {
+    //     fprintf(stderr, "Error receiving data %d\n", errno);
+    // }
+    // msgbuf[6] ='\0';
+    // printf("message received:%s\n",msgbuf);
+
+    pthread_t thread_id = 0;
+    void *thread_arg;
+    int err;
+
+    thread_arg=(void *)fd_to_recv;
+    if((err = pthread_create(&thread_id, NULL, SocketHandler,thread_arg ))!=0) {
+        errorp("PLAYER-pthrad_create:", 1, err, NULL);
+    }
+    if ((err = pthread_detach(thread_id)) != 0) {
+        errorp("PLAYER-pthread_detach:", 1, err, NULL);
+    }
 
 }
 

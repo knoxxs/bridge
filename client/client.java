@@ -26,10 +26,11 @@ public class client {
         String fromServer;
         String fromUser;
 
-        out.write('a');
+        out.write('a');//choice
         out.write("11111000\n",0,9);  //need to add \n not \0 as on client side using sscnf not strcpy
         out.write("abcd\n",0,5);
-        out.write("01234567899",0,11);
+        out.write("0123456789\n",0,11);
+        out.write("check\n",0,6);
 
        //out.println("sdgfdg");
         

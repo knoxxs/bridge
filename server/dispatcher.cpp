@@ -17,8 +17,8 @@ int send_err(int, int, const char *);
 void contactPlayer(char* plid, int fd_to_send){
     int socket_fd;
     printf("in contactPlayer\n");
-    if((fd_to_send = open("vi",O_RDONLY)) < 0)
-        printf("vi open failed");     
+//    if((fd_to_send = open("vi",O_RDONLY)) < 0)
+//        printf("vi open failed");     
     socket_fd = unixClientSocket();
     send_fd(socket_fd, fd_to_send);
 }
