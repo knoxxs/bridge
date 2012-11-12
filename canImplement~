@@ -1,7 +1,0 @@
-strerror_r instead of strerror as first one is threadsafe
-Need to change printf to cin and cout
-dispatcher signal handler
-change syntax to c++;
-learn to use sql in c++
-json
-
