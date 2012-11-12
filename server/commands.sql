@@ -1,7 +1,8 @@
-CREATE TABLE Login(
-	PLID char(8) PRIMARY KEY,
-	password varchar(15) NOT NULL 
-);
+DROP TABLE SubTeam;
+DROP TABLE Login;
+DROP TABLE Players;
+DROP TABLE Schedule;
+DROP TABLE Team;
 CREATE TABLE Team(
 	TID char(8) PRIMARY KEY,
 	Name varchar(30) NOT NULL,
@@ -11,6 +12,10 @@ CREATE TABLE Players(
 	PID char(8) PRIMARY KEY,
 	TID char(8) REFERENCES Team(TID),
 	Name varchar(30)
+);
+CREATE TABLE Login(
+	PLID char(8) REFERENCES Players(PID) PRIMARY KEY,
+	password varchar(15) NOT NULL 
 );
 CREATE TABLE SubTeam(
 	TID char(8) REFERENCES Team(TID),
@@ -34,3 +39,8 @@ CREATE TABLE Schedule(
 	EndTimeB time,
 	CONSTRAINT Schedule_Key PRIMARY KEY(TID1,TID2,DateTime)
 );
+
+
+INSERT INTO Team VALUES('teamID01', 'Team Name', 'Country');
+INSERT INTO Players VALUES('11111000', 'teamID01', 'Player Name');
+INSERT INTO Login VALUES('11111000', 'abcd');

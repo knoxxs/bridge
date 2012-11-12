@@ -2,6 +2,8 @@
 #define player_helperFlag
 #include <unistd.h>
 
+#define PLAYER_NAME_SIZE 31 //30 + 1
+#define PLAYER_TEAM_SIZE 9 //8+1
 
 
 int unixSocket();

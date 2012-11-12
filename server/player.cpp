@@ -1,8 +1,11 @@
 #include "access.h"
 #include "player_helper.h"
+#include "psql_player.h"
 
 void* playerMain(void*);
 void connection_handler(int);
+int getPlayerInfo(char *, char *, char *);
+
 struct playerThreadArg{
     int fd;
     char plid[8];
@@ -27,12 +30,48 @@ int main(){
 	}
 }
 
+
 void* playerMain(void* arg){
+    logp(1,"PLAYER - New thread created succesfully");
+
     playerThreadArg playerInfo;
     playerInfo = *( (playerThreadArg*) (arg) );
 
-	logp(1,"PLAYER - New thread created succesfully");
+    /////////////////////////____Getting player info____///////////////////////
+    char id[9];
+    char name[PLAYER_NAME_SIZE], team[PLAYER_TEAM_SIZE];
+    int fd;
 
+    strncpy(id, playerInfo.plid, 8);
+    id[8] = '\0';
+
+    fd = playerInfo.fd;
+
+    if(getPlayerInfo(id , name, team) == 0 ){
+        printf("This is it %s %s %s.\n", id, name, team);
+    }else{
+        //error
+        exit(-1);
+    }
+
+    //////////////////////_____creating schedule alarm_____///////////////
+
+    
+}
+
+int getPlayerInfo(char *plid, char *name, char *team){
+    int ret;
+    PGconn *conn = NULL;
+    conn = ConnectDB("postgres","123321","bridge","127.0.0.1","5432");
+    if (conn != NULL) {
+        ret = getPlayerInfoFromDb(conn, plid, name, team);
+        CloseConn(conn);
+        return ret;// 0 - done, -1 - error in getPlayerInfo
+    } else{
+        //error
+        printf("Error: establsihing connection tpo database \n");
+        return -3;
+    }
 }
 
 void connection_handler(int connection_fd){
