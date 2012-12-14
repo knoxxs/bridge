@@ -1,4 +1,10 @@
 #include "accessories.h"
+#include <time.h>
+#include <stdio.h>
+#include <errno.h>
+#include <string.h>
+#include <stdlib.h>
+
 
  
 void setLogFile(int log){

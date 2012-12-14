@@ -1,22 +1,6 @@
-#include <malloc.h>
-#include <time.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <errno.h>
-#include <string.h>
-#include <pthread.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-#include <error.h>
-#include <signal.h>
-#include <sys/ioctl.h>
-#include <sys/un.h>
-#include <stropts.h>
+#ifndef accessories
+#define accessories
+
 
 #define PORT "4444" //port we are listening on
 #define PASSCHECK "password"
@@ -34,3 +18,5 @@ void logWrite(int typ, char* msg);
 void errorp(char *where, int boolean, int errn,char *what);
 void logp(char *where, int boolean, int errn,char *what);
 void debugp(char *where, int boolean, int errn,char *what);
+
+#endif

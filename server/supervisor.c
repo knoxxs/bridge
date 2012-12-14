@@ -1,8 +1,18 @@
 #include "accessories.h"
+#include <fcntl.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <errno.h>
+#include <string.h>
+#include <pthread.h>
+#include <stdlib.h>
+#include <signal.h>
+
 
 #define LOG_PATH "/home/abhi/Projects/bridge/server/log"
 #define CUR_WORKING_DIREC "/home/abhi/Projects/bridge/server"
 //TODO different computer working directory issue
+//TODO error handling of signalHandlers
 
 void signalHandlerChild(int signal);
 void signalHandlerSuper(int signal);
