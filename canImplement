@@ -7,10 +7,20 @@ json
 
 
 TO-DO:
+
+
 1.Daemonise Supervisor and scheduling of it.
 -Upstart test - done
 -Daeminie process - not working
 
+PSQL.CPP:
+;Need to do error handling
+
+Access.CPP
+;Need to convert every char* to string and make it fully C++ style
+
+myregex.CPP
+;TODOs in processIdFinder
 
 2.Supervise the supervisor via handling all the signals and think something of two exception signals. - Password , best handing procedures.
 3.Search and Test for any case when SIGCHILD not generated.

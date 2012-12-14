@@ -1,4 +1,4 @@
-all:supervisor dispatcher player
+all:supervisor dispatcher player cleanO
 
 supervisor:supervisor.o accessories.o
 	gcc -o ./bin/supervisor  supervisor.o accessories.o
@@ -34,6 +34,9 @@ access.o:access.cpp access.h
 
 psql.o:psql.cpp psql.h
 	g++ -c psql.cpp -I /usr/include/postgresql -lpq
+
+#myregex:myregex.o access.o
+#	g++ myregex.o access.o -o ./bin/myregex
 
 myregex.o:myregex.cpp myregex.h
 	g++ -c myregex.cpp -lm

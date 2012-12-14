@@ -1,27 +1,6 @@
 #ifndef access
 #define access
 
-#include <malloc.h>
-#include <time.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <errno.h>
-#include <string.h>
-#include <pthread.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-#include <error.h>
-#include <signal.h>
-#include <sys/ioctl.h>
-#include <sys/un.h>
-#include <stropts.h>
-#include <regex.h>
-#include <math.h>
 
 #define PORT "4444" //port we are listening on
 #define PASSCHECK "password"
@@ -31,7 +10,6 @@
 #define DEBUG_TYPE 4
 
 
-int logfile;
 void setLogFile(int);
 int sendall(int fd, char *buf, int *len);
 int recvall(int fd, char *buf, int *len);

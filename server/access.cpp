@@ -1,7 +1,16 @@
+#include <time.h>
+#include <stdio.h>
+#include <errno.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/socket.h>
 #include "access.h"
 
-void setLogFile(int log){
-	logfile = log;
+int logfile;
+
+void setLogFile(int logfd){
+	logfile = logfd;
 }
 
 void logWrite(int typ, char* msg) // typ --> type(category) of message [1-Normal Log, 2-Warning(any unexpected thing happened), 3-Error, 4-Debugging Log ]
