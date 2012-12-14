@@ -1,4 +1,6 @@
-supervisor:supervisor.o accessories.o dispatcher player
+all:supervisor dispatcher player
+
+supervisor:supervisor.o accessories.o
 	gcc -o ./bin/supervisor  supervisor.o accessories.o
 
 supervisor.o:supervisor.c accessories.h
