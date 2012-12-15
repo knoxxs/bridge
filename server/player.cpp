@@ -1,7 +1,37 @@
+#include <fcntl.h>
+#include <stdio.h>
+#include <errno.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <pthread.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <sys/un.h>
+#include <libpq-fe.h>
+#include <string>
+#include <iostream>
 #include "access.h"
-#include "player_helper.h"
 #include "psql_player.h"
 
+#define PLAYER_NAME_SIZE 31 //30 + 1
+#define PLAYER_TEAM_SIZE 9 //8+1
+#define MAXLINE 2
+#define UNIX_SOCKET_FILE "./demo_socket"
+#define LOG_PATH "/home/abhi/Projects/bridge/server/log"
+
+/* size of control buffer to send/recv one file descriptor */
+#define CONTROLLEN  CMSG_LEN(sizeof(int))
+ 
+static struct cmsghdr   *cmptr = NULL;      /* malloc'ed first time */
+
+
+int unixSocket();
+int recv_fd(int , ssize_t (*userfunc)(int, const void *, size_t), char*);
+ssize_t errcheckfunc(int, const void *, size_t);
 void* playerMain(void*);
 void connection_handler(int);
 int getPlayerInfo(char *, char *, char *);
@@ -12,18 +42,26 @@ struct playerThreadArg{
 };
 
 int main(){
-
-	// static struct sigaction sigstruct;
-	// sigfillset(&(sigstruct.sa_mask));//add all the signals
-	// sigstruct.sa_handler = playerMain;
-	// sigstruct.sa_flags |= SA_RESTART;
-
 	int socket_fd, connection_fd;
 	struct sockaddr_un address;
 	socklen_t address_length;
 	
-	socket_fd = unixSocket();
+    int logfile;
+    setLogFile(STDOUT_FILENO);
+    logp("PLAYER-Main", 0,0 ,"Starting");
+    if( (logfile = open(LOG_PATH, O_RDWR|O_CREAT|O_APPEND,S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP)) < 0 ){
+        errorp("PLAYER-Main",0,0,"Error Opening logfile");
+        debugp("PLAYER-Main",1,1,NULL);
+    }
+    setLogFile(logfile);
 
+    logp("PLAYER-main",0,0,"Starting main");
+
+    logp("PLAYER-main",0,0,"Calling unixSocket");
+	socket_fd = unixSocket();
+    logp("PLAYER-main",0,0,"Socket made Succesfully");
+
+    logp("PLAYER-main",0,0,"Starting accepting connection in infinite while loop");
 	while((connection_fd = accept(socket_fd, (struct sockaddr *) &address,&address_length)) > -1) {
 		connection_handler(connection_fd);
 		close(connection_fd);
@@ -32,7 +70,7 @@ int main(){
 
 
 void* playerMain(void* arg){
-    logp(1,"PLAYER - New thread created succesfully");
+    //logp(1,"PLAYER - New thread created succesfully");
 
     playerThreadArg playerInfo;
     playerInfo = *( (playerThreadArg*) (arg) );
@@ -117,4 +155,105 @@ void connection_handler(int connection_fd){
     close(fd_to_recv);
 
     return;
+}
+int unixSocket(){
+    struct sockaddr_un address;
+    int socket_fd;
+    socklen_t address_length;
+
+    logp("PLAYER-unixSocket",0,0,"Inside unixSocket and calling socket");
+    if( (socket_fd = socket(PF_UNIX, SOCK_STREAM, 0) ) < 0 ) {
+        errorp("PLAYER-unixSocket",0,0,"Unable to create the socket");
+        debugp("PLAYER-unixSocket",1,errno,NULL);
+        return 1;
+    } 
+
+    unlink("./demo_socket");
+
+    /* start with a clean address structure */
+    memset(&address, 0, sizeof(struct sockaddr_un));
+
+    address.sun_family = AF_UNIX;
+    snprintf(address.sun_path, sizeof(address.sun_path)-1, "./demo_socket");
+
+    if(bind(socket_fd, (struct sockaddr *) &address, sizeof(struct sockaddr_un)) != 0){
+        printf("bind() failed\n");
+        return 1;
+    }
+
+    if(listen(socket_fd, 5) != 0) {
+        printf("listen() failed\n");
+        return 1;
+    }
+
+    return socket_fd;
+}
+
+
+int recv_fd(int fd, ssize_t (*userfunc)(int, const void *, size_t), char *plid) {
+    int             newfd, nr, status;
+    char            *ptr;
+    char            buf[MAXLINE];
+    //struct iovec    iov[2];
+    struct iovec    iov[1];
+    struct msghdr   msg;
+
+    status = -1;
+    for ( ; ; ) 
+    {
+        iov[0].iov_base = buf;
+        iov[0].iov_len  = sizeof(buf);
+        //iov[1].iov_base = plid;
+        //iov[1].iov_len  = 8;
+        msg.msg_iov     = iov;
+        //msg.msg_iovlen  = 2;
+        msg.msg_iovlen  = 1;
+        msg.msg_name    = NULL;
+        msg.msg_namelen = 0;
+        if (cmptr == NULL && (cmptr = malloc(CONTROLLEN)) == NULL)
+            return(-1);
+        msg.msg_control    = cmptr;
+        msg.msg_controllen = CONTROLLEN;
+        printf("aa %d aa\n",fd);
+        nr = recvmsg(fd, &msg, 0);
+        if (nr < 0) {
+            printf("recvmsg errrrror %d %d %s\n",nr,errno,strerror(errno));
+            //perror("recvmsg errrrror");
+        } else if (nr == 0) {
+            perror("connection closed by server");
+            return(-1);
+        }
+        /*
+        * See if this is the final data with null & status.  Null
+        * is next to last byte of buffer; status byte is last byte.
+        * Zero status means there is a file descriptor to receive.
+        */
+        for (ptr = buf; ptr < &buf[nr]; ) 
+        {
+            if (*ptr++ == 0) 
+            {
+                if (ptr != &buf[nr-1])
+                    perror("message format error");
+                status = *ptr & 0xFF;  /* prevent sign extension */
+                if (status == 0) {
+                    printf("msg_controllen(%d) and mine(%d)\n",msg.msg_controllen, CONTROLLEN );
+                    if (msg.msg_controllen != CONTROLLEN)
+                        perror("status = 0 but no fd");
+                    newfd = *(int *)CMSG_DATA(cmptr);
+                } else {
+                    newfd = -status;
+                }
+                nr -= 2;
+            }
+        }
+        if (nr > 0 && (*userfunc)(STDERR_FILENO, buf, nr) != nr)
+            return(-1);
+        if (status >= 0)    /* final data has arrived */
+            return(newfd);  /* descriptor, or -status */
+    }
+}
+
+ssize_t errcheckfunc(int a,const void *b, size_t c)
+{
+    return 0;
 }
