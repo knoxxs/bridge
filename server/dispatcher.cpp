@@ -17,18 +17,188 @@
 #include "psql.h"
 #include "myregex.h"
 
-
+#define PLAYER_PROCESS_NAME "player"
+#define LISTEN_QUEUE_SIZE 10
 #define CONTROLLEN  CMSG_LEN(sizeof(int))
-static struct cmsghdr   *cmptr = NULL;  /* malloc'ed first time */ 
 
+
+void *get_in_addr(struct sockaddr*);
+int makeSocketForClients();
+int socketBind(struct addrinfo *ai);
 void* SocketHandler(void* lp);
-int listenBind(struct addrinfo *ai);
 int login(int fd, char* plid);
-//get sockaddr , IPv4 or IPv6:
 void contactPlayer(char*,int);
 int send_fd(int, int, char*);
 int unixClientSocket();
 int send_err(int, int, const char *);
+
+static struct cmsghdr   *cmptr = NULL;  /* malloc'ed first time */ 
+int playerProcId;
+
+int main(int argv, char** argc) {
+
+    logp("DISPATCHER-main",0,0,"");
+    logp("DISPATCHER-main",0,0,"Starting main");
+
+    int listener; // listening the socket descriptor
+    int newfd; //newly accept()ed file descriptor
+    struct sockaddr_storage clientaddr; // client address
+    socklen_t addrlen;
+    char buf[256]; //buffer for client
+    char remoteIP[INET6_ADDRSTRLEN];
+    
+    pthread_t thread_id = 0;
+    void *thread_arg;
+    void **thread_ret;
+
+    int err;
+
+    logp("DISPATCHER-main",0,0,"Calling makeSocketForClients");
+    listener = makeSocketForClients();
+    logp("DISPATCHER-main",0,0,"Successfully made socket for client");
+    
+    //Finding pid of player process
+    logp("DISPATCHER-main",0,0,"Calling the processIdFinder to find the id of the player process");
+    playerProcId = processIdFinder(PLAYER_PROCESS_NAME);
+    logp("DISPATCHER-main",0,0,"Successfully Found the player process ID");
+    debugp("DISPATCHER-main",0,0,snprintf(buf, "The ID - %d", playerProcId));
+    
+    logp("DISPATCHER-main",0,0,"Enetering the everlistening while loop");
+    while (1) { 
+        logp("DISPATCHER-main",0,0,"Waiting for the connection");
+        
+        logp("DISPATCHER-main",0,0,"Calling accept");
+        if((newfd = accept(listener, (struct sockaddr *)&clientaddr, &addrlen)) == -1){
+            errorp("DISPATCHER-main",0,0,"unable to accept the connection");
+            debugp("DISPATCHER-main",1,errno,NULL);
+            continue;
+        }
+        logp("DISPATCHER-main",0,0,"Accepted New Connection");
+        
+        logp("DISPATCHER-main",0,0,"Calling inet_ntop");
+        inet_ntop(clientaddr.ss_family, get_in_addr((struct sockaddr *)&clientaddr), remoteIP, INET6_ADDRSTRLEN);
+        logp("DISPATCHER-main",0,0,sprintf(buf,"Got new connection from IP - %s", remoteIP));
+    
+        logp("DISPATCHER-main",0,0,"Making newfd as thread argument compatible");
+        thread_arg=(void *)newfd;
+
+        logp("DISPATCHER-main",0,0,"Calling pthread");
+        if((err = pthread_create(&thread_id, NULL, SocketHandler,thread_arg ))!=0) {
+            errorp("DISPATCHER-main",0,0,"Unable to create the thread");
+            debugp("DISPATCHER-main",1,err,NULL);
+        }
+        
+        logp("DISPATCHER-main",0,0,"Calling pthread_detach");
+        if ((err = pthread_detach(thread_id)) != 0){
+            errorp("DISPATCHER-main",0,0,"Unable to detach the thread");
+            debugp("DISPATCHER-main",1,err,NULL);
+        }
+    }
+
+    logp("DISPATCHER-main",0,0,"after the infinite while loop - THIS IS IMPOSSIBLE");
+    return -1;
+}
+
+int socketBind(struct addrinfo *ai){
+    struct addrinfo  *p;
+    int yes = 1, ret;
+    int listener;
+
+    logp("DISPATCHER-socketBind",0,0,"Starting the main for loop to see supported structs");
+    for (p = ai; p != NULL; p = p->ai_next) {
+        logp("DISPATCHER-socketBind",0,0,"Calling socket");
+        listener = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
+        if (listener < 0) {
+            errorp("DISPATCHER-socketBind",0,0,"Unable to make the socket");
+            debugp("DISPATCHER-socketBind",1,errno,NULL);
+            continue;
+        }
+        logp("DISPATCHER-socketBind",0,0,"Socket formed succesfully");
+        
+        logp("DISPATCHER-socketBind",0,0,"Calling setsockopt");
+        if ((setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof (int)))) {
+            errorp("DISPATCHER-socketBind",0,0,"Unable to manipulate the socket");
+            debugp("DISPATCHER-socketBind",1,errno, NULL);
+            exit(1);
+        }
+        logp("DISPATCHER-socketBind",0,0,"setsockopt done succesfully");
+        
+        logp("DISPATCHER-socketBind",0,0,"Calling bind");
+        if (bind(listener, p->ai_addr, p->ai_addrlen) < 0) {
+            errorp("DISPATCHER-socketBind",0,0,"Unable to bind the socket");
+            debugp("DISPATCHER-socketBind",1,errno,NULL);
+            close(listener);
+            continue;
+        }
+        logp("DISPATCHER-socketBind",0,0,"Binding Done Successfully");
+        break;
+    }
+
+    logp("DISPATCHER-socketBind",0,0,"Out of the struct finding loop");
+
+    
+    if (p == NULL) {//if we got here, it means we didnot get bound
+        errorp("DISPATCHER-socketBind", 0, 0, "Unable to bind to port using any IP structure, NO SOCKET IS FORMED");
+        if (errno == 98) //already in use
+        {   
+            logp("DISPATCHER-socketBind",0,0,"Unable to bind because the port is alredy in use");
+
+            logp("DISPATCHER-socketBind",0,0,"Calling clearPort");
+            ret = clearPort("4444");
+            if (ret == 0){
+                logp("DISPATCHER-socketBind",0,0,"Port cleared succesfully, again calling socketBind");
+                listener = socketBind(ai);
+                logp("DISPATCHER-socketBind",0,0,"socketBind returned Successfully, returning the listener");
+                return listener;
+            }
+            else{
+                errorp("DISPATCHER-socketBind",0,0,"Error clearing the port");
+                exit(2);
+            }
+        }
+    }
+
+    logp("DISPATCHER-socketBind",0,0,"Socket has been formed in the first attempt, returning listener");
+    return listener;
+}
+
+int makeSocketForClients(){
+    struct addrinfo hints, *ai;
+    int rv, listener;
+
+    //get us a socket and bind it
+    logp("DISPATCHER-makeSocketForClients",0,0,"Initializing the struct sockaddr");
+    memset(&hints, 0, sizeof hints);
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags = AI_PASSIVE;
+
+    logp("DISPATCHER-makeSocketForClients",0,0,"Calling getaddrinfo");
+    if ((rv = getaddrinfo(NULL, PORT, &hints, &ai)) != 0) {
+        errorp("DISPATCHER-makeSocketForClients",0,0,"Error in getting struct sockaddr from getaddrinfo");
+        debugp("DISPATCHER-makeSocketForClients",0,0,gai_strerror(rv));
+        exit(1);
+    }
+
+    logp("DISPATCHER-makeSocketForClients",0,0,"Calling socketBind");
+    listener = socketBind(ai);
+    logp("DISPATCHER-makeSocketForClients",0,0,"Successfully made the socket and bounded to the port");
+   
+    logp("DISPATCHER-makeSocketForClients",0,0,"Freeing the unusable structure memory");
+    freeaddrinfo(ai); // all  done with this
+    
+    //listen
+    logp("DISPATCHER-makeSocketForClients",0,0,"Calling listen");
+    if (listen(listener, LISTEN_QUEUE_SIZE) == -1) {
+        errorp("DISPATCHER-makeSocketForClients",0,0,"Unable to listen");
+        debugp("DISPATCHER-makeSocketForClients",1,errno,NULL);
+        exit(3);
+    }
+
+    //Now lets do the server stuff
+    logp("DISPATCHER-makeSocketForClients",0,0,"Socket is listening Successfully, returning listener");
+    return listener;
+}
 
 void contactPlayer(char* plid, int fd_to_send){
     int socket_fd, recvdBytes;
@@ -141,121 +311,25 @@ void *get_in_addr(struct sockaddr *sa) {
     return &(((struct sockaddr_in6*) sa)->sin6_addr);
 }
 
-int playerProcId;
-
-int main(int argv, char** argc) {
-    //printf(PORT);
-    struct sockaddr_in my_addr;
-
-    int listener; // listening the socket descriptor
-    int newfd; //newly accept()ed file descriptor
-    struct sockaddr_storage clientaddr; // client address
-    socklen_t addrlen;
-    void **thread_ret;
-
-    char buf[256]; //buffer for client
-    char remoteIP[INET6_ADDRSTRLEN];
-
-    int i, j, rv;
-    pthread_t thread_id = 0;
-	void *thread_arg;
-    struct addrinfo hints, *ai;
-    int err;
 
 
-    //get us a socket and bind it
-    memset(&hints, 0, sizeof hints);
-    hints.ai_family = AF_UNSPEC;
-    hints.ai_socktype = SOCK_STREAM;
-    hints.ai_flags = AI_PASSIVE;
-    if ((rv = getaddrinfo(NULL, PORT, &hints, &ai)) != 0) {
-        //fprintf(stderr, "selectserver : %s\n", gai_strerror(rv));
-        errorp("DISPATCHER-getaddrinfo:", 1, rv, "a");
-        exit(1);
-    }
-	logWrite(4,"struct addrinfo has been formed succesfully");
-    
-    listener = listenBind(ai);
 
-   
-    freeaddrinfo(ai); // all  done with this
-	logWrite(4,"memory freed successfully");
-	
-    //listen
-    if (listen(listener, 10) == -1) {
-        errorp("DISPATCHER-listener:", 0, 0, "Unable to connect to reader");
-        exit(3);
-    }
-    //Now lets do the server stuff
-	logWrite(4,"socket is listening");
-	logWrite(1,"socket is listening");
-
-    //Finding pid of player process
-    
-
-    playerProcId = processIdFinder("player");
-    printf("Player proc ID is %d\n", playerProcId);
-
-    while (1) {
-    	
-    	logWrite(1,"Waiting for connections");
-    	
-        if((newfd = accept(listener, (struct sockaddr *)&clientaddr, &addrlen)) == -1){
-        	errorp("DISPATCHER-accept:", 0, 0, "Unable to accept one connection to reader");
-			//continue;
-		}
-
-		logWrite(4,"accepted new connection");
-		
-		inet_ntop(clientaddr.ss_family, get_in_addr((struct sockaddr *)&clientaddr), remoteIP, INET6_ADDRSTRLEN);
-		printf("server : got connection from %s\n", remoteIP);
-		
-		strcat(remoteIP,": Got new connection");
-		logWrite(1,remoteIP);
-		
-		thread_arg=(void *)newfd;
-		if((err = pthread_create(&thread_id, NULL, SocketHandler,thread_arg ))!=0)
-		{
-			errorp("DISPATCHER-pthrad_create:", 1, err, NULL);
-		}
-            
-            if ((err = pthread_detach(thread_id)) != 0)
-            {
-            	errorp("DISPATCHER-pthread_detach:", 1, err, NULL);
-            }
-    }
-
-    return 0;
-}
 
 void* SocketHandler(void* lp) {
+    logp("DISPATCHER-SocketHandler",0,0,"Stating new thread");
 	
     int fd = (long)lp;
-	
-	logWrite(1,"New thread created succesfully");
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
-    // char buffer[6];
-    // int buffer_len = 6;
-    // int bytecount;
-    // memset(buffer, 0, buffer_len);
-    // if ((bytecount = recv(fd, buffer, buffer_len, 0)) == -1) {
-    //     fprintf(stderr, "Error receiving data %d\n", errno);
-    //     //goto FINISH;
-    // }
-    // printf("Received bytes %d\nReceived string \"%s\"\n", bytecount, buffer);
-    // //strcat(buffer, "SERVER");
-	
-    // if ((bytecount = send(fd, buffer, strlen(buffer), 0)) == -1) {
-    //     fprintf(stderr, "Error sending data %d\n", errno);
-    //     //goto FINISH;
-    // }
-    // printf("Sent bytes %d\n", bytecount);
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    char identity[40];
+    sprintf(identity, "DISPATCHER-SocketHandler-fd: %d -", fd);
+
+    logp(identity,0,0,"Successfully gained the identity");
 
     char choice[1], plid[9];
-    int choice_len = sizeof(choice);
     int recvdBytes;
-    if ((recvdBytes = recv(fd, choice, choice_len, 0)) == -1) {
+
+    logp(identity,0,0,"receiving the first choice of the client");    
+    if ((recvdBytes = recv(fd, choice, sizeof(choice), 0)) == -1) {//whether want to play(login), or as audience(no login)
         fprintf(stderr, "Error receiving data %d\n", errno);
     }
     //TODO - need to check if connection get closed.
@@ -302,59 +376,4 @@ int login(int fd, char* plid)
     }
 }
 
-int listenBind(struct addrinfo *ai)
-{
-    struct addrinfo  *p;
-    int yes = 1, ret;
-    int listener;
 
-    for (p = ai; p != NULL; p = p->ai_next) {
-        listener = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
-        if (listener < 0) {
-            continue;
-        }
-        logWrite(4,"socket formed succesfully");
-        //lose the pesky "address already in use " error message
-        //setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int));
-
-        if ((setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof (int)))) {
-            errorp("DISPATCHER-setsockopt:", 1, errno, NULL);
-            //printf("Error setting options %d\n", errno);
-            exit(1);
-        }
-        logWrite(4,"setsockopt formed succesfully");
-        
-        if (bind(listener, p->ai_addr, p->ai_addrlen) < 0) {
-            close(listener);
-            errorp("DISPATCHER-bind:", 1, errno, "");
-            continue;
-        }
-        logWrite(4,"binding has been done");
-        break;
-    }
-
-    printf("In listen bind\n");
-
-    //if we got here, it means we didnot get bound
-    if (p == NULL) {
-        //fprintf(stderr, "selectserver: failed to bind\n");
-        errorp("DISPATCHER-bindcheck:", 0, 0, "Unable to bind to port using any IP");
-        if (errno == 98) //already in use
-        {   
-            ret = clearPort("4444");
-            if (ret == 0){
-                //printf("a\n");
-                listener = listenBind(ai);
-                return listener;
-            }
-            else{
-                printf("error clearPort c\n");
-                exit(2);
-            }
-        }
-    }
-
-    printf("In listen bind ___ out\n");
-
-    return listener;
-}
