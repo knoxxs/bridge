@@ -26,6 +26,7 @@ dispatcher.CPP
 	the after sometime the connection broke , then our program will crash)
 
 ;Do same for the unixClientSocket - Now calling it every time
+;Need to use send_err in send_fd and understand it and then do its error handling
 
 Make:
 ;Need to amke .h of all the files 

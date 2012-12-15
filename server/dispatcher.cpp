@@ -108,9 +108,12 @@ int main(int argv, char** argc) {
 }
 
 void *get_in_addr(struct sockaddr *sa) {
+
     if (sa->sa_family == AF_INET) {
+        logp("DISPATCHER-get_in_addr",0,0,"Returning INET address");
         return &(((struct sockaddr_in*) sa)->sin_addr);
     }
+    logp("DISPATCHER-get_in_addr",0,0,"Returning INET6 address");
     return &(((struct sockaddr_in6*) sa)->sin6_addr);
 }
 
@@ -349,7 +352,7 @@ int unixClientSocket(char* identity){
 }
 
 int send_err(int fd, int errcode, const char *msg){
-    int     n;
+    int n;
 
     if ((n = strlen(msg)) > 0)
         if (write(fd, msg, n) != n)    /* send the error message */
@@ -365,48 +368,69 @@ int send_err(int fd, int errcode, const char *msg){
 }
 
 int send_fd(int fd, int fd_to_send, char* plid){
-
     ssize_t temp;
-    //struct iovec    iov[2];//second is for sneding plid
+    //struct iovec    iov[2];//second is for sending plid
     struct iovec    iov[1];//second is for sneding plid
     struct msghdr   msg;
     char            buf[2]; /* send_fd()/recv_fd() 2-byte protocol */
 
+    char identity[40], tempbuf[100];
+    sprintf(identity, "DISPATCHER-send_fd-fd: %d -", fd_to_send);    
+
+    logp(identity,0,0,"Adding bufs to iovec");
     iov[0].iov_base = buf;
     iov[0].iov_len  = 2;
     // iov[1].iov_base = plid;
     // iov[1].iov_len  = 8;
+
+    logp(identity,0,0,"Adding iovec to msghdr");
     msg.msg_iov     = iov;
     // msg.msg_iovlen  = 2;
     msg.msg_iovlen  = 1;
     msg.msg_name    = NULL;
     msg.msg_namelen = 0;
+
+
     if (fd_to_send < 0) {
+        logp(identity,0,0,"When fd_to_send is < 0, defining the structure of buf according to the protocol");
         msg.msg_control    = NULL;
         msg.msg_controllen = 0;
         buf[1] = -fd_to_send;   /* nonzero status means error */
         if (buf[1] == 0)
             buf[1] = 1; /* -256, etc. would screw up protocol */
     } else {
+        logp(identity,0,0,"When fd_to_send > 0, assigning memory");
         if (cmptr == NULL && (cmptr = malloc(CONTROLLEN)) == NULL)
             return(-1);
+        logp(identity,0,0,"Giving rights");
         cmptr->cmsg_level  = SOL_SOCKET;
         cmptr->cmsg_type   = SCM_RIGHTS;
         cmptr->cmsg_len    = CONTROLLEN;
         msg.msg_control    = cmptr;
         msg.msg_controllen = CONTROLLEN;
-        printf("msg_controllen(%d)\n",CONTROLLEN );
+
+        sprintf(tempbuf,"Adding data with controllen(%d)",CONTROLLEN);
+        logp(identity,0,0,tempbuf);
         *(int *)CMSG_DATA(cmptr) = fd_to_send;     /* the fd to pass */
-        buf[1] = 0;          /* z ero status means OK */
+        buf[1] = 0;          /* zero status means OK */
     }
+
+
     buf[0] = 0;              /* null byte flag to recv_fd() */
-    printf("before sendmsg \n");
+    logp(identity,0,0,"Sending the fd and the msg");
     temp = sendmsg(fd, &msg, 0);
-    if (temp != 2)
-    {
-        printf("inside sendmsg condition %d\n",temp);
+    if (temp != 2){
+        if(temp == -1){
+            errorp(identity,0,0,"Unable to send the data");
+            debugp(identity,1,errno,NULL);
+        }else {
+            errorp(identity,0,0,"Unable to send complete data");
+        }
+
+        logp(identity,0,0,"Returning Unsuccessful");
         return(-1);
     }
-    printf("after sendmsg %d\n",temp);
+
+    logp(identity,0,0,"Returning Successfully");
     return(0);
 }
