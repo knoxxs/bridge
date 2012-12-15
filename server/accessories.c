@@ -77,41 +77,6 @@ void logWrite(int typ, char* msg) // typ --> type(category) of message [1-Normal
 	}
 }
 
-int sendall(int fd, char *buf, int *len, int flags)
-{
-    int total = 0;        // how many bytes we've sent
-    int bytesleft = *len; // how many we have left to send
-    int n;
-
-    while(total < *len) {
-        n = send(fd, buf+total, bytesleft, flags);
-        if (n == -1) { break; }
-        total += n;
-        bytesleft -= n;
-    }
-
-    *len = total; // return number actually sent here
-
-    return n==-1?-1:0; // return -1 on failure, 0 on success
-}
-
-int recvall(int fd, char *buf, int *len, int flags)
-{
-    int total = 0;        // how many bytes we've sent
-    int bytesleft = *len; // how many we have left to send
-    int n;
-
-    while(total < *len) {
-        n = recv(fd, buf+total, bytesleft, flags);
-        if (n == -1) { break; }
-        total += n;
-        bytesleft -= n;
-    }
-
-    *len = total; // return number actually sent here
-
-    return n==-1?-1:0; // return -1 on failure, 0 on success
-} 
 
 void makeMessage(int type, int boolean, char* errmsg, int errn, char* what){
 	if(boolean == 1) { //we got error number
@@ -160,3 +125,61 @@ void debugp(char *where, int boolean, int errn,char *what)
 
 	makeMessage(DEBUG_TYPE, boolean, errmsg, errn, what);
 }
+
+int sendall(int fd, char *buf, int *len, int flags)
+{
+    int total = 0;        // how many bytes we've sent
+    int bytesleft = *len; // how many we have left to send
+    int n;
+
+    while(total < *len) {
+        n = send(fd, buf+total, bytesleft, flags);
+        if (n == -1) { break; }
+        total += n;
+        bytesleft -= n;
+    }
+
+    *len = total; // return number actually sent here
+
+    // return -1 on failure, 0 on success
+    if(n > 0){
+    	logp("access-sendall",0,0,"Successfully sent the complete data");
+    	return 0;
+    }else if(n == 0){
+    	errorp("access-sendall",0,0,"Unable to send the data - Client went OFF");
+    	return -1;
+    }else if(n == -1){
+    	errorp("access-sendall",0,0,"Unable to send the data");
+    	debugp("access-sendall",1,errno,NULL);
+    	return -1;
+    }
+}
+
+int recvall(int fd, char *buf, int *len, int flags)
+{
+    int total = 0;        // how many bytes we've sent
+    int bytesleft = *len; // how many we have left to send
+    int n;
+
+    while(total < *len) {
+        n = recv(fd, buf+total, bytesleft, flags);
+        if (n == -1) { break; }
+        total += n;
+        bytesleft -= n;
+    }
+
+    *len = total; // return number actually sent here
+    
+    // return -1 on failure, 0 on success
+    if(n > 0){
+    	logp("access-recvall",0,0,"Successfully recved the complete data");
+    	return 0;
+    }else if(n == 0){
+    	errorp("access-recvall",0,0,"Unable to recv the data - Client went OFF");
+    	return -1;
+    }else if(n == -1){
+    	errorp("access-recvall",0,0,"Unable to recv the data");
+    	debugp("access-recvall",1,errno,NULL);
+    	return -1;
+    }
+} 

@@ -329,9 +329,9 @@ void* SocketHandler(void* lp) {
     int recvdBytes;
 
     logp(identity,0,0,"receiving the first choice of the client");    
-    if ((recvdBytes = recv(fd, choice, sizeof(choice), 0)) == -1) {//whether want to play(login), or as audience(no login)
-        fprintf(stderr, "Error receiving data %d\n", errno);
-    }
+    recvdBytes = recvall(fd, choice, sizeof(choice), 0);//whether want to play(login), or as audience(no login)
+
+logp(identity,0,0,"");        
     //TODO - need to check if connection get closed.
     switch(choice[0])
     {
