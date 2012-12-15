@@ -17,10 +17,16 @@
 #include "psql.h"
 #include "myregex.h"
 
+
 #define PLAYER_PROCESS_NAME "player"
 #define LISTEN_QUEUE_SIZE 10
 #define CONTROLLEN  CMSG_LEN(sizeof(int))
-
+#define DATABASE_USER_NAME "postgres"
+#define DATABASE_PASSWORD "123321"
+#define DATABASE_NAME "bridge"
+#define DATABASE_IP "127.0.0.1"
+#define DATABASE_PORT "5432"
+#define UNIX_SOCKET_FILE "./demo_socket"
 
 void *get_in_addr(struct sockaddr*);
 int makeSocketForClients();
@@ -29,7 +35,7 @@ void* SocketHandler(void* lp);
 int login(int fd, char* plid);
 void contactPlayer(char*,int);
 int send_fd(int, int, char*);
-int unixClientSocket();
+int unixClientSocket(char*);
 int send_err(int, int, const char *);
 
 static struct cmsghdr   *cmptr = NULL;  /* malloc'ed first time */ 
@@ -61,7 +67,8 @@ int main(int argv, char** argc) {
     logp("DISPATCHER-main",0,0,"Calling the processIdFinder to find the id of the player process");
     playerProcId = processIdFinder(PLAYER_PROCESS_NAME);
     logp("DISPATCHER-main",0,0,"Successfully Found the player process ID");
-    debugp("DISPATCHER-main",0,0,snprintf(buf, "The ID - %d", playerProcId));
+    sprintf(buf, "The ID - %d", playerProcId);
+    debugp("DISPATCHER-main",0,0,buf);
     
     logp("DISPATCHER-main",0,0,"Enetering the everlistening while loop");
     while (1) { 
@@ -77,7 +84,8 @@ int main(int argv, char** argc) {
         
         logp("DISPATCHER-main",0,0,"Calling inet_ntop");
         inet_ntop(clientaddr.ss_family, get_in_addr((struct sockaddr *)&clientaddr), remoteIP, INET6_ADDRSTRLEN);
-        logp("DISPATCHER-main",0,0,sprintf(buf,"Got new connection from IP - %s", remoteIP));
+        sprintf(buf,"Got new connection from IP - %s", remoteIP);
+        logp("DISPATCHER-main",0,0,buf);
     
         logp("DISPATCHER-main",0,0,"Making newfd as thread argument compatible");
         thread_arg=(void *)newfd;
@@ -97,6 +105,13 @@ int main(int argv, char** argc) {
 
     logp("DISPATCHER-main",0,0,"after the infinite while loop - THIS IS IMPOSSIBLE");
     return -1;
+}
+
+void *get_in_addr(struct sockaddr *sa) {
+    if (sa->sa_family == AF_INET) {
+        return &(((struct sockaddr_in*) sa)->sin_addr);
+    }
+    return &(((struct sockaddr_in6*) sa)->sin6_addr);
 }
 
 int socketBind(struct addrinfo *ai){
@@ -200,46 +215,140 @@ int makeSocketForClients(){
     return listener;
 }
 
-void contactPlayer(char* plid, int fd_to_send){
-    int socket_fd, recvdBytes;
-    printf("in contactPlayer\n");
-//    if((fd_to_send = open("vi",O_RDONLY)) < 0)
-//        printf("vi open failed");     
-    socket_fd = unixClientSocket();
-    send_fd(socket_fd, fd_to_send, plid);
-    recvdBytes = send(socket_fd, plid, 8, 0);
-    if (recvdBytes != 8) {
-        errorp("DISPATCHER-contact-Player:", 0, 0, "Unable to send complete plid");
+void* SocketHandler(void* lp) {
+    logp("DISPATCHER-SocketHandler",0,0,"Stating new thread");
+    
+    int fd = (long)lp;
+
+    char identity[40], buf[100];
+    sprintf(identity, "DISPATCHER-SocketHandler-fd: %d -", fd);
+
+    logp(identity,0,0,"Successfully gained the identity");
+
+    char choice[1], plid[9];
+    int choice_len = sizeof(choice);//this is importnat becz recvall takes ppointer to int
+    int ret;
+
+    logp(identity,0,0,"receiving the first choice of the client");    
+    if(recvall(fd, choice, choice_len, 0) != 0){ //whether want to play(login), or as audience(no login)
+        logp(identity,0,0,"Error receiving the first choice of the client");
+    }
+
+    logp(identity,0,0,"Entering the choice Select switch");
+    switch(choice[0])
+    {
+        case 'a':
+            logp(identity,0,0,"User entered the choice 'a' and calling login");
+            if( (ret = login(fd, plid)) == 0){
+                sprintf(buf,"Player id is %s and Contacting player",plid);
+                logp(identity,0,0,buf);
+                contactPlayer( plid, fd);
+                logp(identity,0,0,"Contacted To player succesfully");
+            }else{
+                logp(identity,0,0,"Incorrect login Credentials");
+            }
+            break;
+        default:
+            errorp(identity,0,0,"User entered the wrong choice");
+    }
+
+    logp(identity,0,0,"Returning From the thread");
+    return ((void*)0);
+}
+
+int login(int fd, char* plid){
+    char loginInfo[25], username[9], password[16];
+    int loginInfo_len = sizeof(loginInfo);
+    int ret;
+
+    char identity[40], buf[100];
+    sprintf(identity, "DISPATCHER-login-fd: %d -", fd);
+
+    logp(identity,0,0,"Calling recvall to recv login credentials");
+    if ((ret = recvall(fd, loginInfo, loginInfo_len, 0)) != 0) {
+        errorp(identity,0,0,"Unable to recv login credentials");
+        debugp(identity,1,errno,NULL);
+    }
+
+    sscanf(loginInfo, "%s%s",username, password); //this is wrong as no \n afterusername
+    sprintf(buf,"recvd login credential with username - %s", username);
+    logp(identity,0,0,buf);
+
+    logp(identity,0,0,"Declaring the PGConn object");
+    PGconn *conn = NULL;
+
+    logp(identity,0,0,"Connecting to the database");
+    conn = ConnectDB(DATABASE_USER_NAME, DATABASE_PASSWORD, DATABASE_NAME, DATABASE_IP, DATABASE_PORT);
+
+    if (conn != NULL) {
+        logp(identity,0,0,"Connected to database Successfully and calling login_check");
+        ret = login_check(conn, username, password);
+        sprintf(buf,"Recvd (%d) from login_check", ret);
+        logp(identity,0,0,buf);
+
+        logp(identity,0,0,"Closing database connection");
+        CloseConn(conn);
+        
+        strcpy(plid, username);
+
+        logp(identity,0,0,"Returning from login");
+        return ret;
     }
 }
 
-int unixClientSocket(){
-    logWrite(1,"started"); 
+void contactPlayer(char* plid, int fd_to_send){
+    int socket_fd;
 
+    char identity[40], buf[100];
+    sprintf(identity, "DISPATCHER-contact-Player-fd: %d -", fd_to_send);    
+
+    logp(identity,0,0,"Inside contactPlayer and calling unixClientSocket");
+    sprintf(buf,"DISPATCHER-unixClientSocket-fd: %d -",fd_to_send);
+    socket_fd = unixClientSocket(buf);
+    sprintf(buf,"Recved socket-fd: %d -",socket_fd);
+    logp(identity,0,0,buf);
+
+    logp(identity,0,0,"Calling send_fd");
+    send_fd(socket_fd, fd_to_send, plid);
+    logp(identity,0,0,"fd sent Successfully");
+
+    logp(identity,0,0,"Sending plid to player process");
+    if( sendall(socket_fd, plid, 8, 0) != 0){
+        errorp(identity, 0, 0, "Unable to send complete plid");
+        debugp(identity,1,errno,NULL);
+    }
+}
+
+int unixClientSocket(char* identity){
     struct sockaddr_un address;
     int  socket_fd;
 
+    logp(identity,0,0,"Calling socket");
     if( (socket_fd = socket(PF_UNIX, SOCK_STREAM, 0)) < 0) {
-        printf("socket() failed\n");
-        return 1;
+        errorp(identity,0,0,"Unable to make the socket");
+        debugp(identity,1,errno,NULL);
+        return -1;
     }
 
     /* start with a clean address structure */
+    logp(identity,0,0,"Cleaning the struct");
     memset(&address, 0, sizeof(struct sockaddr_in));
 
     address.sun_family = AF_UNIX;
-    snprintf(address.sun_path, sizeof(address.sun_path)-1, "./demo_socket");
+    snprintf(address.sun_path, sizeof(address.sun_path)-1, UNIX_SOCKET_FILE);
 
+    logp(identity,0,0,"Calling Connect");
     if(connect(socket_fd, (struct sockaddr *) &address, sizeof(struct sockaddr_in)) != 0) {
-        printf("connect() failed\n");
-        return 1;
+        errorp(identity,0,0,"Unable to connect the socket");
+        debugp(identity,1,errno,NULL);
+        return -1;
     }
 
+    logp(identity,0,0,"Returning socket_fd");
     return socket_fd;
 }
 
-int send_err(int fd, int errcode, const char *msg)
-{
+int send_err(int fd, int errcode, const char *msg){
     int     n;
 
     if ((n = strlen(msg)) > 0)
@@ -255,8 +364,7 @@ int send_err(int fd, int errcode, const char *msg)
     return(0);
 }
 
-int send_fd(int fd, int fd_to_send, char* plid)
-{
+int send_fd(int fd, int fd_to_send, char* plid){
 
     ssize_t temp;
     //struct iovec    iov[2];//second is for sneding plid
@@ -301,79 +409,4 @@ int send_fd(int fd, int fd_to_send, char* plid)
     }
     printf("after sendmsg %d\n",temp);
     return(0);
-
 }
-
-void *get_in_addr(struct sockaddr *sa) {
-    if (sa->sa_family == AF_INET) {
-        return &(((struct sockaddr_in*) sa)->sin_addr);
-    }
-    return &(((struct sockaddr_in6*) sa)->sin6_addr);
-}
-
-
-
-
-
-void* SocketHandler(void* lp) {
-    logp("DISPATCHER-SocketHandler",0,0,"Stating new thread");
-	
-    int fd = (long)lp;
-
-    char identity[40];
-    sprintf(identity, "DISPATCHER-SocketHandler-fd: %d -", fd);
-
-    logp(identity,0,0,"Successfully gained the identity");
-
-    char choice[1], plid[9];
-    int recvdBytes;
-
-    logp(identity,0,0,"receiving the first choice of the client");    
-    recvdBytes = recvall(fd, choice, sizeof(choice), 0);//whether want to play(login), or as audience(no login)
-
-logp(identity,0,0,"");        
-    //TODO - need to check if connection get closed.
-    switch(choice[0])
-    {
-        case 'a':
-            int blabla;
-            if( (blabla = login(fd, plid)) == 0){
-                contactPlayer( plid, fd);
-            }else{
-                printf("Oh my god\n");
-            }
-            //printf("login ret %d\n",blabla );
-            break;
-    }
-	return ((void*)0);
-}
-
-int login(int fd, char* plid)
-{   
-    char loginInfo[25], username[9], password[16];
-    int loginInfo_len = sizeof(loginInfo);
-    int recvdBytes, ret;
-    if ((recvdBytes = recv(fd, loginInfo, loginInfo_len, 0)) == -1) {
-        fprintf(stderr, "Error receiving data %d\n", errno);
-    }
-
-    //printf("Hello Hello rcv(%d)\n%s \n",recvdBytes,loginInfo);
-    
-    sscanf(loginInfo, "%s%s",username, password); //this is wrong as no \n afterusername
-
-    //printf("------%s\n",password );
-
-    PGconn *conn = NULL;
-    
-    conn = ConnectDB("postgres","123321","bridge","127.0.0.1","5432");
-
-    if (conn != NULL) {
-        ret = login_check(conn, username, password);
-        //printf("received return val fro login_check %d\n",ret);
-        CloseConn(conn);
-        strcpy(plid, username);
-        return ret;
-    }
-}
-
-

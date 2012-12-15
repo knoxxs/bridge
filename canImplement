@@ -1,11 +1,3 @@
-strerror_r instead of strerror as first one is threadsafe
-Need to change printf to cin and cout
-dispatcher signal handler
-change syntax to c++;
-learn to use sql in c++
-json
-
-
 TO-DO:
 
 
@@ -24,6 +16,37 @@ myregex.CPP
 
 dispatcher.CPP
 ;make the Infinite while loop more efficient with somethng other measure
+;for recvall() and sendall() - Need to do something if error occurs.
+;make login a loop if incorrect login
+;make wrong choice as repeaating loop
+;make communication dynamic instead of sequential
+;Connecting to database for every user make it one time (make a function which return the PGcon  object . 
+	Call it every time not one time like if object was previously creted then return that else make a new 
+	connection and return that -> this will sove the problem That if we connected to database one time and 
+	the after sometime the connection broke , then our program will crash)
+
+;Do same for the unixClientSocket - Now calling it every time
+
+Make:
+;Need to amke .h of all the files 
+;need to learn make thoroughly and then to build depedency perfectly
+-----------------------------------------------------------------------------------------
+
+
+
+
+strerror_r instead of strerror as first one is threadsafe
+Need to change printf to cin and cout
+dispatcher signal handler
+change syntax to c++;
+learn to use sql in c++
+json
+
+
+
+
+
+
 
 2.Supervise the supervisor via handling all the signals and think something of two exception signals. - Password , best handing procedures.
 3.Search and Test for any case when SIGCHILD not generated.
