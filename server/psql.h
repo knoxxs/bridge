@@ -1,6 +1,9 @@
 #ifndef psql
 #define psql
 
+#include <libpq-fe.h>
+#include <string>
+
 using namespace std;
 
 PGconn *ConnectDB(string ,string, string, string, string);

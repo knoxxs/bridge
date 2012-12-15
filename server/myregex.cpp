@@ -9,7 +9,6 @@
 #include "myregex.h"
 #include "access.h"
 
-#define LOG_PATH "/home/abhi/Projects/bridge/server/log"
 
 
 void waitProc(char* id_proc){
@@ -248,21 +247,23 @@ int clearPort( char* portNo){
 //     }
 // }
 
-int main() 
-{   
-        int logfile;
 
-    setLogFile(STDOUT_FILENO);
-    logp("Supervisor- Main", 0,0 ,"Starting");
-    if( (logfile = open(LOG_PATH, O_RDWR|O_CREAT|O_APPEND,S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP)) < 0 ){
-        errorp("Supervisor -Main",0,0,"Error Opening logfile");
-        debugp("Supervisor -Main",1,1,NULL);
-    }
-    setLogFile(logfile);
+//#define LOG_PATH "/home/abhi/Projects/bridge/server/log"
 
-    processIdFinder("supervisor");
-    clearPort("4444");
-    //regtest();
-//    waitProc("9999");
-    return 0;
-}
+// int main() 
+// {   
+//         int logfile;
+
+//     setLogFile(STDOUT_FILENO);
+//     if( (logfile = open(LOG_PATH, O_RDWR|O_CREAT|O_APPEND,S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP)) < 0 ){
+//         errorp("Supervisor -Main",0,0,"Error Opening logfile");
+//         debugp("Supervisor -Main",1,1,NULL);
+//     }
+//     setLogFile(logfile);
+
+//     processIdFinder("supervisor");
+//     clearPort("4444");
+//     //regtest();
+// //    waitProc("9999");
+//     return 0;
+// }

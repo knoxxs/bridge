@@ -1,6 +1,22 @@
+#include <stdio.h>
+#include <errno.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <pthread.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <sys/un.h>
+#include <libpq-fe.h>
+#include <string>
+#include <iostream>
 #include "access.h"
 #include "psql.h"
 #include "myregex.h"
+
 
 #define CONTROLLEN  CMSG_LEN(sizeof(int))
 static struct cmsghdr   *cmptr = NULL;  /* malloc'ed first time */ 
@@ -28,7 +44,7 @@ void contactPlayer(char* plid, int fd_to_send){
 }
 
 int unixClientSocket(){
-    logp(1,"started"); 
+    logWrite(1,"started"); 
 
     struct sockaddr_un address;
     int  socket_fd;
@@ -39,12 +55,12 @@ int unixClientSocket(){
     }
 
     /* start with a clean address structure */
-    memset(&address, 0, sizeof(struct sockaddr_un));
+    memset(&address, 0, sizeof(struct sockaddr_in));
 
     address.sun_family = AF_UNIX;
     snprintf(address.sun_path, sizeof(address.sun_path)-1, "./demo_socket");
 
-    if(connect(socket_fd, (struct sockaddr *) &address, sizeof(struct sockaddr_un)) != 0) {
+    if(connect(socket_fd, (struct sockaddr *) &address, sizeof(struct sockaddr_in)) != 0) {
         printf("connect() failed\n");
         return 1;
     }
@@ -157,13 +173,13 @@ int main(int argv, char** argc) {
         errorp("DISPATCHER-getaddrinfo:", 1, rv, "a");
         exit(1);
     }
-	logp(4,"struct addrinfo has been formed succesfully");
+	logWrite(4,"struct addrinfo has been formed succesfully");
     
     listener = listenBind(ai);
 
    
     freeaddrinfo(ai); // all  done with this
-	logp(4,"memory freed successfully");
+	logWrite(4,"memory freed successfully");
 	
     //listen
     if (listen(listener, 10) == -1) {
@@ -171,8 +187,8 @@ int main(int argv, char** argc) {
         exit(3);
     }
     //Now lets do the server stuff
-	logp(4,"socket is listening");
-	logp(1,"socket is listening");
+	logWrite(4,"socket is listening");
+	logWrite(1,"socket is listening");
 
     //Finding pid of player process
     
@@ -182,20 +198,20 @@ int main(int argv, char** argc) {
 
     while (1) {
     	
-    	logp(1,"Waiting for connections");
+    	logWrite(1,"Waiting for connections");
     	
         if((newfd = accept(listener, (struct sockaddr *)&clientaddr, &addrlen)) == -1){
         	errorp("DISPATCHER-accept:", 0, 0, "Unable to accept one connection to reader");
 			//continue;
 		}
 
-		logp(4,"accepted new connection");
+		logWrite(4,"accepted new connection");
 		
 		inet_ntop(clientaddr.ss_family, get_in_addr((struct sockaddr *)&clientaddr), remoteIP, INET6_ADDRSTRLEN);
 		printf("server : got connection from %s\n", remoteIP);
 		
 		strcat(remoteIP,": Got new connection");
-		logp(1,remoteIP);
+		logWrite(1,remoteIP);
 		
 		thread_arg=(void *)newfd;
 		if((err = pthread_create(&thread_id, NULL, SocketHandler,thread_arg ))!=0)
@@ -216,7 +232,7 @@ void* SocketHandler(void* lp) {
 	
     int fd = (long)lp;
 	
-	logp(1,"New thread created succesfully");
+	logWrite(1,"New thread created succesfully");
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
     // char buffer[6];
     // int buffer_len = 6;
@@ -297,7 +313,7 @@ int listenBind(struct addrinfo *ai)
         if (listener < 0) {
             continue;
         }
-        logp(4,"socket formed succesfully");
+        logWrite(4,"socket formed succesfully");
         //lose the pesky "address already in use " error message
         //setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int));
 
@@ -306,14 +322,14 @@ int listenBind(struct addrinfo *ai)
             //printf("Error setting options %d\n", errno);
             exit(1);
         }
-        logp(4,"setsockopt formed succesfully");
+        logWrite(4,"setsockopt formed succesfully");
         
         if (bind(listener, p->ai_addr, p->ai_addrlen) < 0) {
             close(listener);
             errorp("DISPATCHER-bind:", 1, errno, "");
             continue;
         }
-        logp(4,"binding has been done");
+        logWrite(4,"binding has been done");
         break;
     }
 
