@@ -28,9 +28,20 @@ dispatcher.CPP
 ;Do same for the unixClientSocket - Now calling it every time
 ;Need to use send_err in send_fd and understand it and then do its error handling
 
+logfile
+;Need to make logfile opening one time somehow in access and accessories. Need to think is it ok to add a add 
+	a func there to open file and call it everytime from logWrite[it open file only once bt every time check 
+	whether it is opened or not]. This is error prone or too much.
+
 Make:
 ;Need to amke .h of all the files 
 ;need to learn make thoroughly and then to build depedency perfectly
+
+player.CPP
+;Connecting to database for every user make it one time
+;Instead of acceptiing a new connection from dispatcher for new player, hv 1 long lived connection with 
+	the dispatcher and instead of wait using accept wait usinng recv. (Bcz our accepting method is sequential)
+;error function of recv_fd
 -----------------------------------------------------------------------------------------
 
 
