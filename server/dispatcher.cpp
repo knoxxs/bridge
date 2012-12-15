@@ -1,3 +1,4 @@
+#include <fcntl.h>
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
@@ -27,6 +28,7 @@
 #define DATABASE_IP "127.0.0.1"
 #define DATABASE_PORT "5432"
 #define UNIX_SOCKET_FILE "./demo_socket"
+#define LOG_PATH "/home/abhi/Projects/bridge/server/log"
 
 void *get_in_addr(struct sockaddr*);
 int makeSocketForClients();
@@ -43,7 +45,16 @@ int playerProcId;
 
 int main(int argv, char** argc) {
 
-    logp("DISPATCHER-main",0,0,"");
+    int logfile;
+
+    setLogFile(STDOUT_FILENO);
+    logp("DISPATCHER-Main", 0,0 ,"Starting");
+    if( (logfile = open(LOG_PATH, O_RDWR|O_CREAT|O_APPEND,S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP)) < 0 ){
+        errorp("DISPATCHER-Main",0,0,"Error Opening logfile");
+        debugp("DISPATCHER-Main",1,1,NULL);
+    }
+    setLogFile(logfile);
+
     logp("DISPATCHER-main",0,0,"Starting main");
 
     int listener; // listening the socket descriptor
