@@ -12,8 +12,8 @@
 
 int logfile;
 void setLogFile(int);
-int sendall(int fd, char *buf, int *len);
-int recvall(int fd, char *buf, int *len);
+int sendall(int fd, char *buf, int *len, int flags);
+int recvall(int fd, char *buf, int *len, int flags);
 void logWrite(int typ, char* msg);
 void errorp(char *where, int boolean, int errn,char *what);
 void logp(char *where, int boolean, int errn,char *what);

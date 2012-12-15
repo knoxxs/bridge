@@ -77,14 +77,14 @@ void logWrite(int typ, char* msg) // typ --> type(category) of message [1-Normal
 	}
 }
 
-int sendall(int fd, char *buf, int *len)
+int sendall(int fd, char *buf, int *len, int flags)
 {
     int total = 0;        // how many bytes we've sent
     int bytesleft = *len; // how many we have left to send
     int n;
 
     while(total < *len) {
-        n = send(fd, buf+total, bytesleft, 0);
+        n = send(fd, buf+total, bytesleft, flags);
         if (n == -1) { break; }
         total += n;
         bytesleft -= n;
@@ -95,14 +95,14 @@ int sendall(int fd, char *buf, int *len)
     return n==-1?-1:0; // return -1 on failure, 0 on success
 }
 
-int recvall(int fd, char *buf, int *len)
+int recvall(int fd, char *buf, int *len, int flags)
 {
     int total = 0;        // how many bytes we've sent
     int bytesleft = *len; // how many we have left to send
     int n;
 
     while(total < *len) {
-        n = recv(fd, buf+total, bytesleft, 0);
+        n = recv(fd, buf+total, bytesleft, flags);
         if (n == -1) { break; }
         total += n;
         bytesleft -= n;

@@ -22,6 +22,9 @@ Access.CPP
 myregex.CPP
 ;TODOs in processIdFinder
 
+dispatcher.CPP
+;make the Infinite while loop more efficient with somethng other measure
+
 2.Supervise the supervisor via handling all the signals and think something of two exception signals. - Password , best handing procedures.
 3.Search and Test for any case when SIGCHILD not generated.
 4.Json - Basic Done
