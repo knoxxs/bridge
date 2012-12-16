@@ -29,6 +29,7 @@ PGconn *ConnectDB(string user="postgres",string password="123321",string dbname=
 }
 
 int getPlayerInfoFromDb(PGconn *conn, string plid, char* name, char* team){
+    cout << plid << endl;
     string query = "SELECT * FROM players where pid='" + plid + "'";
 
     PGresult *res = PQexec(conn,query.c_str());

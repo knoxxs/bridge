@@ -55,6 +55,24 @@ int main() {
 	logp("Supervisor- Main",0,0,"Supervisor Pid is ");
 
 
+	//Starting Player
+	logp("Supervisor- Main",0,0,"Forking For Starting Player");
+	dispactcher_pid = fork();
+	if(dispactcher_pid < 0){ //parent
+		errorp("Supervisor-Main",0,0,"Forking For Player");
+    	debugp("Supervisor-Main",1,errno,NULL);
+		_exit(127);
+	}
+	if(dispactcher_pid == 0){ //child
+		logp("Supervisor- Main",0,0,"Executing Player");
+		execl("./bin/player",(const char*) NULL,(char *) 0); // need to change this to exec + e - controll environment
+		//only returns when error
+		errorp("Supervisor-Main",0,0,"Executing Player");
+    	debugp("Supervisor-Main",1,errno,NULL);
+		_exit(127);
+	}
+
+
 	//Starting Dispatcher
 	logp("Supervisor- Main",0,0,"Forking For Starting dispatcher");
 	dispactcher_pid = fork();
