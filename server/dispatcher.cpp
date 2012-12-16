@@ -28,7 +28,7 @@
 #define DATABASE_IP "127.0.0.1"
 #define DATABASE_PORT "5432"
 #define UNIX_SOCKET_FILE "./demo_socket"
-#define LOG_PATH "/home/abhi/Projects/bridge/server/log"
+#define LOG_PATH "/home/vidisha/bridge/server/log"
 
 void *get_in_addr(struct sockaddr*);
 int makeSocketForClients();
