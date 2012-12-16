@@ -243,8 +243,8 @@ void* SocketHandler(void* lp) {
     int choice_len = sizeof(choice);//this is importnat becz recvall takes ppointer to int
     int ret;
 
-    logp(identity,0,0,"receiving the first choice of the client");    
-    if(recvall(fd, choice, choice_len, 0) != 0){ //whether want to play(login), or as audience(no login)
+    logp(identity,0,0,"receiving the first choice of the client");
+    if(recvall(fd, choice, &choice_len, 0) != 0){ //whether want to play(login), or as audience(no login)
         logp(identity,0,0,"Error receiving the first choice of the client");
     }
 
@@ -279,7 +279,7 @@ int login(int fd, char* plid){
     sprintf(identity, "DISPATCHER-login-fd: %d -", fd);
 
     logp(identity,0,0,"Calling recvall to recv login credentials");
-    if ((ret = recvall(fd, loginInfo, loginInfo_len, 0)) != 0) {
+    if ((ret = recvall(fd, loginInfo, &loginInfo_len, 0)) != 0) {
         errorp(identity,0,0,"Unable to recv login credentials");
         debugp(identity,1,errno,NULL);
     }
@@ -311,7 +311,7 @@ int login(int fd, char* plid){
 }
 
 void contactPlayer(char* plid, int fd_to_send){
-    int socket_fd;
+    int socket_fd, plid_len = sizeof(plid);
 
     char identity[40], buf[100];
     sprintf(identity, "DISPATCHER-contact-Player-fd: %d -", fd_to_send);    
@@ -327,7 +327,7 @@ void contactPlayer(char* plid, int fd_to_send){
     logp(identity,0,0,"fd sent Successfully");
 
     logp(identity,0,0,"Sending plid to player process");
-    if( sendall(socket_fd, plid, 8, 0) != 0){
+    if( sendall(socket_fd, plid, &plid_len, 0) != 0){
         errorp(identity, 0, 0, "Unable to send complete plid");
         debugp(identity,1,errno,NULL);
     }

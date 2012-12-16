@@ -163,6 +163,7 @@ int recvall(int fd, char *buf, int *len, int flags)
     int n;
 
     while(total < *len) {
+    	printf("%s\n","thi is it" );
         n = recv(fd, buf+total, bytesleft, flags);
         if (n == -1) { break; }
         total += n;

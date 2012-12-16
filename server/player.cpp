@@ -121,9 +121,9 @@ int unixSocket(){
 }
 
 void connection_handler(int connection_fd){
-    int fd_to_recv, ret;
     char msgbuf[50], plid[8], id[9];
-    
+    int fd_to_recv, ret, plid_len = sizeof(plid);
+
     char identity[40], buf[100];
     sprintf(identity, "PLAYER-connection_handler-fd: %d -", connection_fd);
 
@@ -135,7 +135,7 @@ void connection_handler(int connection_fd){
 
     //recieving plid of the player
     logp(identity,0,0,"recieving the plid fo the player");
-    if((ret = recvall(connection_fd, plid, 8, 0)) != 0) {
+    if((ret = recvall(connection_fd, plid, &plid_len, 0)) != 0) {
         errorp(identity,0,0,"Unable to recv the plid");
         debugp(identity,1,errno,NULL);
     }
@@ -145,15 +145,15 @@ void connection_handler(int connection_fd){
     sprintf(buf,"recvd fd is (%d) and plid is (%s)",fd_to_recv, id);
     logp(identity,0,0,buf);
 
-    // //checking if the fd we have recieved is correct or not
-    // logp(identity,0,0,"recieving the checking data")
-    // if((ret = recvall(fd_to_recv, msgbuf, 6, 0)) == -1) {
-    //     errorp(identity,0,0,"Unable to recv the checking data");
-    //     debugp(identity,1,errno,NULL);
-    // }
-    // msgbuf[6] ='\0';
-    // sprintf(buf,"Checking data recvd is - %s", msgbuf);
-    // logp(identity,0,0,buf);
+    //checking if the fd we have recieved is correct or not
+    logp(identity,0,0,"recieving the checking data");
+    if((ret = recv(fd_to_recv, msgbuf, 6, 0)) == -1) {
+        errorp(identity,0,0,"Unable to recv the checking data");
+        debugp(identity,1,errno,NULL);
+    }
+    msgbuf[6] ='\0';
+    sprintf(buf,"Checking data recvd is - %s", msgbuf);
+    logp(identity,0,0,buf);
     
     //creating thread of the player
     pthread_t thread_id = 0;
@@ -249,7 +249,7 @@ int recv_fd(int fd, ssize_t (*userfunc)(int, const void *, size_t), char *plid) 
     char identity[40], tempbuf[100];
     sprintf(identity, "PLAYER-recv_fd-fd: %d -", fd);
 
-    logp(identity,0,0,"Entering tje infite for loop");
+    logp(identity,0,0,"Entering the infite for loop");
     status = -1;
     for ( ; ; ) 
     {
@@ -303,12 +303,13 @@ int recv_fd(int fd, ssize_t (*userfunc)(int, const void *, size_t), char *plid) 
                     errorp(identity,0,0,"Message Format error");
                 status = *ptr & 0xFF;  /* prevent sign extension */
                 if (status == 0) {
-                    sprintf(tempbuf,"msg_controllen(%d) and recvd is(%d)\n",msg.msg_controllen, CONTROLLEN );
+                    sprintf(tempbuf,"msg_controllen recvd is(%d) and must be is(%d)\n",msg.msg_controllen, CONTROLLEN );
                     logp(identity,0,0,tempbuf);
                     if (msg.msg_controllen != CONTROLLEN)
                         logp(identity,0,0,"Status =0 but no fd");
                     newfd = *(int *)CMSG_DATA(cmptr);
-                    logp(identity,0,0,"newfd extracted");
+                    sprintf(tempbuf, "New fd extracted is %d",newfd);
+                    logp(identity,0,0,tempbuf);
                 } else {
                     logp(identity,0,0,"assigning newfd = error status");
                     newfd = -status;
@@ -320,7 +321,7 @@ int recv_fd(int fd, ssize_t (*userfunc)(int, const void *, size_t), char *plid) 
         logp(identity,0,0,"Checking whether fd recvd succesfully or not");
         if (nr > 0 && (*userfunc)(STDERR_FILENO, buf, nr) != nr)
             logp(identity,0,0,"Error extracting error from the msg");
-            return(-1);
+            //return(-1);
         if (status >= 0){    /* final data has arrived */
             logp(identity,0,0,"Returning new fd");
             return(newfd);  /* descriptor, or -status */
