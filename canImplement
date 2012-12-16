@@ -1,0 +1,89 @@
+TO-DO:
+
+
+1.Daemonise Supervisor and scheduling of it.
+-Upstart test - done
+-Daeminie process - not working
+
+PSQL.CPP:
+;Need to do error handling
+;whether to make a function check connection and call it every time or not
+
+Access.CPP
+;Need to convert every char* to string and make it fully C++ style
+
+myregex.CPP
+;TODOs in processIdFinder
+
+dispatcher.CPP
+;make the Infinite while loop more efficient with somethng other measure
+;for recvall() and sendall() - Need to do something if error occurs.
+;make login a loop if incorrect login
+;make wrong choice as repeaating loop
+;make communication dynamic instead of sequential
+;Connecting to database for every user make it one time (make a function which return the PGcon  object . 
+	Call it every time not one time like if object was previously creted then return that else make a new 
+	connection and return that -> this will sove the problem That if we connected to database one time and 
+	the after sometime the connection broke , then our program will crash)
+;Do same for the unixClientSocket - Now calling it every time
+;Need to use send_err in send_fd and understand it and then do its error handling
+;Need to make the graceful exit (close the database connection)
+
+logfile
+;Need to make logfile opening one time somehow in access and accessories. Need to think is it ok to add a add 
+	a func there to open file and call it everytime from logWrite[it open file only once bt every time check 
+	whether it is opened or not]. This is error prone or too much.
+
+Make:
+;Need to amke .h of all the files 
+;need to learn make thoroughly and then to build depedency perfectly
+
+player.CPP
+;Connecting to database for every user make it one time
+;Instead of acceptiing a new connection from dispatcher for new player, hv 1 long lived connection with 
+	the dispatcher and instead of wait using accept wait usinng recv. (Bcz our accepting method is sequential)
+;error function of recv_fd
+;need to make graceful exit (close database connection)
+
+supervisor.c
+;Run then kill supervisor, (but dispatcher is not getting killed), then again run the supervisor , now getting error 	in getPLayerInfoFromDb
+
+
+
+-----------------------------------------------------------------------------------------
+
+
+
+
+strerror_r instead of strerror as first one is threadsafe
+Need to change printf to cin and cout
+dispatcher signal handler
+change syntax to c++;
+learn to use sql in c++
+json
+
+
+
+
+
+
+
+2.Supervise the supervisor via handling all the signals and think something of two exception signals. - Password , best handing procedures.
+3.Search and Test for any case when SIGCHILD not generated.
+4.Json - Basic Done
+5.SQL - GOING ON
+6.UNIX Domain Sockets
+7.Error handling of Supervisor - Going On
+8.Vidisha's segmentation fault error
+9.No need of #include then error
+10.No need of access.o in supervisor in makefile's supervisor target - DONE
+11.Handel Bind Ports error - DONE
+12.Handel Binary Files. - Done
+
+
+
+
+DOUBTS:
+;Designing the error handling. In a server process for every connection calling some functions repeatedly from my 
+	home made api. Every function is writing log. Best way to set the identity is only to pass idenity to those 	functions or any other.
+;If u give default arg to 1 para then u hv to give to all???
