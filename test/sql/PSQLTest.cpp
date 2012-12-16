@@ -1,6 +1,10 @@
 #include <iostream>
 #include <libpq-fe.h>
 
+//to-install - libpq-fe
+//sudo apt-get install postgresql
+//sudo apt-get install libpq-dev
+
 using namespace std;
 //sudo g++ PSQLTest.cpp -I /usr/include/postgresql -lpq -o PSQLTest
 //sudo -u postgres psql #

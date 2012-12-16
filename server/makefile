@@ -47,8 +47,8 @@ player:player.o access.o psql.o
 player.o:player.cpp
 	g++ -I /usr/include/postgresql -lpq -fpermissive -c player.cpp
 
-psql_player.o:psql_player.cpp psql_player.h
-	g++ -c psql_player.cpp -I /usr/include/postgresql -lpq
+#psql_player.o:psql_player.cpp psql_player.h
+#	g++ -c psql_player.cpp -I /usr/include/postgresql -lpq
 
 cleanAll:cleanO clean~
 	
