@@ -29,6 +29,8 @@
 #define DATABASE_PORT "5432"
 #define UNIX_SOCKET_FILE "./demo_socket"
 #define LOG_PATH "/home/abhi/Projects/bridge/server/log"
+#define IDENTITY_SIZE 40
+
 
 void *get_in_addr(struct sockaddr*);
 int makeSocketForClients();
@@ -81,6 +83,15 @@ int main(int argv, char** argc) {
     sprintf(buf, "The ID - %d", playerProcId);
     debugp("DISPATCHER-main",0,0,buf);
     
+    //connecting to the database
+    logp("DISPATCHER-main",0,0,"Connecting to the database");
+    if (ConnectDB(DATABASE_USER_NAME, DATABASE_PASSWORD, DATABASE_NAME, DATABASE_IP, DATABASE_PORT, "DISPATCHER-main") == 0){
+        logp("DISPATCHER-main",0,0,"Connected to database Successfully");
+    }else {
+        logp("DISPATCHER-main",0,0,"Unable to connect ot the database");
+    }
+
+
     logp("DISPATCHER-main",0,0,"Enetering the everlistening while loop");
     while (1) { 
         logp("DISPATCHER-main",0,0,"Waiting for the connection");
@@ -113,6 +124,11 @@ int main(int argv, char** argc) {
             debugp("DISPATCHER-main",1,err,NULL);
         }
     }
+
+    //TODO graceful exit
+    logp("DISPATCHER-main",0,0,"Closing database connection");
+    CloseConn("DISPATCHER-main");
+
 
     logp("DISPATCHER-main",0,0,"after the infinite while loop - THIS IS IMPOSSIBLE");
     return -1;
@@ -234,7 +250,7 @@ void* SocketHandler(void* lp) {
     
     int fd = (long)lp;
 
-    char identity[40], buf[100];
+    char identity[IDENTITY_SIZE], buf[100];
     sprintf(identity, "DISPATCHER-SocketHandler-fd: %d -", fd);
 
     logp(identity,0,0,"Successfully gained the identity");
@@ -275,7 +291,7 @@ int login(int fd, char* plid){
     int loginInfo_len = sizeof(loginInfo);
     int ret;
 
-    char identity[40], buf[100];
+    char identity[IDENTITY_SIZE], buf[100];
     sprintf(identity, "DISPATCHER-login-fd: %d -", fd);
 
     logp(identity,0,0,"Calling recvall to recv login credentials");
@@ -288,32 +304,21 @@ int login(int fd, char* plid){
     sprintf(buf,"recvd login credential with username - %s", username);
     logp(identity,0,0,buf);
 
-    logp(identity,0,0,"Declaring the PGConn object");
-    PGconn *conn = NULL;
+    logp(identity,0,0,"Calling login_check");
+    ret = login_check(username, password, identity);
+    sprintf(buf,"Recvd (%d) from login_check", ret);
+    logp(identity,0,0,buf);
+    
+    strcpy(plid, username);
 
-    logp(identity,0,0,"Connecting to the database");
-    conn = ConnectDB(DATABASE_USER_NAME, DATABASE_PASSWORD, DATABASE_NAME, DATABASE_IP, DATABASE_PORT);
-
-    if (conn != NULL) {
-        logp(identity,0,0,"Connected to database Successfully and calling login_check");
-        ret = login_check(conn, username, password);
-        sprintf(buf,"Recvd (%d) from login_check", ret);
-        logp(identity,0,0,buf);
-
-        logp(identity,0,0,"Closing database connection");
-        CloseConn(conn);
-        
-        strcpy(plid, username);
-
-        logp(identity,0,0,"Returning from login");
-        return ret;
-    }
+    logp(identity,0,0,"Returning from login");
+    return ret;
 }
 
 void contactPlayer(char* plid, int fd_to_send){
     int socket_fd, plid_len = sizeof(plid);
 
-    char identity[40], buf[100];
+    char identity[IDENTITY_SIZE], buf[100];
     sprintf(identity, "DISPATCHER-contact-Player-fd: %d -", fd_to_send);    
 
     logp(identity,0,0,"Inside contactPlayer and calling unixClientSocket");
@@ -385,7 +390,7 @@ int send_fd(int fd, int fd_to_send, char* plid){
     struct msghdr   msg;
     char            buf[2]; /* send_fd()/recv_fd() 2-byte protocol */
 
-    char identity[40], tempbuf[100];
+    char identity[IDENTITY_SIZE], tempbuf[100];
     sprintf(identity, "DISPATCHER-send_fd-fd: %d -", fd_to_send);    
 
     logp(identity,0,0,"Adding bufs to iovec");

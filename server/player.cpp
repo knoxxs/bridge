@@ -15,7 +15,7 @@
 #include <string>
 #include <iostream>
 #include "access.h"
-#include "psql_player.h"
+#include "psql.h"
 
 /* size of control buffer to send/recv one file descriptor */
 #define CONTROLLEN  CMSG_LEN(sizeof(int))
@@ -66,6 +66,14 @@ int main(){
 	socket_fd = unixSocket();
     logp("PLAYER-main",0,0,"Socket made Succesfully");
 
+    //connecting to the database
+    logp("PLAYER-main",0,0,"Connecting to the database");
+    if (ConnectDB(DATABASE_USER_NAME, DATABASE_PASSWORD, DATABASE_NAME, DATABASE_IP, DATABASE_PORT, "DISPATCHER-main") == 0){
+        logp("PLAYER-main",0,0,"Connected to database Successfully");
+    }else {
+        logp("PLAYER-main",0,0,"Unable to connect ot the database");
+    }
+
     logp("PLAYER-main",0,0,"Starting accepting connection in infinite while loop");
 	while(1){
         logp("PLAYER-main",0,0,"Waiting for the connection");        
@@ -78,6 +86,11 @@ int main(){
             debugp("PLAYER-Main",1,1,NULL);
         }
 	}
+
+    //TODO graceful exit
+    logp("PLAYER-main",0,0,"Closing the connection with the database");
+    CloseConn("PLAYER-main");
+
 }
 
 int unixSocket(){
@@ -217,21 +230,10 @@ int getPlayerInfo(char *plid, char *name, char *team, int identity_fd){
     int ret;
     char identity[40], buf[100];
     sprintf(identity, "PLAYER-getPlayerInfo-fd: %d -", identity_fd);
-
-    logp(identity,0,0,"Creating PGconn object");
-    PGconn *conn = NULL;
-
-    logp(identity,0,0,"Connecting to the database");
-    conn = ConnectDB(DATABASE_USER_NAME,DATABASE_PASSWORD,DATABASE_NAME,DATABASE_IP,DATABASE_PORT);
-    if (conn != NULL) {
-        logp(identity,0,0,"Connected to data Succesfully and calling getPlayerInfoFromDb");
-        ret = getPlayerInfoFromDb(conn, plid, name, team);
-        logp(identity,0,0,"Returned from getPlayerInfoFromDb and closing the Connection with the database");
-        CloseConn(conn);
-    } else{
-        logp(identity,0,0,"Unable to connect ot the database");
-        ret = -3;
-    }
+    
+    logp(identity,0,0,"Connected to data Succesfully and calling getPlayerInfoFromDb");
+    ret = getPlayerInfoFromDb(plid, name, team, identity);
+    logp(identity,0,0,"Returned from getPlayerInfoFromDb");
 
     sprintf(buf,"Returning from getPlayerInfo with ret value (%d)",ret);
     logp(identity,0,0,buf);
