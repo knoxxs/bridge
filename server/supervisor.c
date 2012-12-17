@@ -10,7 +10,8 @@
 
 
 #define LOG_PATH "./log"
-#define CUR_WORKING_DIREC "/home/abhi/Projects/bridge/server"
+//#define CUR_WORKING_DIREC "/home/abhi/Projects/bridge/server"
+#define CUR_WORKING_DIREC "/home/vidisha/bridge/server"
 //TODO different computer working directory issue
 //TODO error handling of signalHandlers
 
