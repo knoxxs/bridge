@@ -9,7 +9,7 @@
 #include <signal.h>
 
 
-#define LOG_PATH "/home/abhi/Projects/bridge/server/log"
+#define LOG_PATH "./log"
 #define CUR_WORKING_DIREC "/home/abhi/Projects/bridge/server"
 //TODO different computer working directory issue
 //TODO error handling of signalHandlers

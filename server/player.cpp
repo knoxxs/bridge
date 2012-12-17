@@ -28,7 +28,7 @@
 #define DATABASE_PORT "5432"
 #define MAXLINE 2
 #define UNIX_SOCKET_FILE "./demo_socket"
-#define LOG_PATH "/home/abhi/Projects/bridge/server/log"
+#define LOG_PATH "./log"
 #define LISTEN_QUEUE_SIZE 5
 
 static struct cmsghdr   *cmptr = NULL;      /* malloc'ed first time */
