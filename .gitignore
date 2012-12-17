@@ -3,10 +3,10 @@
 #*
 #!*.*
 
-#My ow files
+#My own files
 #################
 log
-./server/bin/*
+server/bin/
 *~
 
 # Compiled source #
@@ -34,7 +34,7 @@ log
 # Logs and databases #
 ######################
 *.log
-*.sql
+#*.sql
 *.sqlite
 
 # OS generated files #

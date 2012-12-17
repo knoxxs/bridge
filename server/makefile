@@ -41,14 +41,14 @@ psql.o:psql.cpp psql.h
 myregex.o:myregex.cpp myregex.h
 	g++ -c myregex.cpp -lm
 
-player:player.o access.o psql_player.o
-	g++ player.o access.o psql_player.o -pthread -I /usr/include/postgresql -lpq -o ./bin/player
+player:player.o access.o psql.o
+	g++ player.o access.o psql.o -pthread -I /usr/include/postgresql -lpq -o ./bin/player
 
 player.o:player.cpp
 	g++ -I /usr/include/postgresql -lpq -fpermissive -c player.cpp
 
-psql_player.o:psql_player.cpp psql_player.h
-	g++ -c psql_player.cpp -I /usr/include/postgresql -lpq
+#psql_player.o:psql_player.cpp psql_player.h
+#	g++ -c psql_player.cpp -I /usr/include/postgresql -lpq
 
 cleanAll:cleanO clean~
 	

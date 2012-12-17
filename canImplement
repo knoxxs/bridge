@@ -6,7 +6,8 @@ TO-DO:
 -Daeminie process - not working
 
 PSQL.CPP:
-;Need to do error handling
+;Need to do error handling  - "abhi" (done)
+;whether to make a function check connection and call it every time or not
 
 Access.CPP
 ;Need to convert every char* to string and make it fully C++ style
@@ -23,10 +24,10 @@ dispatcher.CPP
 ;Connecting to database for every user make it one time (make a function which return the PGcon  object . 
 	Call it every time not one time like if object was previously creted then return that else make a new 
 	connection and return that -> this will sove the problem That if we connected to database one time and 
-	the after sometime the connection broke , then our program will crash)
-
+	the after sometime the connection broke , then our program will crash)  - "abhi" (partially done)
 ;Do same for the unixClientSocket - Now calling it every time
 ;Need to use send_err in send_fd and understand it and then do its error handling
+;Need to make the graceful exit (close the database connection)
 
 logfile
 ;Need to make logfile opening one time somehow in access and accessories. Need to think is it ok to add a add 
@@ -38,11 +39,11 @@ Make:
 ;need to learn make thoroughly and then to build depedency perfectly
 
 player.CPP
-;Connecting to database for every user make it one time
+;Connecting to database for every user make it one time - -"abhi"(partially done)
 ;Instead of acceptiing a new connection from dispatcher for new player, hv 1 long lived connection with 
 	the dispatcher and instead of wait using accept wait usinng recv. (Bcz our accepting method is sequential)
 ;error function of recv_fd
-
+;need to make graceful exit (close database connection)
 
 supervisor.c
 ;Run then kill supervisor, (but dispatcher is not getting killed), then again run the supervisor , now getting error 	in getPLayerInfoFromDb
@@ -79,3 +80,10 @@ json
 11.Handel Bind Ports error - DONE
 12.Handel Binary Files. - Done
 
+
+
+
+DOUBTS:
+;Designing the error handling. In a server process for every connection calling some functions repeatedly from my 
+	home made api. Every function is writing log. Best way to set the identity is only to pass idenity to those 	functions or any other.
+;If u give default arg to 1 para then u hv to give to all???
