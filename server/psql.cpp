@@ -36,6 +36,7 @@ int ConnectDB(string user="postgres",string password="123321",string dbname="bri
 	if (PQstatus(conn) != CONNECTION_OK){
 		errorp(cmpltIdentity,0,0,"Unable to make the connection");
 		debugp(cmpltIdentity,0,0,"Calling CloseConn");
+		//logp(cmpltIdentity,0,0,PQerrorMessage(conn) );
 		CloseConn(identity);
 		conn = NULL;
 		return -1;

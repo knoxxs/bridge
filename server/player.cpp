@@ -151,6 +151,7 @@ void connection_handler(int connection_fd){
         errorp(identity,0,0,"Unable to recv the plid");
         debugp(identity,1,errno,NULL);
     }
+    
     strcpy(id, plid);
     id[8] = '\0';
     
