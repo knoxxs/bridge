@@ -10,7 +10,6 @@
 #include "access.h"
 
 
-
 void waitProc(char* id_proc){
 
     char command[6 + strlen(id_proc)];

@@ -301,18 +301,10 @@ int login(int fd, char* plid){
 
     char identity[IDENTITY_SIZE], buf[100];
     sprintf(identity, "DISPATCHER-login-fd: %d -", fd);
-<<<<<<< HEAD
 
     sprintf(buf, "plid_len(%d), username_len(%d), plid - %d",sizeof(plid), sizeof(username), plid);
     logp(identity,0,0,buf);
 
-
-=======
-	
-	sprintf(buf, "plid_len(%d), username_len(%d), plid - %d",sizeof(*plid), sizeof(username), plid);
-   	debugp(identity,0,0,buf);
-	
->>>>>>> origin/dev
     logp(identity,0,0,"Calling recvall to recv login credentials");
     if ((ret = recvall(fd, loginInfo, &loginInfo_len, 0)) != 0) {
         errorp(identity,0,0,"Unable to recv login credentials");

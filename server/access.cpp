@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <sys/socket.h>
 #include "access.h"
+#include <string>
 
 int logfile;
 
@@ -13,50 +14,52 @@ void setLogFile(int logfd){
 	logfile = logfd;
 }
 
-void logWrite(int typ, char* msg) // typ --> type(category) of message [1-Normal Log, 2-Warning(any unexpected thing happened), 3-Error, 4-Debugging Log ]
+void logWrite(int typ, string msg) // typ --> type(category) of message [1-Normal Log, 2-Warning(any unexpected thing happened), 3-Error, 4-Debugging Log ]
 {
 	int fd;
 	time_t now;
 	ssize_t wlength=0;
 	char * dat;
-	char * str;
-	int size = 45+strlen(msg);//14+24+5+sizeof msg+1
+//	int size = 45+strlen(msg);//14+24+5+sizeof msg+1
 	
-	str= (char *) malloc(size);
+//	str= (char *) malloc(size);
 	
 	time(&now);//system time in seconds
 	dat = ctime(&now); // converting seconds to date-time format
 	dat = strtok(dat,"\n");
 	
+	string date,str;
+
+	date.assign(dat);
 	//Appending type of log
 	switch(typ)
 	{
 	case LOG_TYPE:
-		strcpy(str,"__LOG__    |  ");
-		strcat(str,dat);
+		str = "__LOG__    |  ";
+		str = str + dat;
 		break;
 	case WARN_TYPE:
-		strcpy(str,"__WARN__   |  ");
-		strcat(str,dat);
+		str = "__WARN__   |  ";
+		str = str + dat;
 		break;
 	case ERROR_TYPE:
-		strcpy(str,"__ERR__    |  ");
-		strcat(str,dat);
+		str = "__ERR__    |  ";
+		str = str + dat;
 		break;
 	case DEBUG_TYPE:
-		strcpy(str,"__DEBUG__  |  ");
-		strcat(str,dat);
+		str = "__DEBUG__  |  ";
+		str = str + dat;
 		break;
 	default:
-		strcpy(str,"__UNDEF__  |  ");
-		strcat(str,dat);
+		str = "__UNDEF__  |  ";
+		str = str + dat;
 		break;
 	}
 	
 	
-	strcat(str,"  |  ");
-	strcat(str,msg);//appending message
-	strcat(str,"\n");
+	str = str + "  |  ";
+	str = str + msg;//appending message
+	str = str + "\n";
 	
 	//fd = open("log", O_WRONLY | O_CREAT | O_APPEND, 0644); // should be opened somewhere else
 	fd = logfile;
@@ -64,65 +67,63 @@ void logWrite(int typ, char* msg) // typ --> type(category) of message [1-Normal
 		printf("Could not open log - %s\n",strerror(errno));
 	else
 	{//need to add lock to the file and printing error message
-		while ( wlength < strlen(str) )
+		while ( wlength < str.length() )
 		{
-			wlength = write(fd, str,strlen(str));
+			wlength = write(fd, str.c_str(),str.length());
 			if (wlength == -1)
 			{
 				printf("Error : writing log\n");
 				break;
 			}
 		}
-		
-		
 	}
 }
 
 
-void makeMessage(int type, int boolean, char* errmsg, int errn, char* what){
+void makeMessage(int type, int boolean, string errmsg, int errn, string what){
 	if(boolean == 1) { //we got error number
-		strcat(errmsg,strerror(errn));
+		errmsg = errmsg + strerror(errn);
 		//fprintf(stderr,"ERROR - In %s and error is %s\n",where ,strerror(errn));
 		logWrite(type,errmsg);
 	}
 	else if(boolean == 0){ //we got a message
-		strcat(errmsg,what);
+		errmsg = errmsg + what;
 		//fprintf(stderr,"ERROR - In %s and error is %s\n",where ,what);
 		logWrite(type,errmsg);
 	}
 	else{ //we got nothing
-		strcat(errmsg,"No Message");
+		errmsg = errmsg + "No Message";
 		//fprintf(stderr,"ERROR - In %s\n",where);
 		logWrite(type,errmsg);	
 	}
 } 
 
-void errorp(char *where, int boolean, int errn,char *what)
+void errorp(string where, int boolean, int errn,string what)
 {
-	char errmsg[21+strlen(where)];
-	strcpy(errmsg,"Where - ");
-	strcat(errmsg,where);
-	strcat(errmsg,"  |  Error - ");
+	string errmsg;
+	errmsg = "Where - ";
+	errmsg = errmsg + where;
+	errmsg = errmsg + "  |  Error - ";
 
 	makeMessage(ERROR_TYPE, boolean, errmsg, errn, what);
 }
 
-void logp(char *where, int boolean, int errn,char *what)
+void logp(string where, int boolean, int errn,string what)
 {
-	char errmsg[21+strlen(where)];
-	strcpy(errmsg,"Where - ");
-	strcat(errmsg,where);
-	strcat(errmsg,"  |  LogMsg - ");
+	string errmsg;
+	errmsg = "Where - ";
+	errmsg = errmsg + where;
+	errmsg = errmsg + "  |  LogMsg - ";
 
 	makeMessage(LOG_TYPE, boolean, errmsg, errn, what);
 }
 
-void debugp(char *where, int boolean, int errn,char *what)
+void debugp(string where, int boolean, int errn,string what)
 {
-	char errmsg[21+strlen(where)];
-	strcpy(errmsg,"Where - ");
-	strcat(errmsg,where);
-	strcat(errmsg,"  |  DebugMsg - ");
+	string errmsg;
+	errmsg = "Where - ";
+	errmsg = errmsg +  where;
+	errmsg = errmsg + "  |  DebugMsg - ";
 
 	makeMessage(DEBUG_TYPE, boolean, errmsg, errn, what);
 }
