@@ -36,11 +36,11 @@ void *get_in_addr(struct sockaddr*);
 int makeSocketForClients();
 int socketBind(struct addrinfo *ai);
 void* SocketHandler(void* lp);
-int login(int fd, char* plid);
-void contactPlayer(char*,int);
-int send_fd(int, int, char*);
-int unixClientSocket(char*);
-int send_err(int, int, const char *);
+int login(int fd, char* plid, int len);
+void contactPlayer(char*,int,int len);
+int send_fd(int, int, char*, int len);
+int unixClientSocket(char*, int len);
+int send_err(int, int, const char *, int len);
 
 static struct cmsghdr   *cmptr = NULL;  /* malloc'ed first time */ 
 int playerProcId;
@@ -277,10 +277,10 @@ void* SocketHandler(void* lp) {
             logp(identity,0,0,"User entered the choice 'a' and calling login");
 	   		sprintf(buf, "plid_len(%d), username_len(), plid - %d",sizeof(plid), plid);
    	 		debugp(identity,0,0,buf);
-            if( (ret = login(fd, plid)) == 0){
+            if( (ret = login(fd, plid, sizeof(plid))) == 0){
                 sprintf(buf,"Player id is %s and Contacting player",plid);
                 logp(identity,0,0,buf);
-                contactPlayer( plid, fd);
+                contactPlayer( plid, fd, sizeof(plid));
                 logp(identity,0,0,"Contacted To player succesfully");
             }else{
                 logp(identity,0,0,"Incorrect login Credentials");
@@ -294,25 +294,20 @@ void* SocketHandler(void* lp) {
     return ((void*)0);
 }
 
-int login(int fd, char* plid){
+int login(int fd, char* plid, int len){
     char loginInfo[25], username[9], password[16];
     int loginInfo_len = sizeof(loginInfo);
     int ret;
 
     char identity[IDENTITY_SIZE], buf[100];
     sprintf(identity, "DISPATCHER-login-fd: %d -", fd);
-<<<<<<< HEAD
 
-    sprintf(buf, "plid_len(%d), username_len(%d), plid - %d",sizeof(plid), sizeof(username), plid);
+    sprintf(buf, "plid_len(%d), username_len(%d), plid - %d",len, sizeof(username), plid);
     logp(identity,0,0,buf);
-
-
-=======
 	
-	sprintf(buf, "plid_len(%d), username_len(%d), plid - %d",sizeof(*plid), sizeof(username), plid);
+	sprintf(buf, "plid_len(%d), username_len(%d), plid - %d",len, sizeof(username), plid);
    	debugp(identity,0,0,buf);
 	
->>>>>>> origin/dev
     logp(identity,0,0,"Calling recvall to recv login credentials");
     if ((ret = recvall(fd, loginInfo, &loginInfo_len, 0)) != 0) {
         errorp(identity,0,0,"Unable to recv login credentials");
@@ -336,31 +331,31 @@ int login(int fd, char* plid){
     return ret;
 }
 
-void contactPlayer(char* plid, int fd_to_send){
-    int socket_fd, plid_len = sizeof(plid);
+void contactPlayer(char* plid, int fd_to_send, int len){
+    int socket_fd;
 
     char identity[IDENTITY_SIZE], buf[100];
     sprintf(identity, "DISPATCHER-contact-Player-fd: %d -", fd_to_send);    
 
     logp(identity,0,0,"Inside contactPlayer and calling unixClientSocket");
     sprintf(buf,"DISPATCHER-unixClientSocket-fd: %d -",fd_to_send);
-    socket_fd = unixClientSocket(buf);
+    socket_fd = unixClientSocket(buf,sizeof(buf));
     sprintf(buf,"Recved socket-fd: %d -",socket_fd);
     logp(identity,0,0,buf);
 
     logp(identity,0,0,"Calling send_fd");
-    send_fd(socket_fd, fd_to_send, plid);
+    send_fd(socket_fd, fd_to_send, plid, len);
     logp(identity,0,0,"fd sent Successfully");
 
-    sprintf(buf, "Sending plid to player process ,plid_length(%d)", plid_len);
+    sprintf(buf, "Sending plid to player process ,plid_length(%d)",len);
     logp(identity,0,0,buf);
-    if( sendall(socket_fd, plid, &plid_len, 0) != 0){
+    if( sendall(socket_fd, plid, &len, 0) != 0){
         errorp(identity, 0, 0, "Unable to send complete plid");
         debugp(identity,1,errno,NULL);
     }
 }
 
-int unixClientSocket(char* identity){
+int unixClientSocket(char* identity, int len){
     struct sockaddr_un address;
     int  socket_fd;
 
@@ -389,7 +384,7 @@ int unixClientSocket(char* identity){
     return socket_fd;
 }
 
-int send_err(int fd, int errcode, const char *msg){
+int send_err(int fd, int errcode, const char *msg, int len){
     int n;
 
     if ((n = strlen(msg)) > 0)
@@ -399,13 +394,13 @@ int send_err(int fd, int errcode, const char *msg){
     if (errcode >= 0)
         errcode = -1;   /* must be negative */
 
-    if (send_fd(fd, errcode, NULL) < 0) //NULL for plid
+    if (send_fd(fd, errcode, NULL,0) < 0) //NULL for plid
         return(-1);
 
     return(0);
 }
 
-int send_fd(int fd, int fd_to_send, char* plid){
+int send_fd(int fd, int fd_to_send, char* plid, int len){
     ssize_t temp;
     //struct iovec    iov[2];//second is for sending plid
     struct iovec    iov[1];//second is for sneding plid

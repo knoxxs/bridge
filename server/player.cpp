@@ -34,11 +34,11 @@
 static struct cmsghdr   *cmptr = NULL;      /* malloc'ed first time */
 
 int unixSocket();
-int recv_fd(int , ssize_t (*userfunc)(int, const void *, size_t), char*);
+int recv_fd(int , ssize_t (*userfunc)(int, const void *, size_t), char*, int len);
 ssize_t errcheckfunc(int, const void *, size_t);
 void* playerMain(void*);
 void connection_handler(int);
-int getPlayerInfo(char *, char *, char *, int);
+int getPlayerInfo(char *, char *, char *, int, int, int, int);
 
 
 struct playerThreadArg{
@@ -142,7 +142,7 @@ void connection_handler(int connection_fd){
 
     //recieving fd of the player
     logp(identity,0,0,"Calling recv_fd");
-    fd_to_recv = recv_fd(connection_fd ,&errcheckfunc, plid);
+    fd_to_recv = recv_fd(connection_fd ,&errcheckfunc, plid, sizeof(plid));
     logp(identity,0,0,"fd recvd successfuly");
 
     //recieving plid of the player
@@ -215,7 +215,7 @@ void* playerMain(void* arg){
     logp(identity,0,0,"New thread created Succesfully");
 
     logp(identity,0,0,"Calling get player info");
-    if(getPlayerInfo(id , name, team, fd) == 0 ){
+    if(getPlayerInfo(id , name, team, fd, sizeof(id), sizeof(name), sizeoof(team)) == 0 ){
         sprintf(buf,"This is player info id(%s) name(%s) team(%s)\n", id, name, team);
         logp(identity,0,0,buf);
     }else{
@@ -226,7 +226,7 @@ void* playerMain(void* arg){
     //////////////////////_____creating schedule alarm_____///////////////
 }
 
-int getPlayerInfo(char *plid, char *name, char *team, int identity_fd){
+int getPlayerInfo(char *plid, char *name, char *team, int identity_fd,int p_len, int n_len, int t_len){
     int ret;
     char identity[40], buf[100];
     sprintf(identity, "PLAYER-getPlayerInfo-fd: %d -", identity_fd);
@@ -240,7 +240,7 @@ int getPlayerInfo(char *plid, char *name, char *team, int identity_fd){
     return ret;// 0 - done, -1 - error in getPlayerInfoFromDb
 }
 
-int recv_fd(int fd, ssize_t (*userfunc)(int, const void *, size_t), char *plid) {
+int recv_fd(int fd, ssize_t (*userfunc)(int, const void *, size_t), char *plid, int len) {
     int             newfd, nr, status;
     char            *ptr;
     char            buf[MAXLINE];
