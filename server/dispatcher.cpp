@@ -267,6 +267,9 @@ void* SocketHandler(void* lp) {
     switch(choice[0])
     {
         case 'a':
+            sprintf(buf, "plid_len(%d), username_len(), plid - %d",sizeof(plid), plid);
+            logp(identity,0,0,buf);
+
             logp(identity,0,0,"User entered the choice 'a' and calling login");
             if( (ret = login(fd, plid)) == 0){
                 sprintf(buf,"Player id is %s and Contacting player",plid);
@@ -293,6 +296,10 @@ int login(int fd, char* plid){
     char identity[IDENTITY_SIZE], buf[100];
     sprintf(identity, "DISPATCHER-login-fd: %d -", fd);
 
+    sprintf(buf, "plid_len(%d), username_len(%d), plid - %d",sizeof(plid), sizeof(username), plid);
+    logp(identity,0,0,buf);
+
+
     logp(identity,0,0,"Calling recvall to recv login credentials");
     if ((ret = recvall(fd, loginInfo, &loginInfo_len, 0)) != 0) {
         errorp(identity,0,0,"Unable to recv login credentials");
@@ -309,6 +316,8 @@ int login(int fd, char* plid){
     logp(identity,0,0,buf);
     
     strcpy(plid, username);
+    sprintf(buf, "plid_len(%d), username_len(%d)",sizeof(plid), sizeof(username));
+    logp(identity,0,0,buf);
 
     logp(identity,0,0,"Returning from login");
     return ret;
@@ -330,7 +339,8 @@ void contactPlayer(char* plid, int fd_to_send){
     send_fd(socket_fd, fd_to_send, plid);
     logp(identity,0,0,"fd sent Successfully");
 
-    logp(identity,0,0,"Sending plid to player process");
+    sprintf(buf, "Sending plid to player process ,plid_length(%d)", plid_len);
+    logp(identity,0,0,buf);
     if( sendall(socket_fd, plid, &plid_len, 0) != 0){
         errorp(identity, 0, 0, "Unable to send complete plid");
         debugp(identity,1,errno,NULL);
