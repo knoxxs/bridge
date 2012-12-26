@@ -41,7 +41,7 @@ void read_command_output(char* command, char* buf, int buf_len){
 
     if(fclose(ps_output_file) != 0){
         errorp("myregex-read_command_output",0,0,"Unable to close the command output file");
-        debugp("myregex-read_command_output",1,errno,NULL);
+        debugp("myregex-read_command_output",1,errno,"");
     }
 
     return;

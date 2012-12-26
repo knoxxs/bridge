@@ -56,7 +56,7 @@ int main(){
     logp("PLAYER-Main", 0,0 ,"Starting");
     if( (logfile = open(LOG_PATH, O_RDWR|O_CREAT|O_APPEND,S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP)) < 0 ){
         errorp("PLAYER-Main",0,0,"Error Opening logfile");
-        debugp("PLAYER-Main",1,1,NULL);
+        debugp("PLAYER-Main",1,1,"");
     }
     setLogFile(logfile);
 
@@ -83,7 +83,7 @@ int main(){
     		close(connection_fd);
         }else{
             errorp("PLAYER-Main",0,0,"Error accepting connection");
-            debugp("PLAYER-Main",1,1,NULL);
+            debugp("PLAYER-Main",1,1,"");
         }
 	}
 
@@ -100,7 +100,7 @@ int unixSocket(){
     logp("PLAYER-unixSocket",0,0,"Inside unixSocket and calling socket");
     if( (socket_fd = socket(PF_UNIX, SOCK_STREAM, 0) ) < 0 ) {
         errorp("PLAYER-unixSocket",0,0,"Unable to create the socket");
-        debugp("PLAYER-unixSocket",1,errno,NULL);
+        debugp("PLAYER-unixSocket",1,errno,"");
         return -1;
     } 
 
@@ -117,14 +117,14 @@ int unixSocket(){
     logp("PLAYER-unixSocket",0,0,"Calling bind");
     if(bind(socket_fd, (struct sockaddr *) &address, sizeof(struct sockaddr_un)) != 0){
         errorp("PLAYER-unixSocket",0,0,"Unable to bind to the socket");
-        debugp("PLAYER-unixSocket",1,errno,NULL);
+        debugp("PLAYER-unixSocket",1,errno,"");
         return -1;
     }
 
     logp("PLAYER-unixSocket",0,0,"calling listen");
     if(listen(socket_fd,LISTEN_QUEUE_SIZE ) != 0) {
         errorp("PLAYER-unixSocket",0,0,"Unable to create the socket");
-        debugp("PLAYER-unixSocket",1,errno,NULL);
+        debugp("PLAYER-unixSocket",1,errno,"");
         return -1;
     }
 
@@ -149,7 +149,7 @@ void connection_handler(int connection_fd){
     logp(identity,0,0,"recieving the plid fo the player");
     if((ret = recvall(connection_fd, plid, &plid_len, 0)) != 0) {
         errorp(identity,0,0,"Unable to recv the plid");
-        debugp(identity,1,errno,NULL);
+        debugp(identity,1,errno,"");
     }
     
     strcpy(id, plid);
@@ -162,7 +162,7 @@ void connection_handler(int connection_fd){
     logp(identity,0,0,"recieving the checking data");
     if((ret = recv(fd_to_recv, msgbuf, 6, 0)) == -1) {
         errorp(identity,0,0,"Unable to recv the checking data");
-        debugp(identity,1,errno,NULL);
+        debugp(identity,1,errno,"");
     }
     msgbuf[6] ='\0';
     sprintf(buf,"Checking data recvd is - %s", msgbuf);
@@ -182,13 +182,13 @@ void connection_handler(int connection_fd){
     logp(identity,0,0,"Calling Calling pthread_create");
     if((err = pthread_create(&thread_id, NULL, playerMain, &thread_arg ))!=0) {
         errorp(identity,0,0,"Unable to create the thread");
-        debugp(identity,1,err,NULL);
+        debugp(identity,1,err,"");
     }
 
     logp(identity,0,0,"Calling pthread_detach");
     if ((err = pthread_detach(thread_id)) != 0) {
         errorp(identity,0,0,"Unable to detach the thread");
-        debugp(identity,1,err,NULL);
+        debugp(identity,1,err,"");
     }
 
     logp(identity,0,0,"Closing fd_to_recv");
@@ -215,7 +215,7 @@ void* playerMain(void* arg){
     logp(identity,0,0,"New thread created Succesfully");
 
     logp(identity,0,0,"Calling get player info");
-    if(getPlayerInfo(id , name, team, fd, sizeof(id), sizeof(name), sizeoof(team)) == 0 ){
+    if(getPlayerInfo(id , name, team, fd, sizeof(id), sizeof(name), sizeof(team)) == 0 ){
         sprintf(buf,"This is player info id(%s) name(%s) team(%s)\n", id, name, team);
         logp(identity,0,0,buf);
     }else{
@@ -283,7 +283,7 @@ int recv_fd(int fd, ssize_t (*userfunc)(int, const void *, size_t), char *plid, 
         nr = recvmsg(fd, &msg, 0);
         if (nr < 0) {
             errorp(identity,0,0,"Unable to recv the msg");
-            debugp(identity,1,errno,NULL);
+            debugp(identity,1,errno,"");
             return -1;
         } else if (nr == 0) {
             logp(identity,0,0,"Unable to recv the msg becz connection is closed by client");
