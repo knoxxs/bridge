@@ -198,7 +198,7 @@ int clearPort( char* portNo){
             }
             else{
                 logp("myregex-clearPort",0,0,"Killing the process");
-                debugp("myregex-clearPort",1,errno,NULL);
+                debugp("myregex-clearPort",1,errno,"");
                 return -1;
             }
         } 
