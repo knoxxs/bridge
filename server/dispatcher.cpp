@@ -94,11 +94,15 @@ int main(int argv, char** argc) {
     logp("DISPATCHER-main",0,0,"Enetering the everlistening while loop");
     while (1) { 
         logp("DISPATCHER-main",0,0,"Waiting for the connection");
+	addrlen = sizeof(clientaddr);
         
         logp("DISPATCHER-main",0,0,"Calling accept");
         if((newfd = accept(listener, (struct sockaddr *)&clientaddr, &addrlen)) == -1){
             errorp("DISPATCHER-main",0,0,"unable to accept the connection");
             debugp("DISPATCHER-main",1,errno,NULL);
+		sprintf(buf,"fd %d, size %d err %d",listener,addrlen, errno);
+
+		logp("Dispatcher-main",0,0,buf);
             continue;
         }
         logp("DISPATCHER-main",0,0,"Accepted New Connection");
@@ -254,7 +258,7 @@ void* SocketHandler(void* lp) {
 
     logp(identity,0,0,"Successfully gained the identity");
 
-    char choice[1], plid[9];
+    char choice[1], plid[9]; 
     int choice_len = sizeof(choice);//this is importnat becz recvall takes ppointer to int
     int ret;
 
@@ -268,6 +272,8 @@ void* SocketHandler(void* lp) {
     {
         case 'a':
             logp(identity,0,0,"User entered the choice 'a' and calling login");
+	   		sprintf(buf, "plid_len(%d), username_len(), plid - %d",sizeof(plid), plid);
+   	 		debugp(identity,0,0,buf);
             if( (ret = login(fd, plid)) == 0){
                 sprintf(buf,"Player id is %s and Contacting player",plid);
                 logp(identity,0,0,buf);
@@ -292,7 +298,10 @@ int login(int fd, char* plid){
 
     char identity[IDENTITY_SIZE], buf[100];
     sprintf(identity, "DISPATCHER-login-fd: %d -", fd);
-
+	
+	sprintf(buf, "plid_len(%d), username_len(%d), plid - %d",sizeof(*plid), sizeof(username), plid);
+   	debugp(identity,0,0,buf);
+	
     logp(identity,0,0,"Calling recvall to recv login credentials");
     if ((ret = recvall(fd, loginInfo, &loginInfo_len, 0)) != 0) {
         errorp(identity,0,0,"Unable to recv login credentials");
