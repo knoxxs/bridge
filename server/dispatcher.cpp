@@ -368,13 +368,13 @@ int unixClientSocket(char* identity, int len){
 
     /* start with a clean address structure */
     logp(identity,0,0,"Cleaning the struct");
-    memset(&address, 0, sizeof(struct sockaddr_in));
+    memset(&address, 0, sizeof(struct sockaddr_un));
 
     address.sun_family = AF_UNIX;
     snprintf(address.sun_path, sizeof(address.sun_path)-1, UNIX_SOCKET_FILE);
 
     logp(identity,0,0,"Calling Connect");
-    if(connect(socket_fd, (struct sockaddr *) &address, sizeof(struct sockaddr_in)) != 0) {
+    if(connect(socket_fd, (struct sockaddr *) &address, sizeof(struct sockaddr_un)) != 0) {
         errorp(identity,0,0,"Unable to connect the socket");
         debugp(identity,1,errno,NULL);
         return -1;

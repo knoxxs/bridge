@@ -28,8 +28,10 @@
 #define DATABASE_PORT "5432"
 #define MAXLINE 2
 #define UNIX_SOCKET_FILE_DIS_TO_PLA "./demo_socket"
+#define UNIX_SOCKET_FILE_PLA_TO_GAM "./UNIX_SOCKET_FILE_PLA_TO_GAM"
 #define LOG_PATH "./log"
 #define LISTEN_QUEUE_SIZE 5
+#define IDENTITY_SIZE 40
 
 static struct cmsghdr   *cmptr = NULL;      /* malloc'ed first time */
 
@@ -39,6 +41,10 @@ ssize_t errcheckfunc(int, const void *, size_t);
 void* playerMain(void*);
 void connection_handler(int);
 int getPlayerInfo(char *, char *, char *, int, int, int, int);
+void contactGame(char*,int,int len);
+int send_fd(int, int, char*, int len);
+int unixClientSocket(char*, int len);
+int send_err(int, int, const char *, int len);
 
 
 struct playerThreadArg{
@@ -68,7 +74,7 @@ int main(){
 
     //connecting to the database
     logp("PLAYER-main",0,0,"Connecting to the database");
-    if (ConnectDB(DATABASE_USER_NAME, DATABASE_PASSWORD, DATABASE_NAME, DATABASE_IP, DATABASE_PORT, "DISPATCHER-main") == 0){
+    if (ConnectDB(DATABASE_USER_NAME, DATABASE_PASSWORD, DATABASE_NAME, DATABASE_IP, DATABASE_PORT, "PLAYER-main") == 0){
         logp("PLAYER-main",0,0,"Connected to database Successfully");
     }else {
         logp("PLAYER-main",0,0,"Unable to connect ot the database");
@@ -241,6 +247,13 @@ void* playerMain(void* arg){
     tv.tv_usec = 500000;
     //select(0, NULL, NULL, NULL, &tv);
     //create the game and send the data
+
+    sprintf(buf,"Player id is %s and Contacting Game",plid);
+    logp(identity,0,0,buf);
+    contactGame( plid, fd, sizeof(plid));
+    logp(identity,0,0,"Contacted To Game succesfully");
+
+
 }
 
 int getPlayerInfo(char *plid, char *name, char *team, int identity_fd,int p_len, int n_len, int t_len){
@@ -352,4 +365,141 @@ int recv_fd(int fd, ssize_t (*userfunc)(int, const void *, size_t), char *plid, 
 ssize_t errcheckfunc(int a,const void *b, size_t c){
     logp("PLAYER-errcheckfunc",0,0,"Inside error check function");
     return 0;
+}
+
+void contactGame(char* plid, int fd_to_send, int len){
+    int socket_fd;
+
+    char identity[IDENTITY_SIZE], buf[100];
+    sprintf(identity, "PLAYER-contact-Player-fd: %d -", fd_to_send);    
+
+    logp(identity,0,0,"Inside contactPlayer and calling unixClientSocket");
+    sprintf(buf,"PLAYER-unixClientSocket-fd: %d -",fd_to_send);
+    socket_fd = unixClientSocket(buf,sizeof(buf));
+    sprintf(buf,"Recved socket-fd: %d -",socket_fd);
+    logp(identity,0,0,buf);
+
+    logp(identity,0,0,"Calling send_fd");
+    send_fd(socket_fd, fd_to_send, plid, len);
+    logp(identity,0,0,"fd sent Successfully");
+
+    sprintf(buf, "Sending plid to game process ,plid_length(%d)",len);
+    logp(identity,0,0,buf);
+    if( sendall(socket_fd, plid, &len, 0) != 0){
+        errorp(identity, 0, 0, "Unable to send complete plid");
+        debugp(identity,1,errno,"");
+    }
+}
+
+int unixClientSocket(char* identity, int len){
+    struct sockaddr_un address;
+    int  socket_fd;
+
+    logp(identity,0,0,"Calling socket");
+    if( (socket_fd = socket(PF_UNIX, SOCK_STREAM, 0)) < 0) {
+        errorp(identity,0,0,"Unable to make the socket");
+        debugp(identity,1,errno,"");
+        return -1;
+    }
+
+    /* start with a clean address structure */
+    logp(identity,0,0,"Cleaning the struct");
+    memset(&address, 0, sizeof(struct sockaddr_un));
+
+    address.sun_family = AF_UNIX;
+    snprintf(address.sun_path, sizeof(address.sun_path)-1, UNIX_SOCKET_FILE_PLA_TO_GAM);
+
+    logp(identity,0,0,"Calling Connect");
+    if(connect(socket_fd, (struct sockaddr *) &address, sizeof(struct sockaddr_un)) != 0) {
+        errorp(identity,0,0,"Unable to connect the socket");
+        debugp(identity,1,errno,"");
+        return -1;
+    }
+
+    logp(identity,0,0,"Returning socket_fd");
+    return socket_fd;
+}
+
+int send_err(int fd, int errcode, const char *msg, int len){
+    int n;
+
+    if ((n = strlen(msg)) > 0)
+        if (write(fd, msg, n) != n)    /* send the error message */
+            return(-1);
+
+    if (errcode >= 0)
+        errcode = -1;   /* must be negative */
+
+    if (send_fd(fd, errcode, NULL,0) < 0) //NULL for plid
+        return(-1);
+
+    return(0);
+}
+
+int send_fd(int fd, int fd_to_send, char* plid, int len){
+    ssize_t temp;
+    //struct iovec    iov[2];//second is for sending plid
+    struct iovec    iov[1];//second is for sneding plid
+    struct msghdr   msg;
+    char            buf[2]; /* send_fd()/recv_fd() 2-byte protocol */
+
+    char identity[IDENTITY_SIZE], tempbuf[100];
+    sprintf(identity, "PLAYER-send_fd-fd: %d -", fd_to_send);    
+
+    logp(identity,0,0,"Adding bufs to iovec");
+    iov[0].iov_base = buf;
+    iov[0].iov_len  = 2;
+    // iov[1].iov_base = plid;
+    // iov[1].iov_len  = 8;
+
+    logp(identity,0,0,"Adding iovec to msghdr");
+    msg.msg_iov     = iov;
+    // msg.msg_iovlen  = 2;
+    msg.msg_iovlen  = 1;
+    msg.msg_name    = NULL;
+    msg.msg_namelen = 0;
+
+
+    if (fd_to_send < 0) {
+        logp(identity,0,0,"When fd_to_send is < 0, defining the structure of buf according to the protocol");
+        msg.msg_control    = NULL;
+        msg.msg_controllen = 0;
+        buf[1] = -fd_to_send;   /* nonzero status means error */
+        if (buf[1] == 0)
+            buf[1] = 1; /* -256, etc. would screw up protocol */
+    } else {
+        logp(identity,0,0,"When fd_to_send > 0, assigning memory");
+        if (cmptr == NULL && (cmptr = malloc(CONTROLLEN)) == NULL)
+            return(-1);
+        logp(identity,0,0,"Giving rights");
+        cmptr->cmsg_level  = SOL_SOCKET;
+        cmptr->cmsg_type   = SCM_RIGHTS;
+        cmptr->cmsg_len    = CONTROLLEN;
+        msg.msg_control    = cmptr;
+        msg.msg_controllen = CONTROLLEN;
+
+        sprintf(tempbuf,"Adding data with controllen(%d)",CONTROLLEN);
+        logp(identity,0,0,tempbuf);
+        *(int *)CMSG_DATA(cmptr) = fd_to_send;     /* the fd to pass */
+        buf[1] = 0;          /* zero status means OK */
+    }
+
+
+    buf[0] = 0;              /* null byte flag to recv_fd() */
+    logp(identity,0,0,"Sending the fd and the msg");
+    temp = sendmsg(fd, &msg, 0);
+    if (temp != 2){
+        if(temp == -1){
+            errorp(identity,0,0,"Unable to send the data");
+            debugp(identity,1,errno,NULL);
+        }else {
+            errorp(identity,0,0,"Unable to send complete data");
+        }
+
+        logp(identity,0,0,"Returning Unsuccessful");
+        return(-1);
+    }
+
+    logp(identity,0,0,"Returning Successfully");
+    return(0);
 }
