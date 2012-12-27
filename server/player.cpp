@@ -49,7 +49,7 @@ struct playerThreadArg{
 int main(){
 	int socket_fd, connection_fd;
 	struct sockaddr_un address;
-	socklen_t address_length;
+	socklen_t address_length = sizeof(address);
 	
     int logfile;
     setLogFile(STDOUT_FILENO);
@@ -83,7 +83,7 @@ int main(){
     		close(connection_fd);
         }else{
             errorp("PLAYER-Main",0,0,"Error accepting connection");
-            debugp("PLAYER-Main",1,1,"");
+            debugp("PLAYER-Main",1,errno,"");
         }
 	}
 
@@ -96,6 +96,7 @@ int unixSocket(){
     struct sockaddr_un address;
     int socket_fd;
     socklen_t address_length;
+    char buf[100];
 
     logp("PLAYER-unixSocket",0,0,"Inside unixSocket and calling socket");
     if( (socket_fd = socket(PF_UNIX, SOCK_STREAM, 0) ) < 0 ) {
@@ -128,7 +129,8 @@ int unixSocket(){
         return -1;
     }
 
-    logp("PLAYER-unixSocket",0,0,"returning socket fd");
+    sprintf(buf,"returning socket_fd %d",socket_fd);
+    logp("PLAYER-unixSocket",0,0,buf);
     return socket_fd;
 }
 
