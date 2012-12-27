@@ -27,21 +27,21 @@
 #define DATABASE_IP "127.0.0.1"
 #define DATABASE_PORT "5432"
 #define MAXLINE 2
-#define UNIX_SOCKET_FILE_DIS_TO_PLA "./demo_socket"
+#define UNIX_SOCKET_FILE_PLA_TO_GAM "./UNIX_SOCKET_FILE_PLA_TO_GAM"
 #define LOG_PATH "./log"
-#define LISTEN_QUEUE_SIZE 5
+#define LISTEN_QUEUE_SIZE 10
 
 static struct cmsghdr   *cmptr = NULL;      /* malloc'ed first time */
 
 int unixSocket();
 int recv_fd(int , ssize_t (*userfunc)(int, const void *, size_t), char*, int len);
 ssize_t errcheckfunc(int, const void *, size_t);
-void* playerMain(void*);
+void* gameMain(void*);
 void connection_handler(int);
 int getPlayerInfo(char *, char *, char *, int, int, int, int);
 
 
-struct playerThreadArg{
+struct gameThreadArg{
     int fd;
     char plid[9];
 };
@@ -53,43 +53,43 @@ int main(){
 	
     int logfile;
     setLogFile(STDOUT_FILENO);
-    logp("PLAYER-Main", 0,0 ,"Starting");
+    logp("GAME-Main", 0,0 ,"Starting");
     if( (logfile = open(LOG_PATH, O_RDWR|O_CREAT|O_APPEND,S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP)) < 0 ){
-        errorp("PLAYER-Main",0,0,"Error Opening logfile");
-        debugp("PLAYER-Main",1,1,"");
+        errorp("GAME-Main",0,0,"Error Opening logfile");
+        debugp("GAME-Main",1,1,"");
     }
     setLogFile(logfile);
 
-    logp("PLAYER-main",0,0,"Starting main");
+    logp("GAME-main",0,0,"Starting main");
 
-    logp("PLAYER-main",0,0,"Calling unixSocket");
+    logp("GAME-main",0,0,"Calling unixSocket");
 	socket_fd = unixSocket();
-    logp("PLAYER-main",0,0,"Socket made Succesfully");
+    logp("GAME-main",0,0,"Socket made Succesfully");
 
     //connecting to the database
-    logp("PLAYER-main",0,0,"Connecting to the database");
+    logp("GAME-main",0,0,"Connecting to the database");
     if (ConnectDB(DATABASE_USER_NAME, DATABASE_PASSWORD, DATABASE_NAME, DATABASE_IP, DATABASE_PORT, "DISPATCHER-main") == 0){
-        logp("PLAYER-main",0,0,"Connected to database Successfully");
+        logp("GAME-main",0,0,"Connected to database Successfully");
     }else {
-        logp("PLAYER-main",0,0,"Unable to connect ot the database");
+        logp("GAME-main",0,0,"Unable to connect ot the database");
     }
 
-    logp("PLAYER-main",0,0,"Starting accepting connection in infinite while loop");
+    logp("GAME-main",0,0,"Starting accepting connection in infinite while loop");
 	while(1){
-        logp("PLAYER-main",0,0,"Waiting for the connection");        
+        logp("GAME-main",0,0,"Waiting for the connection");        
         if( (connection_fd = accept(socket_fd, (struct sockaddr *) &address,&address_length)) > 0){
-    		logp("PLAYER-main",0,0,"Connection recvd Succesfully and calling connection_handler");
+    		logp("GAME-main",0,0,"Connection recvd Succesfully and calling connection_handler");
             connection_handler(connection_fd);
     		close(connection_fd);
         }else{
-            errorp("PLAYER-Main",0,0,"Error accepting connection");
-            debugp("PLAYER-Main",1,errno,"");
+            errorp("GAME-Main",0,0,"Error accepting connection");
+            debugp("GAME-Main",1,errno,"");
         }
 	}
 
     //TODO graceful exit
-    logp("PLAYER-main",0,0,"Closing the connection with the database");
-    CloseConn("PLAYER-main");
+    logp("GAME-main",0,0,"Closing the connection with the database");
+    CloseConn("GAME-main");
 }
 
 int unixSocket(){
@@ -98,39 +98,39 @@ int unixSocket(){
     socklen_t address_length;
     char buf[100];
 
-    logp("PLAYER-unixSocket",0,0,"Inside unixSocket and calling socket");
+    logp("GAME-unixSocket",0,0,"Inside unixSocket and calling socket");
     if( (socket_fd = socket(PF_UNIX, SOCK_STREAM, 0) ) < 0 ) {
-        errorp("PLAYER-unixSocket",0,0,"Unable to create the socket");
-        debugp("PLAYER-unixSocket",1,errno,"");
+        errorp("GAME-unixSocket",0,0,"Unable to create the socket");
+        debugp("GAME-unixSocket",1,errno,"");
         return -1;
     } 
 
 
-    unlink(UNIX_SOCKET_FILE_DIS_TO_PLA);
+    unlink(UNIX_SOCKET_FILE_PLA_TO_GAM);
 
     /* start with a clean address structure */
     memset(&address, 0, sizeof(struct sockaddr_un));
 
-    logp("PLAYER-unixSocket",0,0,"Making struct");
+    logp("GAME-unixSocket",0,0,"Making struct");
     address.sun_family = AF_UNIX;
-    snprintf(address.sun_path, sizeof(address.sun_path)-1, UNIX_SOCKET_FILE_DIS_TO_PLA);
+    snprintf(address.sun_path, sizeof(address.sun_path)-1, UNIX_SOCKET_FILE_PLA_TO_GAM);
 
-    logp("PLAYER-unixSocket",0,0,"Calling bind");
+    logp("GAME-unixSocket",0,0,"Calling bind");
     if(bind(socket_fd, (struct sockaddr *) &address, sizeof(struct sockaddr_un)) != 0){
-        errorp("PLAYER-unixSocket",0,0,"Unable to bind to the socket");
-        debugp("PLAYER-unixSocket",1,errno,"");
+        errorp("GAME-unixSocket",0,0,"Unable to bind to the socket");
+        debugp("GAME-unixSocket",1,errno,"");
         return -1;
     }
 
-    logp("PLAYER-unixSocket",0,0,"calling listen");
+    logp("GAME-unixSocket",0,0,"calling listen");
     if(listen(socket_fd,LISTEN_QUEUE_SIZE ) != 0) {
-        errorp("PLAYER-unixSocket",0,0,"Unable to create the socket");
-        debugp("PLAYER-unixSocket",1,errno,"");
+        errorp("GAME-unixSocket",0,0,"Unable to create the socket");
+        debugp("GAME-unixSocket",1,errno,"");
         return -1;
     }
 
     sprintf(buf,"returning socket_fd %d",socket_fd);
-    logp("PLAYER-unixSocket",0,0,buf);
+    logp("GAME-unixSocket",0,0,buf);
     return socket_fd;
 }
 
@@ -139,7 +139,7 @@ void connection_handler(int connection_fd){
     int fd_to_recv, ret, plid_len = sizeof(plid);
 
     char identity[40], buf[100];
-    sprintf(identity, "PLAYER-connection_handler-fd: %d -", connection_fd);
+    sprintf(identity, "GAME-connection_handler-fd: %d -", connection_fd);
 
 
     //recieving fd of the player
@@ -173,13 +173,13 @@ void connection_handler(int connection_fd){
     int err;
 
     logp(identity,0,0,"Creating the thread argument");
-    playerThreadArg thread_arg;//structure declared at top
+    gameThreadArg thread_arg;//structure declared at top
     thread_arg.fd = fd_to_recv;
     strcpy(thread_arg.plid, plid);
     //thread_arg_v = (void*) thread_arg;//this is not possible may be because size of struct is more than size of void pointer
 
     logp(identity,0,0,"Calling Calling pthread_create");
-    if((err = pthread_create(&thread_id, NULL, playerMain, &thread_arg ))!=0) {
+    if((err = pthread_create(&thread_id, NULL, gameMain, &thread_arg ))!=0) {
         errorp(identity,0,0,"Unable to create the thread");
         debugp(identity,1,err,"");
     }
@@ -196,9 +196,9 @@ void connection_handler(int connection_fd){
     return;
 }
 
-void* playerMain(void* arg){
-    playerThreadArg playerInfo;
-    playerInfo = *( (playerThreadArg*) (arg) );
+void* gameMain(void* arg){
+    gameThreadArg playerInfo;
+    playerInfo = *( (gameThreadArg*) (arg) );
 
     char plid[9];
     char name[PLAYER_NAME_SIZE], team[PLAYER_TEAM_SIZE];
@@ -208,7 +208,7 @@ void* playerMain(void* arg){
     fd = playerInfo.fd;
 
     char identity[40], buf[100];
-    sprintf(identity, "PLAYER-playerMain-fd: %d -", fd);
+    sprintf(identity, "GAME-gameMain-fd: %d -", fd);
 
     logp(identity,0,0,"New thread created Succesfully");
 
@@ -246,7 +246,7 @@ void* playerMain(void* arg){
 int getPlayerInfo(char *plid, char *name, char *team, int identity_fd,int p_len, int n_len, int t_len){
     int ret;
     char identity[40], buf[100];
-    sprintf(identity, "PLAYER-getPlayerInfo-fd: %d -", identity_fd);
+    sprintf(identity, "GAME-getPlayerInfo-fd: %d -", identity_fd);
     
     sprintf(buf, "Connected to data Succesfully and calling getPlayerInfoFromDb with plid %s",plid);
     logp(identity,0,0,buf);
@@ -267,7 +267,7 @@ int recv_fd(int fd, ssize_t (*userfunc)(int, const void *, size_t), char *plid, 
     struct msghdr   msg;
 
     char identity[40], tempbuf[100];
-    sprintf(identity, "PLAYER-recv_fd-fd: %d -", fd);
+    sprintf(identity, "GAME-recv_fd-fd: %d -", fd);
 
     logp(identity,0,0,"Entering the infite for loop");
     status = -1;
@@ -350,6 +350,6 @@ int recv_fd(int fd, ssize_t (*userfunc)(int, const void *, size_t), char *plid, 
 }
 
 ssize_t errcheckfunc(int a,const void *b, size_t c){
-    logp("PLAYER-errcheckfunc",0,0,"Inside error check function");
+    logp("GAME-errcheckfunc",0,0,"Inside error check function");
     return 0;
 }

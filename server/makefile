@@ -1,4 +1,4 @@
-all:supervisor dispatcher player cleanO
+all:supervisor dispatcher player game cleanO
 
 supervisor:supervisor.o accessories.o
 	gcc -o ./bin/supervisor  supervisor.o accessories.o
@@ -46,6 +46,12 @@ player:player.o access.o psql.o
 
 player.o:player.cpp
 	g++ -I /usr/include/postgresql -lpq -fpermissive -c player.cpp
+
+game:game.o access.o psql.o
+	g++ game.o access.o psql.o -pthread -I /usr/include/postgresql -lpq -o ./bin/game
+
+game.o:game.cpp
+	g++ -I /usr/include/postgresql -lpq -fpermissive -c game.cpp
 
 #psql_player.o:psql_player.cpp psql_player.h
 #	g++ -c psql_player.cpp -I /usr/include/postgresql -lpq
