@@ -39,4 +39,30 @@ int getMin();
 int getSec();
 };
 
+
+class Diff_Time{
+private:
+	int year1;
+	int month1;
+	int date1;
+	int hour1;
+	int min1;
+	int sec1;
+	int year2;
+	int month2;
+	int date2;
+	int hour2;
+	int min2;
+	int sec2;
+public:
+Diff_Time(string d1,string d2);
+int getYear();
+int getMonth();
+int getDate();
+int getHour();
+int getMin();
+int getSec();
+};
+
+
 #endif

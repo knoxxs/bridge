@@ -238,3 +238,56 @@ int Time::getSec()
 {
 	return sec;
 }
+
+
+//****************************************************************************************
+//*****************Class - Diff_date functions defined **********************************
+
+Diff_Time::Diff_Time(string d1,string d2)
+{
+	Time t1(d1);
+	Time t2(d2);
+	year1 = t1.getYear();
+	month1 = t1.getMonth();
+	date1= t1.getDate();
+	hour1= t1.getHour();
+	min1= t1.getMin();
+	sec1= t1.getSec();
+	year2= t2.getYear();
+	month2= t2.getMonth();
+	date2= t2.getDate();
+	hour2= t2.getHour();
+	min2= t2.getMin();
+	sec2= t2.getSec();
+}
+
+int Diff_Time::getYear()
+{
+	return getMonth()/12;
+}
+
+int Diff_Time::getMonth()
+{
+	return getDate()/30;
+}
+
+int Diff_Time::getDate()
+{
+	return getHour()/24;
+}
+
+int Diff_Time::getHour()
+{
+	return getMin()/60;
+}
+
+int Diff_Time::getMin()
+{
+	return getSec()/60;
+}
+
+int Diff_Time::getSec()
+{
+	return (year1 - year2)*3110400 + (month1-month2)*2592000 + (date1 - date2)*86400 + (hour1 - hour2)*3600 + (min1-min2)*60 + (sec1-sec2);
+}
+
