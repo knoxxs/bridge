@@ -224,6 +224,13 @@ void* playerMain(void* arg){
     }
 
     //////////////////////_____creating schedule alarm_____///////////////
+    
+    //check for latest match
+    
+    
+    //create a alarm which checks out time remaining.....
+
+    //create the game and send the data
 }
 
 int getPlayerInfo(char *plid, char *name, char *team, int identity_fd,int p_len, int n_len, int t_len){

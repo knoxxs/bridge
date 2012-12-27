@@ -131,3 +131,48 @@ int getPlayerInfoFromDb(string plid, char* name, char* team, char* identity){
         return -2;
     }
 }
+
+int getPlayerSchedule(string plid , string& timestamp,char* identity){
+	char cmpltIdentity[CMPLT_IDENTITY_SIZE], buf[100];
+	strcpy(cmpltIdentity, identity);
+	strcat(cmpltIdentity,"- getPlayerSchedule");
+
+	logp(cmpltIdentity,0,0,"Composing query string");
+    string query = "SELECT * FROM getPlayerSchedule('"+ plid + "')";
+
+    logp(cmpltIdentity,0,0,"Executing query");
+    PGresult *res = PQexec(conn,query.c_str());
+
+    logp(cmpltIdentity,0,0,"Checking query execution");
+    if(PQresultStatus(res) == PGRES_TUPLES_OK) { //successful completion of a command returning data
+        logp(cmpltIdentity,0,0,"Query executed succesfully");
+
+        logp(cmpltIdentity,0,0,"Checking number of rows");
+        int row = PQntuples(res); // number of rows in the output of the query
+        sprintf(buf,"Number of rows returned is %d", row);
+		logp(cmpltIdentity,0,0,buf);
+
+        if( row == 1){
+			logp(cmpltIdentity,0,0,"Retrieving the size of the data from the result");
+            int datetime_length = PQfsize(res,0);
+            char datetime[ datetime_length ];
+
+            logp(cmpltIdentity,0,0,"Fetching data from the result");
+            strcpy( datetime, PQgetvalue(res,0,2) );
+
+            timestamp.assign(datetime, datetime_length);
+
+            logp(cmpltIdentity,0,0,"Clearing result");
+            PQclear(res);
+            return 0;
+        }
+        else {
+            errorp(cmpltIdentity,0,0,"Wrong number of rows retrieved");
+            return -1;
+        }
+    }
+    else {
+        errorp(cmpltIdentity,0,0,"Error executing the query");
+        return -2;
+    }
+}

@@ -12,5 +12,6 @@ int ConnectDB(string ,string, string, string, string, char*);
 int login_check(string, string, char*);
 void CloseConn(char*);
 int getPlayerInfoFromDb(string, char*, char*, char*);
+int getPlayerSchedule(string , string& ,char* );
 
 #endif
