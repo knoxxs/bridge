@@ -238,11 +238,3 @@ int Time::getSec()
 {
 	return sec;
 }
-
-int main()
-{
-	string s = "2012-01-15 04:05:06" ;
-	Time t(s);
-	cout<<"y m d h m s"<<t.getYear()<<" "<<t.getMonth()<<" "<<t.getDate()<<" "<<t.getHour()<<" "<<t.getMin()<<" "<<t.getSec();
-	return 0;
-}
