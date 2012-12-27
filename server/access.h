@@ -21,4 +21,22 @@ void errorp(string where, int boolean, int errn,string what);
 void logp(string where, int boolean, int errn,string what);
 void debugp(string where, int boolean, int errn,string what);
 
+class Time{
+private:
+	int year;
+	int month;
+	int date;
+	int hour;
+	int min;
+	int sec;
+public:
+Time(string s);
+int getYear();
+int getMonth();
+int getDate();
+int getHour();
+int getMin();
+int getSec();
+};
+
 #endif

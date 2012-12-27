@@ -7,7 +7,8 @@
 #include <sys/socket.h>
 #include "access.h"
 #include <string>
-
+#include <iostream>
+#include <sstream>
 int logfile;
 
 void setLogFile(int logfd){
@@ -186,3 +187,62 @@ int recvall(int fd, char *buf, int *len, int flags)
     	return -1;
     }
 } 
+
+
+bool str2int (int &i, string s)
+{
+    char c;
+    std::stringstream ss(s);
+    ss >> i;
+    if (ss.fail() || ss.get(c)) {
+        // not an integer
+        return false;
+    }
+    return true;
+}
+
+//***********************Time Functions defined**************************
+
+Time::Time(string s)
+{
+	str2int(year,s.substr(0,4));
+	str2int(month,s.substr(5,2));
+	str2int(date,s.substr(8,2));
+	str2int(hour,s.substr(11,2));
+	str2int(min,s.substr(14,2));
+	str2int(sec,s.substr(17,2));
+}
+
+int Time::getYear()
+{
+	return year;
+}
+
+int Time::getMonth()
+{
+	return month;
+}
+int Time::getDate()
+{
+	return date;
+}
+int Time::getHour()
+{
+	return hour;
+}
+int Time::getMin()
+{
+	return min;
+}
+int Time::getSec()
+{
+	return sec;
+}
+
+int main()
+{
+	string s = "2012-01-15 04:05:06" ;
+	Time t(s);
+	cout<<"y m d h m s"<<t.getYear()<<" "<<t.getMonth()<<" "<<t.getDate()<<" "<<t.getHour()<<" "<<t.getMin()<<" "<<t.getSec();
+	return 0;
+}
