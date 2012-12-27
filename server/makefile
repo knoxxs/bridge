@@ -1,4 +1,4 @@
-all:supervisor dispatcher player cleanO
+all:supervisor dispatcher player game cleanO
 
 supervisor:supervisor.o accessories.o
 	gcc -o ./bin/supervisor  supervisor.o accessories.o
