@@ -20,10 +20,7 @@ CREATE TABLE Login(
 CREATE TABLE SubTeam(
 	TID char(8) REFERENCES Team(TID),
 	STID char(1),
-	PID1 char(8) REFERENCES Players(PID),
-	PID2 char(8) REFERENCES Players(PID),
-	PID3 char(8) REFERENCES Players(PID),
-	PID4 char(8) REFERENCES Players(PID),
+	PID char(8) REFERENCES Players(PID),
 	CONSTRAINT SubTeam_Key PRIMARY KEY(TID,STID)
 );
 CREATE TABLE Schedule(
@@ -43,10 +40,9 @@ CREATE TABLE Schedule(
 
 INSERT INTO Team VALUES('teamID01', 'Team Name', 'Country');
 INSERT INTO Team VALUES('teamID02', 'Team Name', 'Country');
---INSERT INTO Players VALUES('11111000', 'teamID01', 'Player Name');
 INSERT INTO Players VALUES('11111000', 'Player Name');
 INSERT INTO Login VALUES('11111000', 'abcd');
-INSERT INTO SUBTEAM VALUES('teamID01','A', '11111000', NULL, NULL, NULL);
+INSERT INTO SUBTEAM VALUES('teamID01','A', '11111000');
 INSERT INTO Schedule VALUES('teamID01','teamID02', '2012-01-15 04:05:06');
 
 CREATE OR REPLACE FUNCTION getPlayerSchedule(plid char(8)) RETURNS timestamp As
@@ -54,9 +50,21 @@ $$
 DECLARE
 	t timestamp;
 BEGIN
-	SELECT min(datetime) INTO t FROM SCHEDULE JOIN (SELECT TID FROM PLAYERS JOIN SUBTEAM ON plid = pid1 OR plid = pid2 OR plid = pid3 OR plid = pid4) as Q ON tid = Q.tid;
+	SELECT min(datetime) INTO t FROM SCHEDULE JOIN (SELECT TID FROM SUBTEAM WHERE plid = pid) as Q ON tid = Q.tid;
 	return t;
 END
 $$ LANGUAGE plpgsql;
 
 --Select * From getPlayerSchedule('11111000');
+
+CREATE OR REPLACE FUNCTION getPlayerInfo(plid char(8), OUT tid char(8), OUT name varchar(30)) As
+$$
+DECLARE
+BEGIN
+	SELECT PLAYERS.name INTO name FROM PLAYERS WHERE pid = plid;
+	SELECT SubTeam.tid INTO tid FROM SubTeam NATURAL JOIN PLAYERS WHERE pid = plid;
+	return;
+END
+$$ LANGUAGE plpgsql;
+
+--Select * From getPlayerInfo('11111000');

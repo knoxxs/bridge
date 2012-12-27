@@ -43,7 +43,7 @@ int getPlayerInfo(char *, char *, char *, int, int, int, int);
 
 struct playerThreadArg{
     int fd;
-    char plid[8];
+    char plid[9];
 };
 
 int main(){
@@ -135,7 +135,7 @@ int unixSocket(){
 }
 
 void connection_handler(int connection_fd){
-    char msgbuf[50], plid[8], id[9];
+    char msgbuf[50], plid[9];
     int fd_to_recv, ret, plid_len = sizeof(plid);
 
     char identity[40], buf[100];
@@ -154,10 +154,7 @@ void connection_handler(int connection_fd){
         debugp(identity,1,errno,"");
     }
     
-    strcpy(id, plid);
-    id[8] = '\0';
-    
-    sprintf(buf,"recvd fd is (%d) and plid is (%s)",fd_to_recv, id);
+    sprintf(buf,"recvd fd is (%d) and plid is (%s)",fd_to_recv, plid);
     logp(identity,0,0,buf);
 
     //checking if the fd we have recieved is correct or not
@@ -203,12 +200,11 @@ void* playerMain(void* arg){
     playerThreadArg playerInfo;
     playerInfo = *( (playerThreadArg*) (arg) );
 
-    char id[9];
+    char plid[9];
     char name[PLAYER_NAME_SIZE], team[PLAYER_TEAM_SIZE];
     int fd;
 
-    strncpy(id, playerInfo.plid, 8);
-    id[8] = '\0';
+    strncpy(plid, playerInfo.plid, 9);
     fd = playerInfo.fd;
 
     char identity[40], buf[100];
@@ -216,9 +212,10 @@ void* playerMain(void* arg){
 
     logp(identity,0,0,"New thread created Succesfully");
 
-    logp(identity,0,0,"Calling get player info");
-    if(getPlayerInfo(id , name, team, fd, sizeof(id), sizeof(name), sizeof(team)) == 0 ){
-        sprintf(buf,"This is player info id(%s) name(%s) team(%s)\n", id, name, team);
+    sprintf(buf, "Calling get player info with plid %s", plid);
+    logp(identity,0,0,buf);
+    if(getPlayerInfo(plid , name, team, fd, sizeof(plid), sizeof(name), sizeof(team)) == 0 ){
+        sprintf(buf,"This is player info id(%s) name(%s) team(%s)\n", plid, name, team);
         logp(identity,0,0,buf);
     }else{
         logp(identity,0,0,"Unable to retrieve the player info, exiting from this thread");
@@ -240,7 +237,8 @@ int getPlayerInfo(char *plid, char *name, char *team, int identity_fd,int p_len,
     char identity[40], buf[100];
     sprintf(identity, "PLAYER-getPlayerInfo-fd: %d -", identity_fd);
     
-    logp(identity,0,0,"Connected to data Succesfully and calling getPlayerInfoFromDb");
+    sprintf(buf, "Connected to data Succesfully and calling getPlayerInfoFromDb with plid %s",plid);
+    logp(identity,0,0,buf);
     ret = getPlayerInfoFromDb(plid, name, team, identity);
     logp(identity,0,0,"Returned from getPlayerInfoFromDb");
 

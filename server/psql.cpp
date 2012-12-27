@@ -97,8 +97,9 @@ int getPlayerInfoFromDb(string plid, char* name, char* team, char* identity){
 	strcpy(cmpltIdentity, identity);
 	strcat(cmpltIdentity,"- getplayerInfoFromDb");
 
-	logp(cmpltIdentity,0,0,"Composing query string");
-    string query = "SELECT * FROM players where pid='" + plid + "'";
+	sprintf(buf, "Composing query string with plid %s, plid(c++) length %d", plid.c_str(), plid.length());
+	logp(cmpltIdentity,0,0,buf);
+    string query = "Select * From getPlayerInfo('" + plid + "')";
 
     logp(cmpltIdentity,0,0,"Executing query");
     PGresult *res = PQexec(conn,query.c_str());
@@ -114,8 +115,8 @@ int getPlayerInfoFromDb(string plid, char* name, char* team, char* identity){
 
         if( row == 1){
             logp(cmpltIdentity,0,0,"Fetching data from the result");
-            strcpy( name, PQgetvalue(res,0,2) );
-            strcpy( team, PQgetvalue(res,0,1) );
+            strcpy( name, PQgetvalue(res,0,1) );
+            strcpy( team, PQgetvalue(res,0,0) );
 
             logp(cmpltIdentity,0,0,"Clearing result");
             PQclear(res);
@@ -128,6 +129,7 @@ int getPlayerInfoFromDb(string plid, char* name, char* team, char* identity){
     }
     else {
         errorp(cmpltIdentity,0,0,"Error executing the query");
+        debugp(cmpltIdentity,0,0,PQerrorMessage(conn) );
         return -2;
     }
 }
