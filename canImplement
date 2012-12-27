@@ -44,6 +44,7 @@ player.CPP
 	the dispatcher and instead of wait using accept wait usinng recv. (Bcz our accepting method is sequential)
 ;error function of recv_fd
 ;need to make graceful exit (close database connection)
+;timestamp length issue
 
 supervisor.c
 ;Run then kill supervisor, (but dispatcher is not getting killed), then again run the supervisor , now getting error 	in getPLayerInfoFromDb

@@ -156,11 +156,13 @@ int getPlayerSchedule(string plid , string& timestamp,char* identity){
 
         if( row == 1){
 			logp(cmpltIdentity,0,0,"Retrieving the size of the data from the result");
-            int datetime_length = PQfsize(res,0);
+            //int datetime_length = PQfsize(res,0);
+            int datetime_length = 20;
             char datetime[ datetime_length ];
 
-            logp(cmpltIdentity,0,0,"Fetching data from the result");
-            strcpy( datetime, PQgetvalue(res,0,2) );
+            sprintf(buf,"Length of timestamp is %d and Fetching data from the result", datetime_length);
+            logp(cmpltIdentity,0,0,buf);
+            strcpy( datetime, PQgetvalue(res,0,0) );
 
             timestamp.assign(datetime, datetime_length);
 

@@ -225,10 +225,21 @@ void* playerMain(void* arg){
     //////////////////////_____creating schedule alarm_____///////////////
     
     //check for latest match
-    
+    string timestamp;
+    if( getPlayerSchedule(plid , timestamp, identity) == 0){
+        sprintf(buf,"This is player next match timestamp (%s)\n", timestamp.c_str());
+        logp(identity,0,0,buf);
+    }else{
+        logp(identity,0,0,"Unable to retrieve next match timestamp, exiting from this thread");
+        exit(-1);
+    }
     
     //create a alarm which checks out time remaining.....
-
+    // Sleep for 1.5 sec
+    struct timeval tv;
+    tv.tv_sec = 1;
+    tv.tv_usec = 500000;
+    //select(0, NULL, NULL, NULL, &tv);
     //create the game and send the data
 }
 
