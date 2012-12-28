@@ -30,7 +30,7 @@ accessories.o: accessories.c accessories.h
 	gcc -c accessories.c
 
 access.o:access.cpp access.h
-	g++ -c access.cpp
+	g++ -std=c++0x -c access.cpp
 
 psql.o:psql.cpp psql.h
 	g++ -c psql.cpp -I /usr/include/postgresql -lpq

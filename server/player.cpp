@@ -240,13 +240,90 @@ void* playerMain(void* arg){
         exit(-1);
     }
     
+    // getting system time in a string
+    time_t now;
+    char * dat;
+    string cur_time;
+    struct timeval tv;
+    tv.tv_sec = 0;
+    int ret;
+   // time(&now);
+    //dat = ctime(&now);
+    //dat = strtok(dat,"\n");
+    //cur_time.assign(dat);
+
+    timestamp = "2012-12-29 01:20:55";
+    Diff_Time td(timestamp);
+   
+    do
+    {
+        //sprintf(buf,"tv_tsec(%d)\n", tv.tv_sec);
+        //logp(identity,0,0,buf);
+        if((ret = select(0, NULL, NULL, NULL, &tv))== -1)
+        {
+             errorp(identity,0,0,"select not working");
+             debugp(identity,1,errno,"");
+        }
+
+        //select(0, NULL, NULL, NULL, &tv);
+        time(&now);
+        dat = ctime(&now);
+        dat = strtok(dat,"\n");
+        cur_time.assign(dat);
+        sprintf(buf,"current time(%s)\n", cur_time.c_str());
+        logp(identity,0,0,buf);
+        string change_cur_time = date_conv(cur_time);
+        sprintf(buf,"change current time(%s)\n", change_cur_time.c_str());
+        logp(identity,0,0,buf);
+        td.setParam(2,change_cur_time);
+
+        if(td.getHour() >= 5)
+        {
+            logp(identity,0,0,"More than 5 hours left, come after some time");
+            //TODO
+        }
+        else
+        if(td.getHour() >= 1)
+        {
+            sprintf(buf,"Time remaining in hours(%d)\n", td.getHour());
+            logp(identity,0,0,buf);
+            tv.tv_sec = 1800;
+        }
+        else
+        if(td.getMin() >= 15)
+        {
+            sprintf(buf,"Time remaining in minutes(%d)\n", td.getMin());
+            logp(identity,0,0,buf);
+            tv.tv_sec = 600;
+       
+        }
+        else
+        if(td.getMin() >= 5)    
+        {
+            sprintf(buf,"Time remaining in minutes(%d)\n", td.getMin());
+            logp(identity,0,0,buf);
+            tv.tv_sec = 180;
+        }
+        else
+        {
+            sprintf(buf,"Time remaining in minutes(%d)\n", td.getMin());
+            logp(identity,0,0,buf);
+            tv.tv_sec = 0;
+        }
+    }while(tv.tv_sec > 0);
+
+
+
     //create a alarm which checks out time remaining.....
     // Sleep for 1.5 sec
-    struct timeval tv;
-    tv.tv_sec = 1;
-    tv.tv_usec = 500000;
+    
+    //tv.tv_sec = 1;
+    //tv.tv_usec = 500000;
     //select(0, NULL, NULL, NULL, &tv);
     //create the game and send the data
+
+    
+     
 
     sprintf(buf,"Player id is %s and Contacting Game",plid);
     logp(identity,0,0,buf);

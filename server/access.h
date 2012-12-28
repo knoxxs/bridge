@@ -20,6 +20,7 @@ void logWrite(int typ, string msg);
 void errorp(string where, int boolean, int errn,string what);
 void logp(string where, int boolean, int errn,string what);
 void debugp(string where, int boolean, int errn,string what);
+string date_conv(string a);
 
 class Time{
 private:
@@ -56,12 +57,14 @@ private:
 	int sec2;
 public:
 Diff_Time(string d1,string d2);
+Diff_Time(string d1);
 int getYear();
 int getMonth();
 int getDate();
 int getHour();
 int getMin();
 int getSec();
+int setParam(int, string);
 };
 
 

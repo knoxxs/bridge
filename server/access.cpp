@@ -9,6 +9,7 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <unordered_map>
 int logfile;
 
 void setLogFile(int logfd){
@@ -201,6 +202,22 @@ bool str2int (int &i, string s)
     return true;
 }
 
+string date_conv(string a)
+{
+	istringstream iss(a);
+	string day, month , date , hour , year;
+	iss >> day;
+	iss >> month ;
+	iss >> date ;
+	iss >> hour ;
+	iss >> year;
+
+	unordered_map <string, string> months ={{"Jan","01"},{"Feb","02"},{"Mar","03"},{"Apr","04"},{"May","05"},{"Jun","06"},{"Jul","07"},{"Aug","08"},{"Sep","09"},{"Oct","10"},{"Nov","11"},{"Dec","12"}};
+
+	return ( year + "-" + months[month] + "-" +  date + " " + hour);
+}
+
+
 //***********************Time Functions defined**************************
 
 Time::Time(string s)
@@ -259,6 +276,49 @@ Diff_Time::Diff_Time(string d1,string d2)
 	hour2= t2.getHour();
 	min2= t2.getMin();
 	sec2= t2.getSec();
+}
+
+Diff_Time::Diff_Time(string d1)
+{
+	Time t1(d1);
+	year1 = t1.getYear();
+	month1 = t1.getMonth();
+	date1= t1.getDate();
+	hour1= t1.getHour();
+	min1= t1.getMin();
+	sec1= t1.getSec();
+}
+
+int Diff_Time::setParam(int i, string new_time)
+{
+	if(i==1)
+	{
+		Time t1(new_time);
+		year1 = t1.getYear();
+		month1 = t1.getMonth();
+		date1= t1.getDate();
+		hour1= t1.getHour();
+		min1= t1.getMin();
+		sec1= t1.getSec();
+		return 0;
+
+	}
+	else
+		if(i==2)
+		{
+			Time t2(new_time);
+			year2= t2.getYear();
+			month2= t2.getMonth();
+			date2= t2.getDate();
+			hour2= t2.getHour();
+			min2= t2.getMin();
+			sec2= t2.getSec();
+			return 0;
+		}
+		else
+		{
+			return -1;
+		}
 }
 
 int Diff_Time::getYear()
