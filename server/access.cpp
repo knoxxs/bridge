@@ -291,3 +291,13 @@ int Diff_Time::getSec()
 	return (year1 - year2)*31104000 + (month1-month2)*2592000 + (date1 - date2)*86400 + (hour1 - hour2)*3600 + (min1-min2)*60 + (sec1-sec2);
 }
 
+int main()
+{
+	
+	string s1 = "2011-01-16 04:05:06";
+	string s2 = "2012-02-15 04:05:06";
+	Diff_Time d(s1,s2);
+	cout<<"y m d h m s"<<d.getYear()<<"\n"<<d.getMonth()<<"\n"<<d.getDate()<<"\n"<<d.getHour()<<"\n"<<d.getMin()<<"\n"<<d.getSec()<<"\n";
+	return 0;
+
+}
