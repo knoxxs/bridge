@@ -238,3 +238,66 @@ int Time::getSec()
 {
 	return sec;
 }
+
+
+//****************************************************************************************
+//*****************Class - Diff_date functions defined **********************************
+
+Diff_Time::Diff_Time(string d1,string d2)
+{
+	Time t1(d1);
+	Time t2(d2);
+	year1 = t1.getYear();
+	month1 = t1.getMonth();
+	date1= t1.getDate();
+	hour1= t1.getHour();
+	min1= t1.getMin();
+	sec1= t1.getSec();
+	year2= t2.getYear();
+	month2= t2.getMonth();
+	date2= t2.getDate();
+	hour2= t2.getHour();
+	min2= t2.getMin();
+	sec2= t2.getSec();
+}
+
+int Diff_Time::getYear()
+{
+	return getMonth()/12;
+}
+
+int Diff_Time::getMonth()
+{
+	return getDate()/30;
+}
+
+int Diff_Time::getDate()
+{
+	return getHour()/24;
+}
+
+int Diff_Time::getHour()
+{
+	return getMin()/60;
+}
+
+int Diff_Time::getMin()
+{
+	return getSec()/60;
+}
+
+int Diff_Time::getSec()
+{
+	return (year1 - year2)*31104000 + (month1-month2)*2592000 + (date1 - date2)*86400 + (hour1 - hour2)*3600 + (min1-min2)*60 + (sec1-sec2);
+}
+
+int main()
+{
+	
+	string s1 = "2011-01-16 04:05:06";
+	string s2 = "2012-02-15 04:05:06";
+	Diff_Time d(s1,s2);
+	cout<<"y m d h m s"<<d.getYear()<<"\n"<<d.getMonth()<<"\n"<<d.getDate()<<"\n"<<d.getHour()<<"\n"<<d.getMin()<<"\n"<<d.getSec()<<"\n";
+	return 0;
+
+}
