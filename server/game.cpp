@@ -353,3 +353,26 @@ ssize_t errcheckfunc(int a,const void *b, size_t c){
     logp("GAME-errcheckfunc",0,0,"Inside error check function");
     return 0;
 }
+
+char SUIT[] = {'C', 'S', 'H', 'D'};
+unordered_map <char, int> RANKS = {{'A',1}, {'2',2}, {'3',3}, {'4',4}, {'5',5}, {'6',6}, {'7',7}, {'8',8}, {'9',9}, {'T',10}, {'J',11}, {'Q',12}, {'K',13} };
+unordered_map <char, int> VALUES = {{'A',1}, {'2',2}, {'3',3}, {'4',4}, {'5',5}, {'6',6}, {'7',7}, {'8',8}, {'9',9}, {'T',10}, {'J',11}, {'Q',12}, {'K',13} }; 
+
+
+Card::Card(char rank, char suit)
+    :rank(rank), suit(suit)
+{}
+
+string Card::print(){
+    std::ostringstream oss;
+    oss << "Card's Rank: '" << rank << "' and Suit: '"<< suit <<"'" <<endl;
+    return oss.str();
+}
+
+char Card::getRank(){
+    return rank;
+}
+
+char Card::getSuit(){
+    return suit;
+}
