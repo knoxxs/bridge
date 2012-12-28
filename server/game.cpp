@@ -18,10 +18,9 @@
 #include "psql.h"
 #include "game.h"
 #include <unordered_map>
+#include <sstream>
 
 static struct cmsghdr   *cmptr = NULL;      /* malloc'ed first time */
-
-unordered_map <string, int> m;
 
 
 struct gameThreadArg{
@@ -336,3 +335,4 @@ ssize_t errcheckfunc(int a,const void *b, size_t c){
     logp("GAME-errcheckfunc",0,0,"Inside error check function");
     return 0;
 }
+
