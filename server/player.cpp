@@ -252,13 +252,14 @@ void* playerMain(void* arg){
     //dat = strtok(dat,"\n");
     //cur_time.assign(dat);
 
-    timestamp = "2012-12-29 01:20:55";
+    timestamp = "2012-12-29 03:20:55";
     Diff_Time td(timestamp);
    
     do
     {
-        //sprintf(buf,"tv_tsec(%d)\n", tv.tv_sec);
-        //logp(identity,0,0,buf);
+        sprintf(buf,"tv_tsec(%d)\n", tv.tv_sec);
+        logp(identity,0,0,buf);
+        
         if((ret = select(0, NULL, NULL, NULL, &tv))== -1)
         {
              errorp(identity,0,0,"select not working");
@@ -266,6 +267,8 @@ void* playerMain(void* arg){
         }
 
         //select(0, NULL, NULL, NULL, &tv);
+
+        select(0, NULL, NULL, NULL, &tv);
         time(&now);
         dat = ctime(&now);
         dat = strtok(dat,"\n");
