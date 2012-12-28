@@ -30,7 +30,7 @@ int getPlayerInfo(char *, char *, char *, int, int, int, int);
 class Card{
 	public:
 		Card(char, char);
-		print();
+		string print();
 		getSuit();
 		getRank();
 	private:
