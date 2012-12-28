@@ -290,7 +290,7 @@ int Diff_Time::getSec()
 {
 	return (year1 - year2)*31104000 + (month1-month2)*2592000 + (date1 - date2)*86400 + (hour1 - hour2)*3600 + (min1-min2)*60 + (sec1-sec2);
 }
-
+/*
 int main()
 {
 	
@@ -301,3 +301,4 @@ int main()
 	return 0;
 
 }
+*/
