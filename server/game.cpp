@@ -16,6 +16,11 @@
 #include <iostream>
 #include "access.h"
 #include "psql.h"
+#include "game.h"
+#include <algorithm>
+#include <vector> 
+#include <unordered_map>
+#include <sstream>
 
 /* size of control buffer to send/recv one file descriptor */
 #define CONTROLLEN  CMSG_LEN(sizeof(int))
@@ -354,7 +359,7 @@ ssize_t errcheckfunc(int a,const void *b, size_t c){
     return 0;
 }
 
-char SUIT[] = {'C', 'S', 'H', 'D'};
+char SUITS[] = {'C', 'S', 'H', 'D'};
 unordered_map <char, int> RANKS = {{'A',1}, {'2',2}, {'3',3}, {'4',4}, {'5',5}, {'6',6}, {'7',7}, {'8',8}, {'9',9}, {'T',10}, {'J',11}, {'Q',12}, {'K',13} };
 unordered_map <char, int> VALUES = {{'A',1}, {'2',2}, {'3',3}, {'4',4}, {'5',5}, {'6',6}, {'7',7}, {'8',8}, {'9',9}, {'T',10}, {'J',11}, {'Q',12}, {'K',13} }; 
 
@@ -375,4 +380,26 @@ char Card::getRank(){
 
 char Card::getSuit(){
     return suit;
+}
+
+
+Deck::Deck(){
+    int i,j;
+
+    for(i = 0; i < 4; i++){
+        for(j = 0; j < 13; j++){
+            Card c(SUITS[i], RANKS[j]);
+            deck.push_back(c);
+        }
+    } 
+}
+
+void Deck::shuffle(){
+   random_shuffle(deck.begin(), deck.end());
+}
+
+Card Deck::deal(){
+    Card c = deck.back();
+    deck.pop_back();
+    return c;
 }
