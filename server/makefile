@@ -50,7 +50,7 @@ player.o:player.cpp
 game:game.o access.o psql.o
 	g++ game.o access.o psql.o -pthread -I /usr/include/postgresql -lpq -o ./bin/game
 
-game.o:game.cpp
+game.o:game.cpp game.h
 	g++ -I /usr/include/postgresql -lpq -fpermissive -c game.cpp
 
 #psql_player.o:psql_player.cpp psql_player.h
