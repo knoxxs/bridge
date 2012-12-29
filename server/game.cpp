@@ -22,6 +22,7 @@
 #include <unordered_map>
 #include <sstream>
 #include "helper.h"
+#include "msgQ.h"
 
 struct gameThreadArg{
     int fd;
@@ -149,11 +150,16 @@ void* checkThread(void* arg){
     gameThreadArg playerInfo;
     playerInfo = *( (gameThreadArg*) (arg) );
 
+    char identity[40], buf[100];
+    sprintf(identity, "GAME-connection_handler-fd: %d -", playerInfo.fd);
     
-    getPlayerInfo() --- yr team ID
-    getOppTeamId() --- opp team ID
     string myTeam;
     string oppTeam;
+
+    getPlayerTid(playerInfo.plid,myTeam,identity);   // yr team ID
+    getOppTid(myTeam,oppTeam,identity);   // opp team ID
+    
+    
     string gameId = myTeam + oppTeam;
 
     //defining two hashmaps
@@ -161,15 +167,15 @@ void* checkThread(void* arg){
     unordered_map <string, long> mapMtype= {};
     vector <int> VecMtype;
 
-    unordered_map <string,pthread_id>::const_iterator got = mapThread.find(gameId);
+    unordered_map <string,pthread_t>::const_iterator got = mapThread.find(gameId);
 
-    if(got == mymap.end())
+    if(got == mapThread.end())
     {
         pthread_t shuffleId;
 
         pthread_create(&shuffleId, NULL,shuffleThread, &playerInfo);
         pthread_mutex_lock(&lock);
-        mapthread[gameId] = shuffleId;
+        mapThread[gameId] = shuffleId;
         if(VecMtype.empty())
         {
             VecMtype.push_back(1);
@@ -179,6 +185,7 @@ void* checkThread(void* arg){
         {
             int val=1;
             int flag =0; 
+            int i;
             for(i=0;i<VecMtype.size();i++)
             {
                if(VecMtype[i] == val)
@@ -206,14 +213,14 @@ void* checkThread(void* arg){
         //message to be sent on queue
         struct playerMsg msg;
         msg.mtype = mapMtype[gameId];
-        msg.plid.assign(playerInfo.pild);
+        msg.plid.assign(playerInfo.plid);
         msg.fd = playerInfo.fd;
         msg.gameId = gameId;
 
         msgSend(&msg,identity);
     }   
 
-
+/*
     
 
     char plid[9];
@@ -257,6 +264,7 @@ void* checkThread(void* arg){
     tv.tv_usec = 500000;
     //select(0, NULL, NULL, NULL, &tv);
     //create the game and send the data
+    */
 }
 
 
