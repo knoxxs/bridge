@@ -50,7 +50,7 @@ $$
 DECLARE
 	t timestamp;
 BEGIN
-	SELECT min(datetime) INTO t FROM SCHEDULE JOIN (SELECT TID FROM SUBTEAM WHERE plid = pid) as Q ON tid = Q.tid;
+	SELECT min(datetime) INTO t FROM SCHEDULE JOIN (SELECT TID FROM SUBTEAM WHERE plid = pid) as Q ON tid1 = Q.tid OR tid2 = Q.tid;
 	return t;
 END
 $$ LANGUAGE plpgsql;
@@ -68,3 +68,35 @@ END
 $$ LANGUAGE plpgsql;
 
 --Select * From getPlayerInfo('11111000');
+
+CREATE OR REPLACE FUNCTION getPlayerTid(plid char(8), OUT tid char(8)) As
+$$
+DECLARE
+BEGIN
+	SELECT SubTeam.tid INTO tid FROM SubTeam NATURAL JOIN PLAYERS WHERE pid = plid;
+	return;
+END
+$$ LANGUAGE plpgsql;
+
+--Select * From getPlayerTid('11111000');
+
+CREATE OR REPLACE FUNCTION getOppTid(mytid char(8), OUT oppTid char(8)) As
+$$
+DECLARE
+	t timestamp;
+	tempTid1 char(8);
+	tempTid2 char(8);
+BEGIN
+	SELECT min(datetime) INTO t FROM SCHEDULE WHERE tid1 = mytid OR tid2 = mytid;
+	SELECT tid1, tid2 INTO tempTid1, tempTid2 FROM SCHEDULE WHERE datetime = t AND(tid1 = mytid OR tid2 = mytid);
+	
+	IF tempTid1 = mytid THEN
+		oppTid = tempTid2;
+	ELSE
+		oppTid = tempTid1;
+	END IF;
+	return;
+END
+$$ LANGUAGE plpgsql;
+
+--Select * From getOppTid('teamID01');
