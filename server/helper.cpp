@@ -126,7 +126,7 @@ int recv_fd(int fd, ssize_t (*userfunc)(int, const void *, size_t), char *plid, 
         logp(cmpltIdentity,0,0,"Assinging allocated memory to msghdr");
         msg.msg_control    = cmptr;
 
-        sprintf(tempbuf,"Adding lenght of allocated memory, lenght - controllen(%d)",CONTROLLEN);
+        sprintf(tempbuf,"Adding lenght of allocated memory, lenght - controllen(%lu)",CONTROLLEN);
         logp(cmpltIdentity,0,0,tempbuf);
         msg.msg_controllen = CONTROLLEN;
         
@@ -156,7 +156,7 @@ int recv_fd(int fd, ssize_t (*userfunc)(int, const void *, size_t), char *plid, 
                     errorp(cmpltIdentity,0,0,"Message Format error");
                 status = *ptr & 0xFF;  /* prevent sign extension */
                 if (status == 0) {
-                    sprintf(tempbuf,"msg_controllen recvd is(%d) and must be is(%d)\n",msg.msg_controllen, CONTROLLEN );
+                    sprintf(tempbuf,"msg_controllen recvd is(%zu) and must be is(%lu)\n",msg.msg_controllen, CONTROLLEN );
                     logp(cmpltIdentity,0,0,tempbuf);
                     if (msg.msg_controllen != CONTROLLEN)
                         logp(cmpltIdentity,0,0,"Status =0 but no fd");
@@ -254,8 +254,6 @@ int send_fd(int fd, int fd_to_send, char* plid, int len, char* identity){
     strcpy(cmpltIdentity, identity);
     strcat(cmpltIdentity,tempbuf);
 
-
-
     logp(cmpltIdentity,0,0,"Adding bufs to iovec");
     iov[0].iov_base = buf;
     iov[0].iov_len  = 2;
@@ -288,7 +286,7 @@ int send_fd(int fd, int fd_to_send, char* plid, int len, char* identity){
         msg.msg_control    = cmptr;
         msg.msg_controllen = CONTROLLEN;
 
-        sprintf(tempbuf,"Adding data with controllen(%d)",CONTROLLEN);
+        sprintf(tempbuf,"Adding data with controllen(%lu)",CONTROLLEN);
         logp(cmpltIdentity,0,0,tempbuf);
         *(int *)CMSG_DATA(cmptr) = fd_to_send;     /* the fd to pass */
         buf[1] = 0;          /* zero status means OK */
@@ -312,4 +310,38 @@ int send_fd(int fd, int fd_to_send, char* plid, int len, char* identity){
 
     logp(cmpltIdentity,0,0,"Returning Successfully");
     return(0);
+}
+
+void mutexLock(pthread_mutex_t *lock, char* identity, char* name){
+    int ret;
+    char cmpltIdentity[CMPLT_IDENTITY_SIZE];
+    strcpy(cmpltIdentity, identity);
+    strcat(cmpltIdentity,"mutexLock");
+    strcat(cmpltIdentity,name);
+
+    logp(cmpltIdentity,0,0,"Calling pthread_mutex_lock");
+    if((ret = pthread_mutex_lock(lock)) !=0){
+        errorp(identity,0,0,"Unable to lock the mapThread");
+        debugp(identity,1,ret,"");
+    }
+    else{
+        logp(identity,0,0,"locked successfully");
+    }
+}
+
+void mutexUnlock(pthread_mutex_t *lock, char* identity, char* name){
+    int ret;
+    char cmpltIdentity[CMPLT_IDENTITY_SIZE];
+    strcpy(cmpltIdentity, identity);
+    strcat(cmpltIdentity,"mutexLock");
+    strcat(cmpltIdentity,name);
+
+    logp(cmpltIdentity,0,0,"Calling pthread_mutex_unlock");
+    if((ret = pthread_mutex_unlock(lock)) !=0){
+        errorp(identity,0,0,"Unable to lock the mapThread");
+        debugp(identity,1,ret,"");
+    }
+    else{
+        logp(identity,0,0,"unlocked successfully");
+    }
 }

@@ -134,16 +134,6 @@ void connection_handler(int connection_fd){
     
     sprintf(buf,"recvd fd is (%d) and plid is (%s)",fd_to_recv, plid);
     logp(identity,0,0,buf);
-
-    //checking if the fd we have recieved is correct or not
-    logp(identity,0,0,"recieving the checking data");
-    if((ret = recv(fd_to_recv, msgbuf, 6, 0)) == -1) {
-        errorp(identity,0,0,"Unable to recv the checking data");
-        debugp(identity,1,errno,"");
-    }
-    msgbuf[6] ='\0';
-    sprintf(buf,"Checking data recvd is - %s", msgbuf);
-    logp(identity,0,0,buf);
     
     //creating thread of the player
     pthread_t thread_id = 0;
@@ -184,64 +174,58 @@ void* checkThread(void* arg){
     playerInfo = *( (gameThreadArg*) (arg) );
 
     string plid, myTeam, oppTeam, gameId;
-    int ret,err;
     plid.assign(playerInfo.plid);
 
-    int val=1;
+    int val=1, ret;
     char identity[40], buf[100];
-    sprintf(identity, "GAME-connection_handler-fd: %d -", playerInfo.fd);
+    sprintf(identity, "GAME-checkThread-fd: %d -", playerInfo.fd);
     
-    if((ret = getPlayerTid(plid,myTeam,identity)) == 0 )
-    {
-        sprintf(buf,"Player Tid - %s", myTeam);
+    logp(identity,0,0,"Calling getPlayerTid");
+    if((ret = getPlayerTid(plid,myTeam,identity)) == 0 ){
+        sprintf(buf,"Player Tid - %s", myTeam.c_str());
         logp(identity,0,0,buf);
+    }else{
+        sprintf(buf,"error returned from getPlayerTid ,ret val - %d", ret);
+        errorp(identity,0,0,buf);
     }
-    if((ret = getOppTid(myTeam,oppTeam,identity)) == 0)
-    {
-        sprintf(buf,"Player's opposite Tid - %s", oppTeam);
+
+    logp(identity,0,0,"Calling getOppTid");
+    if((ret = getOppTid(myTeam,oppTeam,identity)) == 0){
+        sprintf(buf,"Player's opposite Tid - %s", oppTeam.c_str());
         logp(identity,0,0,buf);
+    }else{
+        sprintf(buf,"error returned from getOppTid ,ret val - %d", ret);
+        errorp(identity,0,0,buf);
     }
 
     gameId = myTeam + oppTeam;
-    sprintf(buf,"game id - %s", gameId);
+    sprintf(buf,"game id - %s", gameId.c_str());
     logp(identity,0,0,buf);
 
+    struct playerMsg msg;
+    msg.mtype = -1;
+    msg.plid.assign(plid);
+    msg.fd = playerInfo.fd;
+    msg.gameId = gameId;
 
     if( !mapThread.count(gameId) ){
         pthread_t shuffleId;
-        if((err = pthread_create(&shuffleId, NULL,shuffleThread, &playerInfo))!=0) {
-        errorp(identity,0,0,"Unable to create the thread");
-        debugp(identity,1,err,"");
+
+        logp(identity,0,0,"Calling Calling pthread_create");
+        if((ret = pthread_create(&shuffleId, NULL, shuffleThread, &msg))!=0) {
+            errorp(identity,0,0,"Unable to create the thread");
+            debugp(identity,1,ret,"");
         }
-        else{
-            logp(identity,0,0,"created the thread successfully");
+
+        logp(identity,0,0,"Calling pthread_detach");
+        if ((ret = pthread_detach(shuffleId)) != 0) {
+            errorp(identity,0,0,"Unable to detach the thread");
+            debugp(identity,1,ret,"");
         }
         
-        if((err = pthread_mutex_lock(&lock_mapThread)) !=0){
-        errorp(identity,0,0,"Unable to lock the mapThread");
-        debugp(identity,1,err,"");
-        }
-        else{
-            logp(identity,0,0,"mapThread locked successfully");
-        }
+        mutexLock(&lock_mapThread, identity, "mapThread");
         mapThread[gameId] = shuffleId;
-
-        if((err = pthread_mutex_unlock(&lock_mapThread)) !=0){
-        errorp(identity,0,0,"Unable to unlock the mapThread");
-        debugp(identity,1,err,"");
-        }
-        else{
-            logp(identity,0,0,"mapThread unlocked successfully");
-        }
-
-
-        if((err = pthread_mutex_lock(&lock_mapMtype)) !=0){
-        errorp(identity,0,0,"Unable to lock the mapMtype");
-        debugp(identity,1,err,"");
-        }
-        else{
-            logp(identity,0,0,"mapMtpype locked successfully");
-        }
+        mutexUnlock(&lock_mapThread, identity, "mapThread");
 
         for(vector<int>::iterator it = VecMtype.begin(); it != VecMtype.end(); ++it) {
             if(*it == val){
@@ -252,28 +236,22 @@ void* checkThread(void* arg){
                 break;
             }
         }
-        pthread_mutex_lock(&lock_VecMtype);
+        mutexLock(&lock_VecMtype, identity, "VecMtype");
         VecMtype.insert(it,val);
-        pthread_mutex_unlock(&lock_VecMtype);
+        mutexUnlock(&lock_VecMtype, identity, "VecMtype");
 
-        pthread_mutex_lock(&lock_mapMtype);
+        mutexLock(&lock_mapMtype, identity, "mapMtype");
         mapMtype[gameId] =val;
-        pthread_mutex_unlock(&lock_mapMtype);
-
-
+        mutexLock(&lock_mapMtype, identity, "mapMtype");
     }
     else{
-        //message to be sent on queue
-        struct playerMsg msg;
         msg.mtype = val;
-        msg.plid.assign(plid);
-        msg.fd = playerInfo.fd;
-        msg.gameId = gameId;
 
-        sprintf(buf,"Msg sent on queue: mtype(%d) plid(%s) fd(%d) gameId(%s) - %s", msg.mtype,msg.plid,msg.fd,msg.gameId);
+        sprintf(buf,"Sending msg to queue: mtype(%d) plid(%s) fd(%d) gameId(%s) - %s", msg.mtype, msg.plid.c_str(), msg.fd, msg.gameId.c_str());
         logp(identity,0,0,buf);
-
-        msgSend(&msg,identity);
+        if(msgSend(&msg, identity) != 0){
+            errorp(identity,0,0,"Unable to send the msg");
+        }
     }   
 
 /*

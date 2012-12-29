@@ -26,6 +26,8 @@ int getPlayerInfo(char *, char *, char *, int, int, int, int, char*);
 int send_fd(int, int, char*, int len, char*);
 int unixClientSocket(char* ,char*, int len);
 int send_err(int, int, const char *, int len);
+void mutexUnlock(pthread_mutex_t *, char*, char*);
+void mutexLock(pthread_mutex_t *, char*, char*);
 
 
 #endif
