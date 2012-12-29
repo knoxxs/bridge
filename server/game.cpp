@@ -494,3 +494,7 @@ int Player::getUserChoice(){
 Team::Team(char team, string tid,string plid1, string plid2)
     :team(team), tid(tid), plid1(plid1), plid2(plid2)
 {}
+
+int Team::score(){
+    
+}
