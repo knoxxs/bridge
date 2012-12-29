@@ -17,19 +17,24 @@
 #include "access.h"
 #include "psql.h"
 #include "game.h"
+#include "helper.h"
+#include "msgQ.h"
 #include <algorithm>
 #include <vector> 
 #include <unordered_map>
 #include <sstream>
-#include "helper.h"
-#include "msgQ.h"
 
 struct gameThreadArg{
     int fd;
     char plid[9];
 };
-pthread_mutex_t lock;
 
+unordered_map <string,pthread_t> mapThread={};
+unordered_map <string, long> mapMtype= {};
+vector <int> VecMtype;
+pthread_mutex_t lock_mapThread;
+pthread_mutex_t lock_mapMtype;
+pthread_mutex_t lock_VecMtype;
 
 int main(){
 	int socket_fd, connection_fd;
@@ -63,7 +68,9 @@ int main(){
     createMsgQ("Game-main");
 
     //initializing lock
-    pthread_mutex_init(&lock,NULL);
+    pthread_mutex_init(&lock_mapThread,NULL);
+    pthread_mutex_init(&lock_mapMtype,NULL);
+    pthread_mutex_init(&lock_VecMtype,NULL);
 
 
     logp("GAME-main",0,0,"Starting accepting connection in infinite while loop");
@@ -150,44 +157,38 @@ void* checkThread(void* arg){
     gameThreadArg playerInfo;
     playerInfo = *( (gameThreadArg*) (arg) );
 
+    string plid, myTeam, oppTeam, gameId;
+    plid.assign(playerInfo.plid);
+
     char identity[40], buf[100];
     sprintf(identity, "GAME-connection_handler-fd: %d -", playerInfo.fd);
     
-    string myTeam;
-    string oppTeam;
-
-    getPlayerTid(playerInfo.plid,myTeam,identity);   // yr team ID
-    getOppTid(myTeam,oppTeam,identity);   // opp team ID
+    getPlayerTid(plid,myTeam,identity);
+    getOppTid(myTeam,oppTeam,identity);
     
-    
-    string gameId = myTeam + oppTeam;
+    gameId = myTeam + oppTeam;
+//    unordered_map <string,pthread_t>::const_iterator got = mapThread.find(gameId);
 
-    //defining two hashmaps
-    unordered_map <string,pthread_t> mapThread={};
-    unordered_map <string, long> mapMtype= {};
-    vector <int> VecMtype;
-
-    unordered_map <string,pthread_t>::const_iterator got = mapThread.find(gameId);
-
-    if(got == mapThread.end())
-    {
+//    if(got == mapThread.end()){
+    if( !mapThread.count(gameId) )
         pthread_t shuffleId;
 
         pthread_create(&shuffleId, NULL,shuffleThread, &playerInfo);
-        pthread_mutex_lock(&lock);
+        
+        pthread_mutex_lock(&lock_mapThread);
         mapThread[gameId] = shuffleId;
-        if(VecMtype.empty())
-        {
+        pthread_mutex_unlock(&lock_mapThread);
+
+        pthread_mutex_lock(&lock_mapMtype);
+        if(VecMtype.empty()){
             VecMtype.push_back(1);
             mapMtype[gameId]=1;
         }
-        else
-        {
+        else{
             int val=1;
             int flag =0; 
             int i;
-            for(i=0;i<VecMtype.size();i++)
-            {
+            for(i=0;i<VecMtype.size();i++){
                if(VecMtype[i] == val)
                {
                     val++;
@@ -213,7 +214,7 @@ void* checkThread(void* arg){
         //message to be sent on queue
         struct playerMsg msg;
         msg.mtype = mapMtype[gameId];
-        msg.plid.assign(playerInfo.plid);
+        msg.plid.assign(plid);
         msg.fd = playerInfo.fd;
         msg.gameId = gameId;
 
@@ -227,7 +228,7 @@ void* checkThread(void* arg){
     char name[PLAYER_NAME_SIZE], team[PLAYER_TEAM_SIZE];
     int fd;
 
-    strncpy(plid, playerInfo.plid, 9);
+    strncpy(plid, plid, 9);
     fd = playerInfo.fd;
 
     char identity[40], buf[100];
