@@ -40,7 +40,8 @@ int main(){
 	int socket_fd, connection_fd;
 	struct sockaddr_un address;
 	socklen_t address_length = sizeof(address);
-	
+	int err;
+
     int logfile;
     setLogFile(STDOUT_FILENO);
     logp("GAME-Main", 0,0 ,"Starting");
@@ -68,11 +69,31 @@ int main(){
     createMsgQ("Game-main");
 
     //initializing lock
-    pthread_mutex_init(&lock_mapThread,NULL);
-    pthread_mutex_init(&lock_mapMtype,NULL);
-    pthread_mutex_init(&lock_VecMtype,NULL);
+    if((err = pthread_mutex_init(&lock_mapThread,NULL)) != 0){ 
+        errorp("GAME-Main",0,0,"Error initializing mutex lock for mapThread");
+        debugp("GAME-Main",1,err,"");
+    }
+    else{
+        logp("GAME-main",0,0,"Mutex lock for mapThread made Succesfully");
+    }
 
+    if((err = pthread_mutex_init(&lock_mapMtype,NULL)) != 0){ 
+        errorp("GAME-Main",0,0,"Error initializing mutex lock for mapMtype");
+        debugp("GAME-Main",1,err,"");
+    }
+    else{
+        logp("GAME-main",0,0,"Mutex lock for mapMtype made Succesfully");
+    }
 
+    if((err = pthread_mutex_init(&lock_VecMtype,NULL)) !=0){ 
+        errorp("GAME-Main",0,0,"Error initializing mutex lock for VecType");
+        debugp("GAME-Main",1,err,"");
+    }
+    else{
+        logp("GAME-main",0,0,"Mutex lock for Vectype made Succesfully");
+    }
+
+    //game starting for accepting connection & creating threads
     logp("GAME-main",0,0,"Starting accepting connection in infinite while loop");
 	while(1){
         logp("GAME-main",0,0,"Waiting for the connection");        
@@ -158,28 +179,66 @@ void* checkThread(void* arg){
     playerInfo = *( (gameThreadArg*) (arg) );
 
     string plid, myTeam, oppTeam, gameId;
+    int ret,err;
     plid.assign(playerInfo.plid);
 
     char identity[40], buf[100];
     sprintf(identity, "GAME-connection_handler-fd: %d -", playerInfo.fd);
     
-    getPlayerTid(plid,myTeam,identity);
-    getOppTid(myTeam,oppTeam,identity);
-    
+    if((ret = getPlayerTid(plid,myTeam,identity)) == 0 )
+    {
+        sprintf(buf,"Player Tid - %s", myTeam);
+        logp(identity,0,0,buf);
+    }
+    if((ret = getOppTid(myTeam,oppTeam,identity)) == 0)
+    {
+        sprintf(buf,"Player's opposite Tid - %s", oppTeam);
+        logp(identity,0,0,buf);
+    }
+
     gameId = myTeam + oppTeam;
+    sprintf(buf,"game id - %s", gameId);
+    logp(identity,0,0,buf);
 //    unordered_map <string,pthread_t>::const_iterator got = mapThread.find(gameId);
 
 //    if(got == mapThread.end()){
     if( !mapThread.count(gameId) )
         pthread_t shuffleId;
 
-        pthread_create(&shuffleId, NULL,shuffleThread, &playerInfo);
+        if((err = pthread_create(&shuffleId, NULL,shuffleThread, &playerInfo))!=0) {
+        errorp(identity,0,0,"Unable to create the thread");
+        debugp(identity,1,err,"");
+        }
+        else{
+            logp(identity,0,0,"created the thread successfully");
+        }
         
-        pthread_mutex_lock(&lock_mapThread);
+        if((err = pthread_mutex_lock(&lock_mapThread)) !=0){
+        errorp(identity,0,0,"Unable to lock the mapThread");
+        debugp(identity,1,err,"");
+        }
+        else{
+            logp(identity,0,0,"mapThread locked successfully");
+        }
         mapThread[gameId] = shuffleId;
-        pthread_mutex_unlock(&lock_mapThread);
 
-        pthread_mutex_lock(&lock_mapMtype);
+        if((err = pthread_mutex_unlock(&lock_mapThread)) !=0){
+        errorp(identity,0,0,"Unable to unlock the mapThread");
+        debugp(identity,1,err,"");
+        }
+        else{
+            logp(identity,0,0,"mapThread unlocked successfully");
+        }
+
+
+        if((err = pthread_mutex_lock(&lock_mapMtype)) !=0){
+        errorp(identity,0,0,"Unable to lock the mapMtype");
+        debugp(identity,1,err,"");
+        }
+        else{
+            logp(identity,0,0,"mapMtpype locked successfully");
+        }
+
         if(VecMtype.empty()){
             VecMtype.push_back(1);
             mapMtype[gameId]=1;
@@ -207,7 +266,15 @@ void* checkThread(void* arg){
             mapMtype[gameId] =val; 
         }
         
-        pthread_mutex_unlock(&lock);
+        if((err = pthread_mutex_unlock(&lock)) !=0){
+        errorp(identity,0,0,"Unable to unlock the lock");
+        debugp(identity,1,err,"");
+        }
+        else{
+            logp(identity,0,0,"mlock unlocked successfully");
+        }
+
+
     }
     else
     {
@@ -217,6 +284,9 @@ void* checkThread(void* arg){
         msg.plid.assign(plid);
         msg.fd = playerInfo.fd;
         msg.gameId = gameId;
+
+        sprintf(buf,"Msg sent on queue: mtype(%d) plid(%s) fd(%d) gameId(%s) - %s", msg.mtype,msg.plid,msg.fd,msg.gameId);
+        logp(identity,0,0,buf);
 
         msgSend(&msg,identity);
     }   
