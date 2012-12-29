@@ -4,7 +4,7 @@
 #include <libpq-fe.h>
 #include <string>
 
-#define CMPLT_IDENTITY_SIZE 80
+#define CMPLT_IDENTITY_SIZE 100
 
 using namespace std;
 

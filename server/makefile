@@ -41,14 +41,17 @@ psql.o:psql.cpp psql.h
 myregex.o:myregex.cpp myregex.h
 	g++ -c myregex.cpp -lm
 
-player:player.o access.o psql.o
-	g++ player.o access.o psql.o -pthread -I /usr/include/postgresql -lpq -o ./bin/player
+helper.o:helper.h helper.cpp
+	g++ -I /usr/include/postgresql -lpq -fpermissive -c helper.cpp
+
+player:player.o access.o psql.o helper.o
+	g++ player.o access.o psql.o helper.o -pthread -I /usr/include/postgresql -lpq -o ./bin/player
 
 player.o:player.cpp
 	g++ -I /usr/include/postgresql -lpq -fpermissive -c player.cpp
 
-game:game.o access.o psql.o
-	g++ game.o access.o psql.o -pthread -I /usr/include/postgresql -lpq -o ./bin/game
+game:game.o access.o psql.o helper.o
+	g++ game.o access.o psql.o helper.o -pthread -I /usr/include/postgresql -lpq -o ./bin/game
 
 game.o:game.cpp game.h
 	g++ -std=c++0x -I /usr/include/postgresql -lpq -fpermissive -c game.cpp
