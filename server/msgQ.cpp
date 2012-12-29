@@ -8,13 +8,6 @@
 #include <string.h>
 #include <stdio.h>
 
-struct playerMsg{
-    long mtype;
-    string plid;
-    int fd;
-    string gameId;
-};
-
 
 void createMsgQ(char * identity){
 	char cmpltIdentity[CMPLT_IDENTITY_SIZE], buf[150];

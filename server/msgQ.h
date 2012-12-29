@@ -11,6 +11,17 @@
 
 using namespace std;
 
+struct playerMsg{
+    long mtype;
+    string plid;
+    int fd;
+    string gameId;
+};
+
 int msgQId;
+void createMsgQ(char *);
+int msgSend(playerMsg* , char *);
+int msgRecv(playerMsg* , int , char *);
+
 
 #endif
