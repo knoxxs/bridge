@@ -53,6 +53,8 @@ game:game.o access.o psql.o
 game.o:game.cpp game.h
 	g++ -std=c++0x -I /usr/include/postgresql -lpq -fpermissive -c game.cpp
 
+msgQ.o:msgQ.cpp msgQ.h
+	g++ -c msgQ.cpp
 #psql_player.o:psql_player.cpp psql_player.h
 #	g++ -c psql_player.cpp -I /usr/include/postgresql -lpq
 

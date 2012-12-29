@@ -6,12 +6,14 @@
 #include <string.h>
 #include <iostream>
 
-#define MSGSZ     128
+#define MSGSZ 128
 
 struct msgbuff {
-long    mtype;
-int a;
+    long    mtype;
+    int a;
 };
+
+
 
 int msqid;
 int msgflg = IPC_CREAT | 0666;
