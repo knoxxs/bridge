@@ -18,7 +18,6 @@ struct playerMsg{
     string gameId;
 };
 
-int msgQId;
 void createMsgQ(char *);
 int msgSend(playerMsg* , char *);
 int msgRecv(playerMsg* , int , char *);

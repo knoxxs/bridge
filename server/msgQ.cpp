@@ -8,6 +8,7 @@
 #include <string.h>
 #include <stdio.h>
 
+int msgQueId;
 
 void createMsgQ(char * identity){
 	char cmpltIdentity[CMPLT_IDENTITY_SIZE], buf[150];
@@ -24,7 +25,7 @@ void createMsgQ(char * identity){
     }
     sprintf(buf,"MsgQ created successfully, ID: %d",QId);
     logp(cmpltIdentity, 0,0, buf);
-    msgQId = QId;
+    msgQueId = QId;
 }
 
 int msgSend(playerMsg* msg, char *identity){
@@ -36,7 +37,7 @@ int msgSend(playerMsg* msg, char *identity){
 
 	size_t size = sizeof(playerMsg) - sizeof(long);
 	logp(cmpltIdentity, 0,0, "Calling msgsnd");
-	if(msgsnd(msgQId, msg, size, MSGSENDFLAG) < 0) {
+	if(msgsnd(msgQueId, msg, size, MSGSENDFLAG) < 0) {
 		errorp(cmpltIdentity, 0,0, "Unable to send the message");
 	  	debugp(cmpltIdentity, 1,errno, "");
 	  	return -1;
@@ -55,7 +56,7 @@ int msgRecv(playerMsg* msg, int msgType, char *identity){
 
 	size_t size = sizeof(playerMsg) - sizeof(long);
 	logp(cmpltIdentity, 0,0, "Calling msgrcv");
-	if(msgrcv(msgQId, msg, size, msgType, MSGRECVFLAG) < 0) {
+	if(msgrcv(msgQueId, msg, size, msgType, MSGRECVFLAG) < 0) {
 		errorp(cmpltIdentity, 0,0, "Unable to recv the message");
 	  	debugp(cmpltIdentity, 1,errno, "");
 	  	return -1;

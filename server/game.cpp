@@ -153,6 +153,11 @@ void connection_handler(int connection_fd){
     return;
 }
 
+void shuffleThread(void*){
+    sleep(1);
+    return;
+}
+
 void* checkThread(void* arg){
     gameThreadArg playerInfo;
     playerInfo = *( (gameThreadArg*) (arg) );
@@ -160,6 +165,7 @@ void* checkThread(void* arg){
     string plid, myTeam, oppTeam, gameId;
     plid.assign(playerInfo.plid);
 
+    int val=1;
     char identity[40], buf[100];
     sprintf(identity, "GAME-connection_handler-fd: %d -", playerInfo.fd);
     
@@ -167,53 +173,36 @@ void* checkThread(void* arg){
     getOppTid(myTeam,oppTeam,identity);
     
     gameId = myTeam + oppTeam;
-//    unordered_map <string,pthread_t>::const_iterator got = mapThread.find(gameId);
 
-//    if(got == mapThread.end()){
-    if( !mapThread.count(gameId) )
+
+    if( !mapThread.count(gameId) ){
         pthread_t shuffleId;
-
         pthread_create(&shuffleId, NULL,shuffleThread, &playerInfo);
         
         pthread_mutex_lock(&lock_mapThread);
         mapThread[gameId] = shuffleId;
         pthread_mutex_unlock(&lock_mapThread);
 
-        pthread_mutex_lock(&lock_mapMtype);
-        if(VecMtype.empty()){
-            VecMtype.push_back(1);
-            mapMtype[gameId]=1;
-        }
-        else{
-            int val=1;
-            int flag =0; 
-            int i;
-            for(i=0;i<VecMtype.size();i++){
-               if(VecMtype[i] == val)
-               {
-                    val++;
-               }
-               else
-               {
-                VecMtype.insert(i,val);
-                flag = 1;
+        for(vector<int>::iterator it = VecMtype.begin(); it != VecMtype.end(); ++it) {
+            if(*it == val){
+                val++;
+            }
+            else{
                 break;
-               }
             }
-            if(flag ==1)
-            {
-                VecMtype.push_back(val);
-            }
-            mapMtype[gameId] =val; 
         }
-        
-        pthread_mutex_unlock(&lock);
+        pthread_mutex_lock(&lock_VecMtype);
+        VecMtype.insert(it,val);
+        pthread_mutex_unlock(&lock_VecMtype);
+
+        pthread_mutex_lock(&lock_mapMtype);
+        mapMtype[gameId] =val;
+        pthread_mutex_unlock(&lock_mapMtype);
     }
-    else
-    {
+    else{
         //message to be sent on queue
         struct playerMsg msg;
-        msg.mtype = mapMtype[gameId];
+        msg.mtype = val;
         msg.plid.assign(plid);
         msg.fd = playerInfo.fd;
         msg.gameId = gameId;
