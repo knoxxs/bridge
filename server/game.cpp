@@ -17,11 +17,12 @@
 #include "access.h"
 #include "psql.h"
 #include "game.h"
+#include <algorithm>
+#include <vector> 
 #include <unordered_map>
 #include <sstream>
 
 static struct cmsghdr   *cmptr = NULL;      /* malloc'ed first time */
-
 
 struct gameThreadArg{
     int fd;
@@ -98,7 +99,7 @@ int unixSocket(){
     snprintf(address.sun_path, sizeof(address.sun_path)-1, UNIX_SOCKET_FILE_PLA_TO_GAM);
 
     logp("GAME-unixSocket",0,0,"Calling bind");
-    if(bind(socket_fd, (struct sockaddr *) &address, sizeof(struct sockaddr_un)) != 0){
+    if(::bind(socket_fd, (struct sockaddr *) &address, sizeof(struct sockaddr_un)) != 0){
         errorp("GAME-unixSocket",0,0,"Unable to bind to the socket");
         debugp("GAME-unixSocket",1,errno,"");
         return -1;
@@ -336,3 +337,164 @@ ssize_t errcheckfunc(int a,const void *b, size_t c){
     return 0;
 }
 
+char SUITS[] = {'C', 'S', 'H', 'D'};
+unordered_map <char, int> RANKS = {{'A',1}, {'2',2}, {'3',3}, {'4',4}, {'5',5}, {'6',6}, {'7',7}, {'8',8}, {'9',9}, {'T',10}, {'J',11}, {'Q',12}, {'K',13} };
+unordered_map <char, int> VALUES = {{'A',1}, {'2',2}, {'3',3}, {'4',4}, {'5',5}, {'6',6}, {'7',7}, {'8',8}, {'9',9}, {'T',10}, {'J',11}, {'Q',12}, {'K',13} }; 
+
+//class Card
+Card::Card(char rank, char suit, bool open = false)
+    :rank(rank), suit(suit), open(open)
+{}
+
+Card::Card(){
+    open = false;
+}
+
+string Card::print(){
+    std::ostringstream oss;
+    oss << "Card's Rank: '" << rank << "' and Suit: '"<< suit <<"'" <<endl;
+    return oss.str();
+}
+
+char Card::getRank(){
+    return rank;
+}
+
+char Card::getSuit(){
+    return suit;
+}
+
+
+//class Deck
+Deck::Deck(){
+    int i,j;
+
+    for(i = 0; i < 4; i++){
+        for(j = 0; j < 13; j++){
+            Card c(SUITS[i], RANKS[j], false);
+            deck.push_back(c);
+        }
+    } 
+}
+
+void Deck::shuffle(){
+   random_shuffle(deck.begin(), deck.end());
+}
+
+Card Deck::deal(){
+    Card c = deck.back();
+    deck.pop_back();
+    return c;
+}
+
+char nextPos(char pos){
+    switch(pos) {
+        case 'N':
+            return 'E';
+        case 'E':
+            return 'S';
+        case 'S':
+            return 'W';
+        case 'W':
+            return 'N';
+    }
+}
+
+
+//class Trick
+Trick::Trick(char first) //N,W,E,S
+    :first(first)
+{
+    i = 0;
+}
+
+Trick::Trick(){
+    i =0;
+}
+
+string Trick::print(){
+    std::ostringstream oss;
+    oss << "Card1 played by '"<< first << "': " << cards[0].print() << "Card2 played by '"<< nextPos(first) << "': " << cards[1].print() << "Card3 played by '"<< nextPos(first) << "': " << cards[2].print() << "Card4 played by '"<< nextPos(first) << "': " << cards[3].print() ; 
+    return oss.str();
+}
+
+void Trick::nextCard(Card c){
+    cards[i++] = c;
+}
+
+Card Trick::nextCard(int i){
+    return cards[i];
+}
+
+int Trick::score(){
+    //TODO
+}
+
+void Trick::setWinner(){
+    //TODO
+}
+
+char Trick::getWinner(){
+    //TODO
+}
+
+
+//class Tricks
+Tricks::Tricks(){
+    index = 0;
+}
+
+string Tricks::print(){
+    std::ostringstream oss;
+    int i;
+    for(i = 0; i < 13; i++){
+        oss << "Trick" << i+1 << " (Winner:" << tricks[i].getWinner() << "): '" << tricks[i].print();
+    }
+    return oss.str();
+}
+
+void Tricks::add(Trick t){
+    tricks[index++] = t;
+}
+
+Trick Tricks::get(int i){
+    return tricks[i];
+}
+
+void Tricks::setWinner(){
+
+}
+
+char Tricks::getWinner(){
+
+}
+
+int Tricks::score(char team){
+    int i, score = 0;
+    for(i = 0; i < 13; i++){
+        if(tricks[i].getWinner() == team){
+            score += tricks[i].score();
+        }
+    }
+    return score;
+}
+
+
+//class Player
+Player::Player(string plid, char position, char team, string tid, string name, string country))
+    :plid(plid), position(position), team(team), tid(tid), name(name), country(country)
+{}
+
+int Player::getUserChoice(){
+
+}
+
+
+//class Team
+Team::Team(char team, string tid,string plid1, string plid2)
+    :team(team), tid(tid), plid1(plid1), plid2(plid2)
+{}
+
+int Team::score(){
+    
+}
