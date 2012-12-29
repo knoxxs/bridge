@@ -23,8 +23,9 @@ using namespace std;
 int unixSocket();
 int recv_fd(int , ssize_t (*userfunc)(int, const void *, size_t), char*, int len);
 ssize_t errcheckfunc(int, const void *, size_t);
-void* gameMain(void*);
+void* checkThread(void*);
 void connection_handler(int);
+void shuffleThread(void*);
 int getPlayerInfo(char *, char *, char *, int, int, int, int);
 char nextPos(char);
 

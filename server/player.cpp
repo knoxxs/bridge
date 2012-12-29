@@ -252,7 +252,7 @@ void* playerMain(void* arg){
     //dat = strtok(dat,"\n");
     //cur_time.assign(dat);
 
-    timestamp = "2012-12-29 01:20:55";
+   // timestamp = "2012-12-29 01:20:55";
     Diff_Time td(timestamp);
    
     do

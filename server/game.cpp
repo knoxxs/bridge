@@ -28,6 +28,8 @@ struct gameThreadArg{
     int fd;
     char plid[9];
 };
+pthread_mutex_t lock;
+
 
 int main(){
 	int socket_fd, connection_fd;
@@ -56,6 +58,13 @@ int main(){
     }else {
         logp("GAME-main",0,0,"Unable to connect ot the database");
     }
+
+    //creting message queue
+    createMsgQ("Game-main");
+
+    //initializing lock
+    pthread_mutex_init(&lock,NULL);
+
 
     logp("GAME-main",0,0,"Starting accepting connection in infinite while loop");
 	while(1){
@@ -162,7 +171,7 @@ void connection_handler(int connection_fd){
     //thread_arg_v = (void*) thread_arg;//this is not possible may be because size of struct is more than size of void pointer
 
     logp(identity,0,0,"Calling Calling pthread_create");
-    if((err = pthread_create(&thread_id, NULL, gameMain, &thread_arg ))!=0) {
+    if((err = pthread_create(&thread_id, NULL, checkThread, &thread_arg ))!=0) {
         errorp(identity,0,0,"Unable to create the thread");
         debugp(identity,1,err,"");
     }
@@ -179,9 +188,76 @@ void connection_handler(int connection_fd){
     return;
 }
 
-void* gameMain(void* arg){
+void* checkThread(void* arg){
     gameThreadArg playerInfo;
     playerInfo = *( (gameThreadArg*) (arg) );
+
+    
+    getPlayerInfo() --- yr team ID
+    getOppTeamId() --- opp team ID
+    string myTeam;
+    string oppTeam;
+    string gameId = myTeam + oppTeam;
+
+    //defining two hashmaps
+    unordered_map <string,pthread_t> mapThread={};
+    unordered_map <string, long> mapMtype= {};
+    vector <int> VecMtype;
+
+    unordered_map <string,pthread_id>::const_iterator got = mapThread.find(gameId);
+
+    if(got == mymap.end())
+    {
+        pthread_t shuffleId;
+
+        pthread_create(&shuffleId, NULL,shuffleThread, &playerInfo);
+        pthread_mutex_lock(&lock);
+        mapthread[gameId] = shuffleId;
+        if(VecMtype.empty())
+        {
+            VecMtype.push_back(1);
+            mapMtype[gameId]=1;
+        }
+        else
+        {
+            int val=1;
+            int flag =0; 
+            for(i=0;i<VecMtype.size();i++)
+            {
+               if(VecMtype[i] == val)
+               {
+                    val++;
+               }
+               else
+               {
+                VecMtype.insert(i,val);
+                flag = 1;
+                break;
+               }
+            }
+            if(flag ==1)
+            {
+                VecMtype.push_back(val);
+            }
+            mapMtype[gameId] =val; 
+        }
+        
+        pthread_mutex_unlock(&lock);
+    }
+    else
+    {
+        //message to be sent on queue
+        struct playerMsg msg;
+        msg.mtype = mapMtype[gameId];
+        msg.plid.assign(playerInfo.pild);
+        msg.fd = playerInfo.fd;
+        msg.gameId = gameId;
+
+        msgSend(&msg,identity);
+    }   
+
+
+    
 
     char plid[9];
     char name[PLAYER_NAME_SIZE], team[PLAYER_TEAM_SIZE];
@@ -191,7 +267,7 @@ void* gameMain(void* arg){
     fd = playerInfo.fd;
 
     char identity[40], buf[100];
-    sprintf(identity, "GAME-gameMain-fd: %d -", fd);
+    sprintf(identity, "GAME-checkThread-fd: %d -", fd);
 
     logp(identity,0,0,"New thread created Succesfully");
 
