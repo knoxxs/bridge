@@ -44,6 +44,7 @@ int main(){
 	socklen_t address_length = sizeof(address);
 	int err;
 
+    char buf[100];
     int logfile;
     setLogFile(STDOUT_FILENO);
     logp("GAME-Main", 0,0 ,"Starting");
@@ -55,20 +56,21 @@ int main(){
 
     logp("GAME-main",0,0,"Starting main");
 
+    strcpy(buf, "GAME-main");
     logp("GAME-main",0,0,"Calling unixSocket");
-	socket_fd = unixSocket(UNIX_SOCKET_FILE_PLA_TO_GAM, "GAME-main", LISTEN_QUEUE_SIZE);
+	socket_fd = unixSocket(UNIX_SOCKET_FILE_PLA_TO_GAM, buf, LISTEN_QUEUE_SIZE);
     logp("GAME-main",0,0,"Socket made Succesfully");
 
     //connecting to the database
     logp("GAME-main",0,0,"Connecting to the database");
-    if (ConnectDB(DATABASE_USER_NAME, DATABASE_PASSWORD, DATABASE_NAME, DATABASE_IP, DATABASE_PORT, "DISPATCHER-main") == 0){
+    if (ConnectDB(DATABASE_USER_NAME, DATABASE_PASSWORD, DATABASE_NAME, DATABASE_IP, DATABASE_PORT, buf) == 0){
         logp("GAME-main",0,0,"Connected to database Successfully");
     }else {
         logp("GAME-main",0,0,"Unable to connect ot the database");
     }
 
     //creting message queue
-    createMsgQ("Game-main");
+    createMsgQ(buf);
 
     //initializing lock
     if((err = pthread_mutex_init(&lock_mapThread,NULL)) != 0){ 
@@ -177,18 +179,13 @@ void gameThread(void* arg)
 {
     shuffleToGameThread gameInfo;
     gameInfo = *((shuffleToGameThread*) (arg));
-    Player player[4];
 
     Game game(gameInfo.game->gameId, gameInfo.game->subTeamId);   // copy constructor where v r passing a pointer
-    player[0] = gameInfo.game->N;
-    player[1] = gameInfo.game->E;
-    player[2] = gameInfo.game->W;
-    player[3] = gameInfo.game->S;
-    game.setPlayer(player[0],'N');
-    game.setPlayer(player[1],'E');
-    game.setPlayer(player[2],'W');
-    game.setPlayer(player[3],'S');
-    //change its refrences to that defined above
+    game.N = gameInfo.game->N;
+    game.E = gameInfo.game->E;
+    game.S = gameInfo.game->S;
+    game.W = gameInfo.game->W;
+    
 }
 void shuffleThread(void* arg){
     playerMsg playerInfo;
@@ -424,7 +421,7 @@ void* checkThread(void* arg){
     else if(mapThread.count(gameId+subTeamId)){//running game
         msg.mtype = mapMtype[gameId+subTeamId];
 
-        sprintf(buf,"Sending msg to queue: mtype(%d) plid(%s) fd(%d) gameId(%s) - %s", msg.mtype, msg.plid.c_str(), msg.fd, msg.gameId.c_str());
+        sprintf(buf,"Sending msg to queue: mtype(%ld) plid(%s) fd(%d) gameId(%s) - %s", msg.mtype, msg.plid.c_str(), msg.fd, msg.gameId.c_str());
         logp(identity,0,0,buf);
         if(msgSend(&msg, identity) != 0){
             errorp(identity,0,0,"Unable to send the msg");
@@ -433,7 +430,7 @@ void* checkThread(void* arg){
     }else{
         msg.mtype = mapMtype[gameId];
 
-        sprintf(buf,"Sending msg to queue: mtype(%d) plid(%s) fd(%d) gameId(%s) - %s", msg.mtype, msg.plid.c_str(), msg.fd, msg.gameId.c_str());
+        sprintf(buf,"Sending msg to queue: mtype(%ld) plid(%s) fd(%d) gameId(%s) - %s", msg.mtype, msg.plid.c_str(), msg.fd, msg.gameId.c_str());
         logp(identity,0,0,buf);
         if(msgSend(&msg, identity) != 0){
             errorp(identity,0,0,"Unable to send the msg");
@@ -496,7 +493,8 @@ void setMtype(string gameId, char* identity){
 
     int val = 1;
     mutexLock(&lock_VecMtype, cmpltIdentity, "VecMtype");
-    for(vector<int>::iterator it = VecMtype.begin(); it != VecMtype.end(); ++it) {
+    vector<int>::iterator it;
+    for(it = VecMtype.begin(); it != VecMtype.end(); ++it) {
         if(*it == val){
 
             val++;
@@ -523,7 +521,8 @@ void delSetMtype(string gameId, char* identity){
     int val = 1;
     mutexLock(&lock_mapMtype, cmpltIdentity, "mapMtype");
     mutexLock(&lock_VecMtype, cmpltIdentity, "VecMtype");
-    for(vector<int>::iterator it = VecMtype.begin(); it != VecMtype.end(); ++it) {
+    vector<int>::iterator it;
+    for(it = VecMtype.begin(); it != VecMtype.end(); ++it) {
         if(*it == val){
 
             val++;
@@ -539,7 +538,8 @@ void delSetMtype(string gameId, char* identity){
 
     val = 1;
     mutexLock(&lock_VecMtype, cmpltIdentity, "VecMtype");
-    for(vector<int>::iterator it = VecMtype.begin(); it != VecMtype.end(); ++it) {
+    
+    for(it = VecMtype.begin(); it != VecMtype.end(); ++it) {
         if(*it == val){
 
             val++;
@@ -749,7 +749,7 @@ Game::Game(string gid, char stid)
     :gameId(gid), subTeamId(stid)
 {}
 
-Game::Game(string gid, char stid, Player& n,Player& s, Player& e, Player& w)
+Game::Game(string gid, char stid, Player n,Player s, Player e, Player w)
     :gameId(gid), subTeamId(stid), N(n), S(s), E(e),W(s)
 {}
 

@@ -97,11 +97,11 @@ class Team{
 };
 class Game{
 	public:
-		Game(string, char, Player& ,Player& , Player&, Player&);
+		Game(string, char, Player, Player, Player, Player);
 		Game(string, char);
-		int score();
 		void setPlayer(Player&, char);
-		Player &N,&S,&E,&W;
+		int score();
+		Player N,S,E,W;
 		string gameId;
 		char subTeamId;
 		char declarer, trump;

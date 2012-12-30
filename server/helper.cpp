@@ -312,12 +312,12 @@ int send_fd(int fd, int fd_to_send, char* plid, int len, char* identity){
     return(0);
 }
 
-void mutexLock(pthread_mutex_t *lock, char* identity, char* name){
+void mutexLock(pthread_mutex_t *lock, char* identity, string name){
     int ret;
     char cmpltIdentity[CMPLT_IDENTITY_SIZE];
     strcpy(cmpltIdentity, identity);
     strcat(cmpltIdentity,"mutexLock");
-    strcat(cmpltIdentity,name);
+    strcat(cmpltIdentity,name.c_str());
 
     logp(cmpltIdentity,0,0,"Calling pthread_mutex_lock");
     if((ret = pthread_mutex_lock(lock)) !=0){
@@ -329,12 +329,12 @@ void mutexLock(pthread_mutex_t *lock, char* identity, char* name){
     }
 }
 
-void mutexUnlock(pthread_mutex_t *lock, char* identity, char* name){
+void mutexUnlock(pthread_mutex_t *lock, char* identity, string name){
     int ret;
     char cmpltIdentity[CMPLT_IDENTITY_SIZE];
     strcpy(cmpltIdentity, identity);
     strcat(cmpltIdentity,"mutexLock");
-    strcat(cmpltIdentity,name);
+    strcat(cmpltIdentity,name.c_str());
 
     logp(cmpltIdentity,0,0,"Calling pthread_mutex_unlock");
     if((ret = pthread_mutex_unlock(lock)) !=0){
