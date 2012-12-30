@@ -80,7 +80,10 @@ class Player{
 		Player(string, char, char, string, string, string, int);
 		Player();
 		int getUserChoice();
+		void addCard(vector <Card> &);
+		void addCard(Card);
 	private:
+		int i;
 };
 class Team{
 	public:

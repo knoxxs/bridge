@@ -517,7 +517,17 @@ int Tricks::score(char team){
 //class Player
 Player::Player(string plid, char position, char team, string tid, string name, string country, int fd)
     :plid(plid), position(position), subTeamId(team), tid(tid), name(name), country(country), fd(fd)
-{}
+{
+    i = 0;
+}
+
+void Player::addCard(Card c){
+    cards[i++] = c;
+}
+
+void Player::addCard(vector <Card> &crds){
+    cards = crds;
+}
 
 Player::Player()
 {}
