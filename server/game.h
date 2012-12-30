@@ -14,6 +14,8 @@ void* checkThread(void*);
 void connection_handler(int);
 void shuffleThread(void*);
 char nextPos(char);
+void setMtype(string, char*);
+void delSetMtype(string, char*);
 
 class Card{
 	public:
@@ -77,7 +79,7 @@ class Player{
 		string tid, name, country;
 		int fd;
 		vector <Card> cards;
-		Player(string, char, char, string, string, string, int);
+		Player(string, char, char, string, string, int);
 		Player();
 		int getUserChoice();
 		void addCard(vector <Card> &);
