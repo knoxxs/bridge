@@ -174,21 +174,34 @@ void shuffleThread(void* arg){
     playerMsg playerInfo;
     playerInfo = *( (playerMsg*) (arg) );
 
-    string gameId, plid;
+    string gameId, plid, teamId, name;
     long mtype;
-    int fd[8], playerRecvd = 1;
+    int fd, playerRecvd = 1;
+    char subTeamId, pos;
 
     mtype = playerInfo.mtype;
     plid = playerInfo.plid;
-    fd[0] = playerInfo.fd;
+    fd = playerInfo.fd;
     gameId = playerInfo.gameId;
+    subTeamId = playerInfo.subTeamId;
 
-    char identity[40], buf[100];
+    char identity[40], buf[100], nameTemp[PLAYER_NAME_SIZE], team[PLAYER_TEAM_SIZE];
     sprintf(identity, "GAME-shuffleThread-gameId: %s -", gameId.c_str());
 
     logp(identity,0,0,"Inside shuffleThread");
-    sprintf(buf,"Player1 recvd: mtype(%ld), plid(%s), fd(%d), gameId(%s)",mtype, plid.c_str(), fd[0], gameId.c_str());
+    sprintf(buf,"Player1 recvd: mtype(%ld), plid(%s), fd(%d), gameId(%s), subTeamId(%c)",mtype, plid.c_str(), fd, gameId.c_str(), subTeamId);
     logp(identity,0,0,buf);
+
+    if(getPlayerInfo(plid.c_str(), nameTemp, team, fd, plid.length() + 1, sizeof(nameTemp), sizeof(team), identity) == 0 ){
+        sprintf(buf,"This is player info id(%s) name(%s) team(%s)\n", plid.c_str(), nameTemp, team);
+        logp(identity,0,0,buf);
+    }else{
+        logp(identity,0,0,"Unable to retrieve the player info, exiting from this thread");
+    }
+    teamId.assign(team);
+    name.assign(nameTemp);
+
+    Player player(plid, 'N', subTeamId, teamId, name, fd);
 
     while( playerRecvd < 8 ){
         logp(identity,0,0,"Inside recving while loop");
@@ -196,9 +209,27 @@ void shuffleThread(void* arg){
             errorp(identity,0,0,"Unable to recv the msg");
         }else{
             plid = playerInfo.plid;
-            fd[playerRecvd] = playerInfo.fd;
+            fd = playerInfo.fd;
+            subTeamId = playerInfo.subTeamId;
+
+            if(getPlayerInfo(plid.c_str(), nameTemp, team, fd, plid.length() + 1, sizeof(nameTemp), sizeof(team), identity) == 0 ){
+                sprintf(buf,"This is player info id(%s) name(%s) team(%s)\n", plid.c_str(), nameTemp, team);
+                logp(identity,0,0,buf);
+            }else{
+                logp(identity,0,0,"Unable to retrieve the player info, exiting from this thread");
+            }
+            teamId.assign(team);
+            name.assign(nameTemp);
+
+            if(player.tid == teamId){
+                pos = nextPos(nextPos(player.position));
+            }else{
+                pos = nextPos(player.position);
+            }
+            Player player(plid, pos, subTeamId, teamId, name, fd);
+
             playerRecvd++;
-            sprintf(buf,"Player%d recvd: mtype(%ld), plid(%s), fd(%d), gameId(%s)",playerRecvd, playerInfo.mtype, playerInfo.plid.c_str(), playerInfo.fd, playerInfo.gameId.c_str());
+            sprintf(buf,"Player%d recvd: mtype(%ld), plid(%s), fd(%d), gameId(%s), subTeamId(%c)",playerRecvd, playerInfo.mtype, playerInfo.plid.c_str(), playerInfo.fd, playerInfo.gameId.c_str(), subTeamId);
             logp(identity,0,0,buf);
         }
     }
@@ -492,8 +523,8 @@ int Tricks::score(char team){
 
 
 //class Player
-Player::Player(string plid, char position, char team, string tid, string name, string country, int fd)
-    :plid(plid), position(position), subTeamId(team), tid(tid), name(name), country(country), fd(fd)
+Player::Player(string plid, char position, char team, string tid, string name, int fd)
+    :plid(plid), position(position), subTeamId(team), tid(tid), name(name), fd(fd)
 {}
 
 int Player::getUserChoice(){

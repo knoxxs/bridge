@@ -77,7 +77,7 @@ class Player{
 		string tid, name, country;
 		int fd;
 		vector <Card> cards;
-		Player(string, char, char, string, string, string, int);
+		Player(string, char, char, string, string, int);
 		int getUserChoice();
 	private:
 };
