@@ -29,9 +29,7 @@ struct gameThreadArg{
     char plid[9];
 };
 
-struct shuffleToGameThread{
 
-};
 
 unordered_map <string,pthread_t> mapThread={};
 unordered_map <string, long> mapMtype= {};
@@ -169,12 +167,30 @@ void connection_handler(int connection_fd){
 
     return;
 }
-struct game
+
+struct shuffleToGameThread
 {
-    
+    Game game;
 };
+
 void gameThread(void* arg)
 {
+    shuffleToGameThread gameInfo;
+    gameInfo = *((shuffleToGameThread*) (arg));
+    Player player[4];
+
+    Game game(gameInfo.game.gameId, gameInfo.game.subTeamId);   // copy constructor where v r passing a pointer
+    player[0] = gameInfo.game.N;
+    player[1] = gameInfo.game.E;
+    player[2] = gameInfo.game.W;
+    player[3] = gameInfo.game.S;
+    game.setPlayer(player[0],'N');
+    game.setPlayer(player[1],'E');
+    game.setPlayer(player[2],'W');
+    game.setPlayer(player[3],'S');
+    // change its refrences to that defined above
+
+    
 
 }
 void shuffleThread(void* arg){
@@ -503,6 +519,8 @@ Player::Player(string plid, char position, char team, string tid, string name, s
     :plid(plid), position(position), subTeamId(team), tid(tid), name(name), country(country), fd(fd)
 {}
 
+Player::Player()
+{}
 int Player::getUserChoice(){
 
 }
@@ -525,6 +543,8 @@ Game::Game(string gid, char stid)
 Game::Game(string gid, char stid, Player& n,Player& s, Player& e, Player& w)
     :gameId(gid), subTeamId(stid), N(n), S(s), E(e),W(s)
 {}
+
+
 void Game::setPlayer(Player& p, char pos){
     switch(pos) {
         case 'N':
