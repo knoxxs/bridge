@@ -491,8 +491,8 @@ int Tricks::score(char team){
 
 
 //class Player
-Player::Player(string plid, char position, char team, string tid, string name, string country)
-    :plid(plid), position(position), team(team), tid(tid), name(name), country(country)
+Player::Player(string plid, char position, char team, string tid, string name, string country, int fd)
+    :plid(plid), position(position), subTeamId(team), tid(tid), name(name), country(country), fd(fd)
 {}
 
 int Player::getUserChoice(){
@@ -508,3 +508,9 @@ Team::Team(char team, string tid,string plid1, string plid2)
 int Team::score(){
     
 }
+
+
+//class game
+Game::Game(string gid, char stid, Player n,Player s, Player e, Player w)
+    :gameId(gid), subTeamId(stid), N(n), S(s), E(e),W(s)
+{}

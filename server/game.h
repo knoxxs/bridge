@@ -71,13 +71,15 @@ class Tricks{
 };
 class Player{
 	public:
-		Player(string, char, char, string, string, string);
-		int getUserChoice();
-	private:
 		char position;
 		string plid;
-		char team;
+		char subTeamId;
 		string tid, name, country;
+		int fd;
+		vector <Card> cards;
+		Player(string, char, char, string, string, string, int);
+		int getUserChoice();
+	private:
 };
 class Team{
 	public:
@@ -86,6 +88,17 @@ class Team{
 	private:
 		char team;
 		string tid, plid1, plid2;
+};
+class Game{
+	public:
+		Game(string, char, Player ,Player , Player, Player);
+		int score();
+		Player N,S,E,W;
+		string gameId;
+		char subTeamId;
+		char declarer, trump;
+		int goal;
+	private:
 };
 
 #endif
