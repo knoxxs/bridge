@@ -519,6 +519,21 @@ int Team::score(){
 
 
 //class game
-Game::Game(string gid, char stid, Player n,Player s, Player e, Player w)
+Game::Game(string gid, char stid)
+    :gameId(gid), subTeamId(stid)
+{}
+Game::Game(string gid, char stid, Player& n,Player& s, Player& e, Player& w)
     :gameId(gid), subTeamId(stid), N(n), S(s), E(e),W(s)
 {}
+void Game::setPlayer(Player& p, char pos){
+    switch(pos) {
+        case 'N':
+            N = p;
+        case 'E':
+            E = p;
+        case 'S':
+            S = p;
+        case 'W':
+            W = p;
+    }    
+}
