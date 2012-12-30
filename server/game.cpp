@@ -278,10 +278,10 @@ void shuffleThread(void* arg){
     }
     logp(identity,0,0,"Recvd all the players");
 
-    Deck deck();
+    Deck deck;
     deck.shuffle();
 
-    for(int i = 0, i < 52 ; i += 4){
+    for(int i = 0; i < 52 ; i += 4){
         gameA.N.addCard(deck.deal());
         gameA.E.addCard(deck.deal());
         gameA.S.addCard(deck.deal());
@@ -292,6 +292,8 @@ void shuffleThread(void* arg){
     gameB.E.addCard(gameA.E.cards);
     gameB.S.addCard(gameA.S.cards);
     gameB.W.addCard(gameA.W.cards);
+
+    
     return;
 }
 
