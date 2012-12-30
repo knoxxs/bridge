@@ -16,6 +16,7 @@ struct playerMsg{
     string plid;
     int fd;
     string gameId;
+    char subTeamId;
 };
 
 void createMsgQ(char *);

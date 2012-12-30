@@ -181,13 +181,13 @@ int getPlayerSchedule(string plid , string& timestamp,char* identity){
     }
 }
 
-int getPlayerTid(string plid , string& myTeam,char* identity){
+int getPlayerTeamInfo(string plid , string& myTeam, char* subTeamId, char* identity){
 	char cmpltIdentity[CMPLT_IDENTITY_SIZE], buf[100];
 	strcpy(cmpltIdentity, identity);
 	strcat(cmpltIdentity,"- getPlayerTid");
 
 	logp(cmpltIdentity,0,0,"Composing query string");
-    string query = "SELECT * FROM getPlayerTid('"+ plid + "')";
+    string query = "SELECT tid,stid FROM SUBTEAM WHERE pid = '"+ plid + "'";
 
     logp(cmpltIdentity,0,0,"Executing query");
     PGresult *res = PQexec(conn,query.c_str());
@@ -208,6 +208,7 @@ int getPlayerTid(string plid , string& myTeam,char* identity){
 
             logp(cmpltIdentity,0,0,"Fetching data from the result");
             strcpy( tid, PQgetvalue(res,0,0) );
+            strcpy( subTeamId, PQgetvalue(res,0,1) );
 
             myTeam.assign(tid, 8);
 

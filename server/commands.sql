@@ -69,16 +69,16 @@ $$ LANGUAGE plpgsql;
 
 --Select * From getPlayerInfo('11111000');
 
-CREATE OR REPLACE FUNCTION getPlayerTid(plid char(8), OUT tid char(8)) As
-$$
-DECLARE
-BEGIN
-	SELECT SubTeam.tid INTO tid FROM SubTeam NATURAL JOIN PLAYERS WHERE pid = plid;
-	return;
-END
-$$ LANGUAGE plpgsql;
+-- CREATE OR REPLACE FUNCTION getPlayerTid(plid char(8), OUT tid char(8)) As
+-- $$
+-- DECLARE
+-- BEGIN
+-- 	SELECT SubTeam.tid INTO tid FROM SubTeam NATURAL JOIN PLAYERS WHERE pid = plid;
+-- 	return;
+-- END
+-- $$ LANGUAGE plpgsql;
 
---Select * From getPlayerTid('11111000');
+-- --Select * From getPlayerTid('11111000');
 
 CREATE OR REPLACE FUNCTION getOppTid(mytid char(8), OUT oppTid char(8)) As
 $$

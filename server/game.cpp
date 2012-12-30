@@ -174,12 +174,12 @@ void shuffleThread(void* arg){
     playerMsg playerInfo;
     playerInfo = *( (playerMsg*) (arg) );
 
-    string gameId, plid[8];
+    string gameId, plid;
     long mtype;
     int fd[8], playerRecvd = 1;
 
     mtype = playerInfo.mtype;
-    plid[0] = playerInfo.plid;
+    plid = playerInfo.plid;
     fd[0] = playerInfo.fd;
     gameId = playerInfo.gameId;
 
@@ -187,7 +187,7 @@ void shuffleThread(void* arg){
     sprintf(identity, "GAME-shuffleThread-gameId: %s -", gameId.c_str());
 
     logp(identity,0,0,"Inside shuffleThread");
-    sprintf(buf,"Player1 recvd: mtype(%ld), plid(%s), fd(%d), gameId(%s)",mtype, plid[0].c_str(), fd[0], gameId.c_str());
+    sprintf(buf,"Player1 recvd: mtype(%ld), plid(%s), fd(%d), gameId(%s)",mtype, plid.c_str(), fd[0], gameId.c_str());
     logp(identity,0,0,buf);
 
     while( playerRecvd < 8 ){
@@ -195,7 +195,7 @@ void shuffleThread(void* arg){
         if(msgRecv(&playerInfo, mtype, identity) != 0){
             errorp(identity,0,0,"Unable to recv the msg");
         }else{
-            plid[playerRecvd] = playerInfo.plid;
+            plid = playerInfo.plid;
             fd[playerRecvd] = playerInfo.fd;
             playerRecvd++;
             sprintf(buf,"Player%d recvd: mtype(%ld), plid(%s), fd(%d), gameId(%s)",playerRecvd, playerInfo.mtype, playerInfo.plid.c_str(), playerInfo.fd, playerInfo.gameId.c_str());
@@ -218,15 +218,15 @@ void* checkThread(void* arg){
     plid.assign(playerInfo.plid);
     fd = playerInfo.fd;
 
-    char identity[40], buf[100];
+    char identity[40], buf[100], subTeamId;
     sprintf(identity, "GAME-checkThread-fd: %d -", fd);
     
-    logp(identity,0,0,"Calling getPlayerTid");
-    if((ret = getPlayerTid(plid,myTeam,identity)) == 0 ){
+    logp(identity,0,0,"Calling getPlayerTeamInfo");
+    if((ret = getPlayerTeamInfo(plid,myTeam, &subTeamId, identity)) == 0 ){
         sprintf(buf,"Player Tid - %s", myTeam.c_str());
         logp(identity,0,0,buf);
     }else{
-        sprintf(buf,"error returned from getPlayerTid ,ret val - %d", ret);
+        sprintf(buf,"error returned from getPlayerTeamInfo ,ret val - %d", ret);
         errorp(identity,0,0,buf);
     }
 
@@ -248,6 +248,7 @@ void* checkThread(void* arg){
     msg.plid = plid;
     msg.fd = fd;
     msg.gameId = gameId;
+    msg.subTeamId = subTeamId;
 
     if( !mapThread.count(gameId) ){
         pthread_t shuffleId;

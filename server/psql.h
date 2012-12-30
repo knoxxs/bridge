@@ -13,6 +13,6 @@ int login_check(string, string, char*);
 void CloseConn(char*);
 int getPlayerInfoFromDb(string, char*, char*, char*);
 int getPlayerSchedule(string , string& ,char* );
-int getPlayerTid(string, string& ,char* );
+int getPlayerTeamInfo(string, string&, char * ,char* );
 int getOppTid(string, string& ,char* );
 #endif
