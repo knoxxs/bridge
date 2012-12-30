@@ -169,7 +169,14 @@ void connection_handler(int connection_fd){
 
     return;
 }
+struct game
+{
+    
+};
+void gameThread(void* arg)
+{
 
+}
 void shuffleThread(void* arg){
     playerMsg playerInfo;
     playerInfo = *( (playerMsg*) (arg) );
