@@ -201,7 +201,19 @@ void shuffleThread(void* arg){
     teamId.assign(team);
     name.assign(nameTemp);
 
+    Game gameA(gameId, 'A'), gameB(gameId, 'B');
+
     Player player(plid, 'N', subTeamId, teamId, name, fd);
+
+    bool ansPos = false, aewPos = false, bnsPos = false, bewPos = false;
+
+    if(player.subTeamId == 'A'){
+        gameA.setPlayer(player, 'N');
+        ansPos = true;
+    }else{
+        gameB.setPlayer(player, 'N');
+        bnsPos = true;
+    }
 
     while( playerRecvd < 8 ){
         logp(identity,0,0,"Inside recving while loop");
@@ -221,12 +233,43 @@ void shuffleThread(void* arg){
             teamId.assign(team);
             name.assign(nameTemp);
 
-            if(player.tid == teamId){
-                pos = nextPos(nextPos(player.position));
+            if(subTeamId == 'A'){
+                if(ansPos){
+                    if(gameA.N.tid == teamId){
+                        pos = 'S';
+                    }else if(aewPos){
+                        pos = 'W';
+                    }else{
+                        pos = 'E';
+                        aewPos = true;
+                    }
+                }else{
+                    pos = 'N';
+                    ansPos = true;
+                }
             }else{
-                pos = nextPos(player.position);
+                if(bnsPos){
+                    if(gameB.N.tid == teamId){
+                        pos = 'S';
+                    }else if(bewPos){
+                        pos = 'W';
+                    }else{
+                        pos = 'E';
+                        bewPos = true;
+                    }
+                }else{
+                    pos = 'N';
+                    bnsPos = true;
+                }
+
             }
             Player player(plid, pos, subTeamId, teamId, name, fd);
+
+            if(player.subTeamId == 'A'){
+                gameA.setPlayer(player, pos);
+            }else{
+                gameB.setPlayer(player, pos);
+            }
 
             playerRecvd++;
             sprintf(buf,"Player%d recvd: mtype(%ld), plid(%s), fd(%d), gameId(%s), subTeamId(%c)",playerRecvd, playerInfo.mtype, playerInfo.plid.c_str(), playerInfo.fd, playerInfo.gameId.c_str(), subTeamId);
