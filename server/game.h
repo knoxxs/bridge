@@ -1,5 +1,5 @@
-#ifndef game
-#define game
+#ifndef GAME_H
+#define GAME_H
 
 #include <string>
 #include <vector> 

@@ -170,7 +170,7 @@ void connection_handler(int connection_fd){
 
 struct shuffleToGameThread
 {
-    Game game;
+    Game* game;
 };
 
 void gameThread(void* arg)
@@ -179,19 +179,16 @@ void gameThread(void* arg)
     gameInfo = *((shuffleToGameThread*) (arg));
     Player player[4];
 
-    Game game(gameInfo.game.gameId, gameInfo.game.subTeamId);   // copy constructor where v r passing a pointer
-    player[0] = gameInfo.game.N;
-    player[1] = gameInfo.game.E;
-    player[2] = gameInfo.game.W;
-    player[3] = gameInfo.game.S;
+    Game game(gameInfo.game->gameId, gameInfo.game->subTeamId);   // copy constructor where v r passing a pointer
+    player[0] = gameInfo.game->N;
+    player[1] = gameInfo.game->E;
+    player[2] = gameInfo.game->W;
+    player[3] = gameInfo.game->S;
     game.setPlayer(player[0],'N');
     game.setPlayer(player[1],'E');
     game.setPlayer(player[2],'W');
     game.setPlayer(player[3],'S');
-    // change its refrences to that defined above
-
-    
-
+    //change its refrences to that defined above
 }
 void shuffleThread(void* arg){
     playerMsg playerInfo;
@@ -317,8 +314,8 @@ void shuffleThread(void* arg){
     gameB.W.addCard(gameA.W.cards);
 
     shuffleToGameThread gameInfoA, gameInfoB;
-    gameInfoA.game = gameA;
-    gameInfoB.game = gameB;
+    gameInfoA.game = &gameA;
+    gameInfoB.game = &gameB;
     
     pthread_t gameAId, gameBId;
 
@@ -751,6 +748,7 @@ int Team::score(){
 Game::Game(string gid, char stid)
     :gameId(gid), subTeamId(stid)
 {}
+
 Game::Game(string gid, char stid, Player& n,Player& s, Player& e, Player& w)
     :gameId(gid), subTeamId(stid), N(n), S(s), E(e),W(s)
 {}

@@ -15,7 +15,7 @@ class class1{
 		}
 		int geti()
 		{
-			cout<<"value in class1  get"<<i;
+			cout<<"value in class1  get"<<i <<endl;
 			return i;
 		}
 };
@@ -32,16 +32,33 @@ public:
 		cout<< "value in class2 get"<<obj.geti();
 		return obj.geti();
 	}
-	int change
+	int change;
 };
 
+void func(class1* a){
+	a->geti();
+	a->i = 10;
+	a->geti();
+}
+
+void func2(class1& a){
+	a.geti();
+	a.i = 100;
+	a.geti();
+}
 
 int main()
 {
 	int i =1;
 	class1 o1(1);
 	o1.geti();
-	class2 o2(o1);
-	o2.get();
+
+	func(&o1);
+	func2(o1);
+
+	o1.geti();
+
+	// class2 o2(o1);
+	// o2.get();
 	return 0;
 }
