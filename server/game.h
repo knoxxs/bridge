@@ -14,6 +14,8 @@ void* checkThread(void*);
 void connection_handler(int);
 void shuffleThread(void*);
 char nextPos(char);
+void setMtype(string, char*);
+void delSetMtype(string, char*);
 
 class Card{
 	public:

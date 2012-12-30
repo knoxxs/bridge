@@ -176,7 +176,7 @@ void shuffleThread(void* arg){
 
     string gameId, plid, teamId, name;
     long mtype;
-    int fd, playerRecvd = 1;
+    int fd, playerRecvd = 1, ret;
     char subTeamId, pos;
 
     mtype = playerInfo.mtype;
@@ -293,7 +293,45 @@ void shuffleThread(void* arg){
     gameB.S.addCard(gameA.S.cards);
     gameB.W.addCard(gameA.W.cards);
 
+    shuffleToGameThread gameInfoA, gameInfoB;
+    gameInfoA.game = gameA;
+    gameInfoB.game = gameB;
     
+    pthread_t gameAId, gameBId;
+
+    mutexLock(&lock_mapThread, identity, "mapThread");
+
+    logp(identity,0,0,"Calling Calling pthread_create for gameA");
+    if((ret = pthread_create(&gameAId, NULL, gameThread, &gameInfoA))!=0) {
+        errorp(identity,0,0,"Unable to create the thread");
+        debugp(identity,1,ret,"");
+    }
+
+    logp(identity,0,0,"Calling Calling pthread_create for gameB");
+    if((ret = pthread_create(&gameBId, NULL, gameThread, &gameInfoB))!=0) {
+        errorp(identity,0,0,"Unable to create the thread");
+        debugp(identity,1,ret,"");
+    }
+
+    logp(identity,0,0,"Calling pthread_detach for gameA");
+    if ((ret = pthread_detach(gameAId)) != 0) {
+        errorp(identity,0,0,"Unable to detach the thread");
+        debugp(identity,1,ret,"");
+    }
+
+    logp(identity,0,0,"Calling pthread_detach for gameB");
+    if ((ret = pthread_detach(gameBId)) != 0) {
+        errorp(identity,0,0,"Unable to detach the thread");
+        debugp(identity,1,ret,"");
+    }
+    
+    mapThread[gameId+"A"] = gameAId;
+    mapThread[gameId+"B"] = gameBId;
+    mapThread.erase(gameId);
+    mutexUnlock(&lock_mapThread, identity, "mapThread");
+
+    delSetMtype(gameId, identity);
+
     return;
 }
 
@@ -301,7 +339,7 @@ void* checkThread(void* arg){
     gameThreadArg playerInfo;
     playerInfo = *( (gameThreadArg*) (arg) );
 
-    int val=1, ret, fd;
+    int ret, fd;
 
     string plid, myTeam, oppTeam, gameId;
     plid.assign(playerInfo.plid);
@@ -359,27 +397,12 @@ void* checkThread(void* arg){
         mapThread[gameId] = shuffleId;
         mutexUnlock(&lock_mapThread, identity, "mapThread");
 
-        mutexLock(&lock_VecMtype, identity, "VecMtype");
-        for(vector<int>::iterator it = VecMtype.begin(); it != VecMtype.end(); ++it) {
-            if(*it == val){
-
-                val++;
-            }
-            else{
-                break;
-            }
-        }
-        VecMtype.insert(it,val);
-        mutexUnlock(&lock_VecMtype, identity, "VecMtype");
-
-        mutexLock(&lock_mapMtype, identity, "mapMtype");
-        mapMtype[gameId] =val;
-        mutexLock(&lock_mapMtype, identity, "mapMtype");
+        setMtype(gameId, identity);
 
         sleep(1);
     }
-    else{
-        msg.mtype = val;
+    else if(mapThread.count(gameId+subTeamId)){//running game
+        msg.mtype = mapMtype[gameId+subTeamId];
 
         sprintf(buf,"Sending msg to queue: mtype(%d) plid(%s) fd(%d) gameId(%s) - %s", msg.mtype, msg.plid.c_str(), msg.fd, msg.gameId.c_str());
         logp(identity,0,0,buf);
@@ -387,7 +410,17 @@ void* checkThread(void* arg){
             errorp(identity,0,0,"Unable to send the msg");
         }
         logp(identity,0,0,"Message sent successfuly, exiting the thread");
-    }   
+    }else{
+        msg.mtype = mapMtype[gameId];
+
+        sprintf(buf,"Sending msg to queue: mtype(%d) plid(%s) fd(%d) gameId(%s) - %s", msg.mtype, msg.plid.c_str(), msg.fd, msg.gameId.c_str());
+        logp(identity,0,0,buf);
+        if(msgSend(&msg, identity) != 0){
+            errorp(identity,0,0,"Unable to send the msg");
+        }
+        logp(identity,0,0,"Message sent successfuly, exiting the thread");
+
+    }
 
 /*
     
@@ -436,6 +469,85 @@ void* checkThread(void* arg){
     */
 }
 
+void setMtype(string gameId, char* identity){
+    char cmpltIdentity[CMPLT_IDENTITY_SIZE];
+    strcpy(cmpltIdentity, identity);
+    strcat(cmpltIdentity,"setMtype");
+
+    int val = 1;
+    mutexLock(&lock_VecMtype, cmpltIdentity, "VecMtype");
+    for(vector<int>::iterator it = VecMtype.begin(); it != VecMtype.end(); ++it) {
+        if(*it == val){
+
+            val++;
+        }
+        else{
+            break;
+        }
+    }
+    VecMtype.insert(it,val);
+    mutexUnlock(&lock_VecMtype, cmpltIdentity, "VecMtype");
+
+    mutexLock(&lock_mapMtype, cmpltIdentity, "mapMtype");
+    mapMtype[gameId] =val;
+    mutexLock(&lock_mapMtype, cmpltIdentity, "mapMtype");
+
+    return;
+}
+
+void delSetMtype(string gameId, char* identity){
+    char cmpltIdentity[CMPLT_IDENTITY_SIZE];
+    strcpy(cmpltIdentity, identity);
+    strcat(cmpltIdentity,"delSetMtype");
+
+    int val = 1;
+    mutexLock(&lock_mapMtype, cmpltIdentity, "mapMtype");
+    mutexLock(&lock_VecMtype, cmpltIdentity, "VecMtype");
+    for(vector<int>::iterator it = VecMtype.begin(); it != VecMtype.end(); ++it) {
+        if(*it == val){
+
+            val++;
+        }
+        else{
+            break;
+        }
+    }
+    VecMtype.insert(it,val);
+    mutexUnlock(&lock_VecMtype, cmpltIdentity, "VecMtype");
+
+    mapMtype[gameId+'A'] =val;
+
+    val = 1;
+    mutexLock(&lock_VecMtype, cmpltIdentity, "VecMtype");
+    for(vector<int>::iterator it = VecMtype.begin(); it != VecMtype.end(); ++it) {
+        if(*it == val){
+
+            val++;
+        }
+        else{
+            break;
+        }
+    }
+    VecMtype.insert(it,val);
+    mutexUnlock(&lock_VecMtype, cmpltIdentity, "VecMtype");
+
+    mapMtype[gameId+'B'] =val;
+
+    val = mapMtype[gameId];
+    for(vector<int>::iterator it = VecMtype.begin(); it != VecMtype.end(); ++it) {
+        if(*it == val){
+
+            break;
+        }
+    }
+    VecMtype.erase(it);
+    mutexUnlock(&lock_VecMtype, cmpltIdentity, "VecMtype");
+
+    mapMtype.erase(gameId);
+    mutexLock(&lock_mapMtype, cmpltIdentity, "mapMtype");
+
+    return;
+}
 
 char SUITS[] = {'C', 'S', 'H', 'D'};
 unordered_map <char, int> RANKS = {{'A',1}, {'2',2}, {'3',3}, {'4',4}, {'5',5}, {'6',6}, {'7',7}, {'8',8}, {'9',9}, {'T',10}, {'J',11}, {'Q',12}, {'K',13} };
