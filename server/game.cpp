@@ -276,9 +276,22 @@ void shuffleThread(void* arg){
             logp(identity,0,0,buf);
         }
     }
-
     logp(identity,0,0,"Recvd all the players");
 
+    Deck deck();
+    deck.shuffle();
+
+    for(int i = 0, i < 52 ; i += 4){
+        gameA.N.addCard(deck.deal());
+        gameA.E.addCard(deck.deal());
+        gameA.S.addCard(deck.deal());
+        gameA.W.addCard(deck.deal());
+    }
+
+    gameB.N.addCard(gameA.N.cards);
+    gameB.E.addCard(gameA.E.cards);
+    gameB.S.addCard(gameA.S.cards);
+    gameB.W.addCard(gameA.W.cards);
     return;
 }
 
