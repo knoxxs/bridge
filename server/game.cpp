@@ -23,6 +23,7 @@
 #include <vector> 
 #include <unordered_map>
 #include <sstream>
+#include "jsoncpp/json.h"
 
 struct gameThreadArg{
     int fd;
@@ -33,7 +34,7 @@ char SUITS[] = {'C', 'D', 'H', 'S'};
 char RANKS[] = {'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K'};
 unordered_map <char, int> VALUES = {{'A',1}, {'2',2}, {'3',3}, {'4',4}, {'5',5}, {'6',6}, {'7',7}, {'8',8}, {'9',9}, {'T',10}, {'J',11}, {'Q',12}, {'K',13} }; 
 
-unordered_map <string, int> commandsDataLen= {{"CARDS",363}, {"CARDO", 47}, {"BIDOT", 31}};
+unordered_map <string, int> commandsDataLen= {{"CARDS",363}, {"CARDO", 47}, {"BIDOT", 31}, {"BIDMY", 31}};
 
 unordered_map <string,pthread_t> mapThread={};
 unordered_map <string, long> mapMtype= {};
@@ -804,7 +805,7 @@ int Player::sendOtherBid(bid* bd, char* identity){
 
     logp(cmpltIdentity,0,0,"Making the data to send");
     std::ostringstream oss;
-    oss << "BIDOT{\"bid\":{\"val\":\"" << bd->val << "\", \"suit\":\"" << bd->trump << "\"}}";
+    oss << "BIDOT{\"bid\":{\"val\":\"" << bd->val << "\", \"trump\":\"" << bd->trump << "\"}}";
      
     logp(cmpltIdentity,0,0,"Converting the data to string");
     string s = oss.str();
@@ -836,16 +837,33 @@ int Player::getUserBid(bid* bd, char* identity){
         return -5;
     }
 
-    if(strncmp(command, "BIDOT", 5) == 0){
-        len = commandsDataLen["BIDOT"];
-        char data[len];
+    if(strncmp(command, "BIDMY", 5) == 0){
+        len = commandsDataLen["BIDMY"];
+        char dataC[len];
         logp(cmpltIdentity,0,0,"Receiving the data");
-        if((ret = recvall(fd, data, &len, 0)) != 0) {
+        if((ret = recvall(fd, dataC, &len, 0)) != 0) {
             errorp(identity,0,0,"Unable to recv the data");
             debugp(identity,1,errno,"");
             return -3;
         }
+        
+        string data;
+        data.assign(dataC, len);
 
+        Json::Value root;
+        Json::Reader reader;        
+        
+        logp(cmpltIdentity,0,0,"Parsing data");
+        if( !reader.parse(data, root, false) ){
+            errorp(identity,0,0,"Error parsing the data");
+            debugp(identity,0,0,reader.getFormatedErrorMessages().c_str());
+            return -2;
+        }
+
+        bd->val = root["bid"]["val"].asInt();
+        bd->trump = root["bid"]["trump"].asString().at(0);
+
+        return 0;
     }else{//wrong command received
         errorp(identity,0,0,"Wrong command recvd");
         return -4;

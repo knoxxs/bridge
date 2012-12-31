@@ -9,7 +9,7 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
-    string json_example = "{\"array\":[\"item1\", \"item2\"], \"not an array\":\"asdf\"}";
+    string json_example = "{\"array\":[\"item1\", \"item2\"], \"not an array\":\"asdf\", \"nestedObject\":{\"test\":\"testVal\"}}";
 
 
     // Let's parse it    
@@ -28,13 +28,16 @@ int main(int argc, char **argv)
     // Let's extract the array that is contained inside the root object
     const Json::Value array = root["array"];
     
+    int z = 0;
+    cout<<"array:"<<root["array"][z]<<endl;
+
     // And print its values
     for ( int index = 0; index < array.size(); ++index )  // Iterates over the sequence elements.
         cout<<"Element " << index <<" in array: "<< array[index].asString() << endl;
 
     // Lets extract the not array element contained in the root object and print its value
     cout<<"Not an array: "<<root["not an array"]<<endl;
-
+    cout<<"nestedObject:test: "<<root["nestedObject"]["test"]<<endl;
     // If we want to print JSON is as easy as doing:
     cout << "Json Example pretty print: " <<endl<< root.toStyledString() << endl;
     

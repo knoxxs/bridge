@@ -3,4 +3,5 @@ bridge
 
 sendUserCards: TotalL = 368, method = CARDS, methodL = 5, DataL = 368-5 = 363
 sendOtherCard: TotalL = 52,  method = CARDO, methodL = 5, DataL = 52-5  = 47
-sendOtherBid:  TotalL = 36,  method = BIDOT, methodL = 5, DataL = 36-5  = 31
+sendOtherBid : TotalL = 36,  method = BIDOT, methodL = 5, DataL = 36-5  = 31
+getUserBid   : TotalL = 36,  method = BIDMY, methodL = 5, DataL = 36-5  = 31
