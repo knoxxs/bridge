@@ -185,7 +185,45 @@ void gameThread(void* arg)
     game.E = gameInfo.game->E;
     game.S = gameInfo.game->S;
     game.W = gameInfo.game->W;
+
+    int ret;
+    char identity[40], buf[150];
+    sprintf(identity, "GAME-shuffleThread-gameId: %s -", game.gameId.c_str());
     
+    logp(identity,0,0,"Sending cards to north player");
+    if((ret = game.N.sendUserCards(identity)) != 0){
+        if(ret == -1){
+            //player disconnected need to wai for it
+        }else{
+            errorp(identity,0,0,"Error sending the cards to north");
+        }
+    }
+    logp(identity,0,0,"Sending cards to east player");
+    if((ret = game.E.sendUserCards(identity)) != 0){
+        if(ret == -1){
+            //player disconnected need to wai for it
+        }else{
+            errorp(identity,0,0,"Error sending the cards to east");
+        }
+    }
+    logp(identity,0,0,"Sending cards to south player");
+    if((ret = game.S.sendUserCards(identity)) != 0){
+        if(ret == -1){
+            //player disconnected need to wai for it
+        }else{
+            errorp(identity,0,0,"Error sending the cards to south");
+        }
+    }
+    logp(identity,0,0,"Sending cards to west player");
+    if((ret = game.W.sendUserCards(identity)) != 0){
+        if(ret == -1){
+            //player disconnected need to wai for it
+        }else{
+            errorp(identity,0,0,"Error sending the cards to west");
+        }
+    }
+
+
 }
 void shuffleThread(void* arg){
     playerMsg playerInfo;
@@ -305,7 +343,6 @@ void shuffleThread(void* arg){
         gameA.W.addCard(deck.deal());
     }
 
-    cout << gameA.N.sendUserCards() << endl;
     gameB.N.addCard(gameA.N.cards);
     gameB.E.addCard(gameA.E.cards);
     gameB.S.addCard(gameA.S.cards);
@@ -526,7 +563,7 @@ void delSetMtype(string gameId, char* identity){
 }
 
 char SUITS[] = {'C', 'S', 'H', 'D'};
-unordered_map <char, int> RANKS = {{'A',1}, {'2',2}, {'3',3}, {'4',4}, {'5',5}, {'6',6}, {'7',7}, {'8',8}, {'9',9}, {'T',10}, {'J',11}, {'Q',12}, {'K',13} };
+char RANKS[] = {'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K'};
 unordered_map <char, int> VALUES = {{'A',1}, {'2',2}, {'3',3}, {'4',4}, {'5',5}, {'6',6}, {'7',7}, {'8',8}, {'9',9}, {'T',10}, {'J',11}, {'Q',12}, {'K',13} }; 
 
 //class Card
@@ -564,7 +601,7 @@ Deck::Deck(){
 
     for(i = 0; i < 4; i++){
         for(j = 0; j < 13; j++){
-            Card c(SUITS[i], RANKS[j], false);
+            Card c(RANKS[j],SUITS[i], false);
             deck.push_back(c);
         }
     } 
@@ -676,12 +713,10 @@ int Tricks::score(char team){
 //class Player
 Player::Player(string plid, char position, char team, string tid, string name, int fd)
     :plid(plid), position(position), subTeamId(team), tid(tid), name(name), fd(fd)
-{
-    i = 0;
-}
+{}
 
 void Player::addCard(Card c){
-    cards[i++] = c;
+    cards.push_back(c);
 }
 
 void Player::addCard(vector <Card> &crds){
@@ -702,18 +737,34 @@ Player::Player()
 
 // }
 
-string Player::sendUserCards(){
+int Player::sendUserCards(char* identity){
+    char cmpltIdentity[CMPLT_IDENTITY_SIZE], buf[150];
+    strcpy(cmpltIdentity, identity);
+    strcat(cmpltIdentity,"-Player::sendUserCards");
+
+    logp(cmpltIdentity,0,0,"Making the data to send");
     std::ostringstream oss;
-    oss << "{ \"method\":\"CARDS\", \"cards\":[";
+    oss << "CARDS{\"cards\":[";
     
     vector<Card>::iterator end = --(cards.end());
     for(vector<Card>::iterator it = cards.begin(); it != end; ++it) {
         oss << (*it).format_json() << ", ";
     }
+    oss << (*it).format_json() << " ] }";
+    
+    logp(cmpltIdentity,0,0,"Converting the data to string");
+    string s = oss.str();
+    int ret, len = s.length();
 
-    oss << (*it).format_json() << " ] } ";
-    return oss.str();
-
+    sprintf(buf, "Sending cards to client ,totalLength(%d), command(%s)",len, s.substr(0,5).c_str());//length is 368
+    logp(identity,0,0,buf);
+    if((ret = sendall(fd, s.c_str(), &len, 0) ) != 0){
+        errorp(identity, 0, 0, "Unable to send complete data");
+        debugp(identity,1,errno,"");
+    }
+    sprintf(buf, "Returning with return value(%d)",ret);
+    logp(cmpltIdentity,0,0,buf);
+    return ret;
 }
 
 //class Team

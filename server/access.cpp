@@ -155,7 +155,7 @@ int sendall(int fd, char *buf, int *len, int flags)
     }else if(n == -1){
     	errorp("access-sendall",0,0,"Unable to send the data");
     	debugp("access-sendall",1,errno,"");
-    	return -1;
+    	return -2;
     }
 }
 
