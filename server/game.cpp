@@ -305,6 +305,7 @@ void shuffleThread(void* arg){
         gameA.W.addCard(deck.deal());
     }
 
+    cout << gameA.N.sendUserCards() << endl;
     gameB.N.addCard(gameA.N.cards);
     gameB.E.addCard(gameA.E.cards);
     gameB.S.addCard(gameA.S.cards);
@@ -349,6 +350,7 @@ void shuffleThread(void* arg){
 
     delSetMtype(gameId, identity);
 
+    sleep(2);
     return;
 }
 
@@ -438,52 +440,6 @@ void* checkThread(void* arg){
         logp(identity,0,0,"Message sent successfuly, exiting the thread");
 
     }
-
-/*
-    
-
-    char plid[9];
-    char name[PLAYER_NAME_SIZE], team[PLAYER_TEAM_SIZE];
-    int fd;
-
-    strncpy(plid, plid, 9);
-    fd = playerInfo.fd;
-
-    char identity[40], buf[100];
-    sprintf(identity, "GAME-checkThread-fd: %d -", fd);
-
-    logp(identity,0,0,"New thread created Succesfully");
-
-    sprintf(buf, "Calling get player info with plid %s", plid);
-    logp(identity,0,0,buf);
-    if(getPlayerInfo(plid , name, team, fd, sizeof(plid), sizeof(name), sizeof(team), identity) == 0 ){
-        sprintf(buf,"This is player info id(%s) name(%s) team(%s)\n", plid, name, team);
-        logp(identity,0,0,buf);
-    }else{
-        logp(identity,0,0,"Unable to retrieve the player info, exiting from this thread");
-        exit(-1);
-    }
-
-    //////////////////////_____creating schedule alarm_____///////////////
-    
-    //check for latest match
-    string timestamp;
-    if( getPlayerSchedule(plid , timestamp, identity) == 0){
-        sprintf(buf,"This is player next match timestamp (%s)\n", timestamp.c_str());
-        logp(identity,0,0,buf);
-    }else{
-        logp(identity,0,0,"Unable to retrieve next match timestamp, exiting from this thread");
-        exit(-1);
-    }
-    
-    //create a alarm which checks out time remaining.....
-    // Sleep for 1.5 sec
-    struct timeval tv;
-    tv.tv_sec = 1;
-    tv.tv_usec = 500000;
-    //select(0, NULL, NULL, NULL, &tv);
-    //create the game and send the data
-    */
 }
 
 void setMtype(string gameId, char* identity){
@@ -588,6 +544,11 @@ string Card::print(){
     return oss.str();
 }
 
+string Card::format_json(){
+    std::ostringstream oss;
+    oss << "{\"rank\":\"" << rank << "\", \"suit\": \""<< suit <<"\"}";
+    return oss.str();    
+}
 char Card::getRank(){
     return rank;
 }
@@ -729,10 +690,31 @@ void Player::addCard(vector <Card> &crds){
 
 Player::Player()
 {}
-int Player::getUserChoice(){
+// int Player::recvUser(){
+
+// }
+
+// int Player::sendUserCard(Card c){
+
+// }
+
+// int Player::sendUserScore(int ){
+
+// }
+
+string Player::sendUserCards(){
+    std::ostringstream oss;
+    oss << "{ \"method\":\"CARDS\", \"cards\":[";
+    
+    vector<Card>::iterator end = --(cards.end());
+    for(vector<Card>::iterator it = cards.begin(); it != end; ++it) {
+        oss << (*it).format_json() << ", ";
+    }
+
+    oss << (*it).format_json() << " ] } ";
+    return oss.str();
 
 }
-
 
 //class Team
 Team::Team(char team, string tid,string plid1, string plid2)

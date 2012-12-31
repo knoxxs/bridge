@@ -299,7 +299,7 @@ int send_fd(int fd, int fd_to_send, char* plid, int len, char* identity){
     if (temp != 2){
         if(temp == -1){
             errorp(cmpltIdentity,0,0,"Unable to send the data");
-            debugp(cmpltIdentity,1,errno,NULL);
+            debugp(cmpltIdentity,1,errno,"");
         }else {
             errorp(cmpltIdentity,0,0,"Unable to send complete data");
         }

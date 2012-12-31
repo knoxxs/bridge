@@ -154,7 +154,7 @@ int sendall(int fd, char *buf, int *len, int flags)
     	return -1;
     }else if(n == -1){
     	errorp("access-sendall",0,0,"Unable to send the data");
-    	debugp("access-sendall",1,errno,NULL);
+    	debugp("access-sendall",1,errno,"");
     	return -1;
     }
 }
@@ -184,7 +184,7 @@ int recvall(int fd, char *buf, int *len, int flags)
     	return -1;
     }else if(n == -1){
     	errorp("access-recvall",0,0,"Unable to recv the data");
-    	debugp("access-recvall",1,errno,NULL);
+    	debugp("access-recvall",1,errno,"");
     	return -1;
     }
 } 

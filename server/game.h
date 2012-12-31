@@ -24,6 +24,7 @@ class Card{
 		string print();
 		char getSuit();
 		char getRank();
+		string format_json();
 	private:
 		char suit;
 		char rank;
@@ -84,6 +85,7 @@ class Player{
 		int getUserChoice();
 		void addCard(vector <Card> &);
 		void addCard(Card);
+		string sendUserCards();
 	private:
 		int i;
 };
