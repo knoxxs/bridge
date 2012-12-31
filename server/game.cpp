@@ -29,7 +29,7 @@ struct gameThreadArg{
     char plid[9];
 };
 
-char SUITS[] = {'C', 'S', 'H', 'D'};
+char SUITS[] = {'C', 'D', 'H', 'S'};
 char RANKS[] = {'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K'};
 unordered_map <char, int> VALUES = {{'A',1}, {'2',2}, {'3',3}, {'4',4}, {'5',5}, {'6',6}, {'7',7}, {'8',8}, {'9',9}, {'T',10}, {'J',11}, {'Q',12}, {'K',13} }; 
 
@@ -800,11 +800,20 @@ int Team::score(){
 //class game
 Game::Game(string gid, char stid)
     :gameId(gid), subTeamId(stid)
-{}
+{
+    dbl = false;
+    redbl = false;
+    goal = 6;
+}
 
 Game::Game(string gid, char stid, Player n,Player s, Player e, Player w)
     :gameId(gid), subTeamId(stid), N(n), S(s), E(e),W(s)
-{}
+{
+    dbl = false;
+    redbl = false;
+    goal = 6;
+
+}
 
 
 void Game::setPlayer(Player& p, char pos){

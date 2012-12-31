@@ -17,6 +17,11 @@ char nextPos(char);
 void setMtype(string, char*);
 void delSetMtype(string, char*);
 
+struct bid{
+	char rank;// A, 2 ... K  //pass,double,redouble = 0
+	char suit;//C D H S N    //P     D     R
+};
+
 class Card{
 	public:
 		Card(char, char, bool);
@@ -106,7 +111,9 @@ class Game{
 		Player N,S,E,W;
 		string gameId;
 		char subTeamId;
-		char declarer, trump;
+		char declarer, trump, dealer;
+		bool dbl, redbl;
+		vector<bid> bids;
 		int goal;
 	private:
 };
