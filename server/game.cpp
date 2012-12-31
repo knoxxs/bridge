@@ -183,17 +183,17 @@ void gameThread(void* arg)
     gameInfo = *((shuffleToGameThread*) (arg));
 
     Game game(gameInfo.game->gameId, gameInfo.game->subTeamId);   // copy constructor where v r passing a pointer
-    game.N = gameInfo.game->N;
-    game.E = gameInfo.game->E;
-    game.S = gameInfo.game->S;
-    game.W = gameInfo.game->W;
+    game.players[0] = gameInfo.game->players[0];
+    game.players[1] = gameInfo.game->players[1];
+    game.players[2] = gameInfo.game->players[2];
+    game.players[3] = gameInfo.game->players[3];
 
     int ret;
     char identity[40], buf[150];
     sprintf(identity, "GAME-shuffleThread-gameId: %s -", game.gameId.c_str());
     
     logp(identity,0,0,"Sending cards to north player");
-    if((ret = game.N.sendUserCards(identity)) != 0){
+    if((ret = game.players[0].sendUserCards(identity)) != 0){
         if(ret == -1){
             //player disconnected need to wai for it
         }else{
@@ -201,7 +201,7 @@ void gameThread(void* arg)
         }
     }
     logp(identity,0,0,"Sending cards to east player");
-    if((ret = game.E.sendUserCards(identity)) != 0){
+    if((ret = game.players[1].sendUserCards(identity)) != 0){
         if(ret == -1){
             //player disconnected need to wai for it
         }else{
@@ -209,7 +209,7 @@ void gameThread(void* arg)
         }
     }
     logp(identity,0,0,"Sending cards to south player");
-    if((ret = game.S.sendUserCards(identity)) != 0){
+    if((ret = game.players[2].sendUserCards(identity)) != 0){
         if(ret == -1){
             //player disconnected need to wai for it
         }else{
@@ -217,13 +217,18 @@ void gameThread(void* arg)
         }
     }
     logp(identity,0,0,"Sending cards to west player");
-    if((ret = game.W.sendUserCards(identity)) != 0){
+    if((ret = game.players[3].sendUserCards(identity)) != 0){
         if(ret == -1){
             //player disconnected need to wai for it
         }else{
             errorp(identity,0,0,"Error sending the cards to west");
         }
     }
+
+    //selecting the dealer
+    game.dealer = 'N';
+
+
 
     Tricks tricks();
 }
@@ -292,7 +297,7 @@ void shuffleThread(void* arg){
 
             if(subTeamId == 'A'){
                 if(ansPos){
-                    if(gameA.N.tid == teamId){
+                    if(gameA.players[0].tid == teamId){
                         pos = 'S';
                     }else if(aewPos){
                         pos = 'W';
@@ -306,7 +311,7 @@ void shuffleThread(void* arg){
                 }
             }else{
                 if(bnsPos){
-                    if(gameB.N.tid == teamId){
+                    if(gameB.players[0].tid == teamId){
                         pos = 'S';
                     }else if(bewPos){
                         pos = 'W';
@@ -339,16 +344,12 @@ void shuffleThread(void* arg){
     deck.shuffle();
 
     for(int i = 0; i < 52 ; i += 4){
-        gameA.N.addCard(deck.deal());
-        gameA.E.addCard(deck.deal());
-        gameA.S.addCard(deck.deal());
-        gameA.W.addCard(deck.deal());
+        gameA.players[i%4].addCard(deck.deal());
     }
 
-    gameB.N.addCard(gameA.N.cards);
-    gameB.E.addCard(gameA.E.cards);
-    gameB.S.addCard(gameA.S.cards);
-    gameB.W.addCard(gameA.W.cards);
+    for(int i = 0; i < 4; i++){
+        gameB.players[i].addCard(gameA.players[i].cards);
+    }
 
     shuffleToGameThread gameInfoA, gameInfoB;
     gameInfoA.game = &gameA;
@@ -807,24 +808,27 @@ Game::Game(string gid, char stid)
 }
 
 Game::Game(string gid, char stid, Player n,Player s, Player e, Player w)
-    :gameId(gid), subTeamId(stid), N(n), S(s), E(e),W(s)
+    :gameId(gid), subTeamId(stid)
 {
     dbl = false;
     redbl = false;
     goal = 6;
-
+    players[0] = n;
+    players[1] = s;
+    players[2] = e;
+    players[3] = s;
 }
 
 
 void Game::setPlayer(Player& p, char pos){
     switch(pos) {
         case 'N':
-            N = p;
+            players[0] = p;
         case 'E':
-            E = p;
+            players[1] = p;
         case 'S':
-            S = p;
+            players[2] = p;
         case 'W':
-            W = p;
+            players[3] = p;
     }    
 }

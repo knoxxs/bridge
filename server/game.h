@@ -108,7 +108,7 @@ class Game{
 		Game(string, char);
 		void setPlayer(Player&, char);
 		int score();
-		Player N,S,E,W;
+		Player players[4];
 		string gameId;
 		char subTeamId;
 		char declarer, trump, dealer;
