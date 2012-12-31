@@ -30,6 +30,11 @@ struct gameThreadArg{
     char plid[9];
 };
 
+struct shuffleToGameThread
+{
+    Game* game;
+};
+
 char SUITS[] = {'C', 'D', 'H', 'S'};
 char RANKS[] = {'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K'};
 unordered_map <char, int> VALUES = {{'A',1}, {'2',2}, {'3',3}, {'4',4}, {'5',5}, {'6',6}, {'7',7}, {'8',8}, {'9',9}, {'T',10}, {'J',11}, {'Q',12}, {'K',13} }; 
@@ -175,11 +180,6 @@ void connection_handler(int connection_fd){
     return;
 }
 
-struct shuffleToGameThread
-{
-    Game* game;
-};
-
 void gameThread(void* arg)
 {
     shuffleToGameThread gameInfo;
@@ -230,12 +230,83 @@ void gameThread(void* arg)
 
     //selecting the dealer
     game.dealer = 0;
+    
     bid currentBid;
+    int continousPass = 0, i, j;
+    bool flag = false;
 
-    for(int i = 0; i < 4; i++ ){
-        //game.players[(i+dealer)%4].
+    //inserting dummy bid
+    currentBid.val = 0;
+    currentBid.trump = 'P';
+    game.bids.push_back(currentBid);
+
+    while(continousPass < 3){
+        for(i = 0; i < 4; i++ ){
+            int player = (i + game.dealer)%4;
+            flag = false;
+
+            game.players[player].getUserBid(&currentBid, identity);
+            
+            if(currentBid.val >= 1 && currentBid.val <= 7 ){
+                switch(currentBid.trump){
+                    case 'd':
+                        if( game.declarer != ( (player + 2) % 4) && !game.dbl && !game.redbl){
+                            game.dbl = true;
+                            continousPass = 0;
+                        }else{
+                            flag = true;
+                        }
+                        break;
+                    case 'r':
+                        if( game.declarer == ( (player + 2) % 4) && !game.dbl && !game.redbl){
+                            game.redbl = true;
+                            continousPass = 0;
+                        }else{
+                            flag = true;
+                        }
+                        break;
+                    case 'p':
+                        continousPass++;
+                        break;
+                    case 'N': 
+                    case 'C': 
+                    case 'D': 
+                    case 'H': 
+                    case 'S':{
+                        int lastVal = game.bids.back().val;
+                        char lastTrump = game.bids.back().trump;
+                        if(currentBid.val > lastVal || (currentBid.val == lastVal  && (currentBid.trump > lastTrump  || currentBid.trump == 'N')) ){
+                            game.trump = currentBid.trump;
+                            game.goal = 6 + currentBid.val;
+                            game.dbl = false;
+                            game.redbl = false;
+                            continousPass = 0;
+                            if(currentBid.trump != lastTrump  && game.declarer != ((player + 2) % 4) ){
+                                game.declarer = player;
+                            }
+                        }else{
+                            flag = true;
+                        }
+                        break;
+                    }
+                    default:
+                        flag = true;
+                }
+                if(!flag){
+                    game.bids.push_back(currentBid);
+
+                    for(j = 0; j < 4; j++){
+                        if(j != player){
+                            game.players[j].sendOtherBid(&currentBid, identity);
+                        }
+                    }
+                }
+                if(continousPass == 3){
+                    break;
+                }
+            }
+        }
     }
-
     Tricks tricks();
 }
 void shuffleThread(void* arg){
@@ -825,7 +896,7 @@ int Player::sendOtherBid(bid* bd, char* identity){
 int Player::getUserBid(bid* bd, char* identity){
     char cmpltIdentity[CMPLT_IDENTITY_SIZE], buf[150];
     strcpy(cmpltIdentity, identity);
-    strcat(cmpltIdentity,"-Player::sendOtherBid");
+    strcat(cmpltIdentity,"-Player::getUserBid");
 
     int ret, len = 5;
     char command[5];
@@ -907,11 +978,15 @@ void Game::setPlayer(Player& p, char pos){
     switch(pos) {
         case 'N':
             players[0] = p;
+            break;
         case 'E':
             players[1] = p;
+            break;
         case 'S':
             players[2] = p;
+            break;
         case 'W':
             players[3] = p;
+            break;
     }    
 }

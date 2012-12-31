@@ -19,7 +19,7 @@ void delSetMtype(string, char*);
 
 struct bid{
 	int val;// A, 2 ... K  //pass,double,redouble = 0
-	char trump;//C D H S N    //P     D     R
+	char trump;//C D H S N    //p     d     r
 };
 
 class Card{
@@ -95,14 +95,6 @@ class Player{
 		int sendOtherBid(bid*, char*);
 	private:
 };
-class Team{
-	public:
-		Team(char, string,string, string);
-		int score();
-	private:
-		char team;
-		string tid, plid1, plid2;
-};
 class Game{
 	public:
 		Game(string, char, Player, Player, Player, Player);
@@ -117,6 +109,14 @@ class Game{
 		vector<bid> bids;
 		int goal;
 	private:
+};
+class Team{
+	public:
+		Team(char, string,string, string);
+		int score();
+	private:
+		char team;
+		string tid, plid1, plid2;
 };
 
 #endif
