@@ -29,7 +29,9 @@ struct gameThreadArg{
     char plid[9];
 };
 
-
+char SUITS[] = {'C', 'S', 'H', 'D'};
+char RANKS[] = {'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K'};
+unordered_map <char, int> VALUES = {{'A',1}, {'2',2}, {'3',3}, {'4',4}, {'5',5}, {'6',6}, {'7',7}, {'8',8}, {'9',9}, {'T',10}, {'J',11}, {'Q',12}, {'K',13} }; 
 
 unordered_map <string,pthread_t> mapThread={};
 unordered_map <string, long> mapMtype= {};
@@ -223,7 +225,7 @@ void gameThread(void* arg)
         }
     }
 
-
+    Tricks tricks();
 }
 void shuffleThread(void* arg){
     playerMsg playerInfo;
@@ -562,9 +564,6 @@ void delSetMtype(string gameId, char* identity){
     return;
 }
 
-char SUITS[] = {'C', 'S', 'H', 'D'};
-char RANKS[] = {'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K'};
-unordered_map <char, int> VALUES = {{'A',1}, {'2',2}, {'3',3}, {'4',4}, {'5',5}, {'6',6}, {'7',7}, {'8',8}, {'9',9}, {'T',10}, {'J',11}, {'Q',12}, {'K',13} }; 
 
 //class Card
 Card::Card(char rank, char suit, bool open = false)
@@ -729,9 +728,30 @@ Player::Player()
 
 // }
 
-// int Player::sendUserCard(Card c){
+int Player::sendUserCardO(Card c, char pos, char* identity){
+    char cmpltIdentity[CMPLT_IDENTITY_SIZE], buf[150];
+    strcpy(cmpltIdentity, identity);
+    strcat(cmpltIdentity,"-Player::sendUserCardO");
 
-// }
+    logp(cmpltIdentity,0,0,"Making the data to send");
+    std::ostringstream oss;
+    oss << "CARDO{\"pos\":\"" << pos << "\", \"card\":\"" << c.format_json() << "\"}";
+     
+    logp(cmpltIdentity,0,0,"Converting the data to string");
+    string s = oss.str();
+    int ret, len = s.length();
+
+    sprintf(buf, "Sending card to client ,totalLength(%d), command(%s)",len, s.substr(0,5).c_str());//length is 368
+    logp(identity,0,0,buf);
+    if((ret = sendall(fd, s.c_str(), &len, 0) ) != 0){
+        errorp(identity, 0, 0, "Unable to send complete data");
+        debugp(identity,1,errno,"");
+    }
+    sprintf(buf, "Returning with return value(%d)",ret);
+    logp(cmpltIdentity,0,0,buf);
+    return ret;
+
+}
 
 // int Player::sendUserScore(int ){
 

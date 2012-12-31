@@ -86,6 +86,7 @@ class Player{
 		void addCard(vector <Card> &);
 		void addCard(Card);
 		int sendUserCards(char*);
+		int sendUserCardO(Card, char, char*);
 	private:
 };
 class Team{

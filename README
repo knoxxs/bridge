@@ -2,3 +2,4 @@ bridge
 ======
 
 sendUserCards: TotalL = 368, method = CARDS, methodL = 5, DataL = 368-5 = 363
+sendUserCardO: TotalL = 52, method = CARDO, methodL = 5, DataL = 52-5 = 47
