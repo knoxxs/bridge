@@ -33,6 +33,8 @@ char SUITS[] = {'C', 'D', 'H', 'S'};
 char RANKS[] = {'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K'};
 unordered_map <char, int> VALUES = {{'A',1}, {'2',2}, {'3',3}, {'4',4}, {'5',5}, {'6',6}, {'7',7}, {'8',8}, {'9',9}, {'T',10}, {'J',11}, {'Q',12}, {'K',13} }; 
 
+unordered_map <string, int> commandsDataLen= {{"CARDS",363}, {"CARDO", 47}, {"BIDOT", 31}};
+
 unordered_map <string,pthread_t> mapThread={};
 unordered_map <string, long> mapMtype= {};
 vector <int> VecMtype;
@@ -226,9 +228,12 @@ void gameThread(void* arg)
     }
 
     //selecting the dealer
-    game.dealer = 'N';
+    game.dealer = 0;
+    bid currentBid;
 
-
+    for(int i = 0; i < 4; i++ ){
+        //game.players[(i+dealer)%4].
+    }
 
     Tricks tricks();
 }
@@ -277,6 +282,11 @@ void shuffleThread(void* arg){
         bnsPos = true;
     }
 
+    bid bd;
+    bd.val = 1;
+    bd.trump = 'N';
+
+    gameA.players[0].sendOtherBid(&bd, identity);
     while( playerRecvd < 8 ){
         logp(identity,0,0,"Inside recving while loop");
         if(msgRecv(&playerInfo, mtype, identity) != 0){
@@ -729,10 +739,10 @@ Player::Player()
 
 // }
 
-int Player::sendUserCardO(Card c, char pos, char* identity){
+int Player::sendOtherCard(Card c, char pos, char* identity){
     char cmpltIdentity[CMPLT_IDENTITY_SIZE], buf[150];
     strcpy(cmpltIdentity, identity);
-    strcat(cmpltIdentity,"-Player::sendUserCardO");
+    strcat(cmpltIdentity,"-Player::sendOtherCard");
 
     logp(cmpltIdentity,0,0,"Making the data to send");
     std::ostringstream oss;
@@ -751,7 +761,6 @@ int Player::sendUserCardO(Card c, char pos, char* identity){
     sprintf(buf, "Returning with return value(%d)",ret);
     logp(cmpltIdentity,0,0,buf);
     return ret;
-
 }
 
 // int Player::sendUserScore(int ){
@@ -786,6 +795,62 @@ int Player::sendUserCards(char* identity){
     sprintf(buf, "Returning with return value(%d)",ret);
     logp(cmpltIdentity,0,0,buf);
     return ret;
+}
+
+int Player::sendOtherBid(bid* bd, char* identity){
+    char cmpltIdentity[CMPLT_IDENTITY_SIZE], buf[150];
+    strcpy(cmpltIdentity, identity);
+    strcat(cmpltIdentity,"-Player::sendOtherBid");
+
+    logp(cmpltIdentity,0,0,"Making the data to send");
+    std::ostringstream oss;
+    oss << "BIDOT{\"bid\":{\"val\":\"" << bd->val << "\", \"suit\":\"" << bd->trump << "\"}}";
+     
+    logp(cmpltIdentity,0,0,"Converting the data to string");
+    string s = oss.str();
+    int ret, len = s.length();
+
+    sprintf(buf, "Sending bid to clients ,totalLength(%d), command(%s)",len, s.substr(0,5).c_str());//length is 368
+    logp(identity,0,0,buf);
+    if((ret = sendall(fd, s.c_str(), &len, 0) ) != 0){
+        errorp(identity, 0, 0, "Unable to send complete data");
+        debugp(identity,1,errno,"");
+    }
+    sprintf(buf, "Returning with return value(%d)",ret);
+    logp(cmpltIdentity,0,0,buf);
+    return ret;
+}
+
+int Player::getUserBid(bid* bd, char* identity){
+    char cmpltIdentity[CMPLT_IDENTITY_SIZE], buf[150];
+    strcpy(cmpltIdentity, identity);
+    strcat(cmpltIdentity,"-Player::sendOtherBid");
+
+    int ret, len = 5;
+    char command[5];
+
+    logp(cmpltIdentity,0,0,"Receiving the command");
+    if((ret = recvall(fd, command, &len, 0)) != 0) {
+        errorp(identity,0,0,"Unable to recv the command");
+        debugp(identity,1,errno,"");
+        return -5;
+    }
+
+    if(strncmp(command, "BIDOT", 5) == 0){
+        len = commandsDataLen["BIDOT"];
+        char data[len];
+        logp(cmpltIdentity,0,0,"Receiving the data");
+        if((ret = recvall(fd, data, &len, 0)) != 0) {
+            errorp(identity,0,0,"Unable to recv the data");
+            debugp(identity,1,errno,"");
+            return -3;
+        }
+
+    }else{//wrong command received
+        errorp(identity,0,0,"Wrong command recvd");
+        return -4;
+    }
+
 }
 
 //class Team

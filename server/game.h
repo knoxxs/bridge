@@ -18,8 +18,8 @@ void setMtype(string, char*);
 void delSetMtype(string, char*);
 
 struct bid{
-	char rank;// A, 2 ... K  //pass,double,redouble = 0
-	char suit;//C D H S N    //P     D     R
+	int val;// A, 2 ... K  //pass,double,redouble = 0
+	char trump;//C D H S N    //P     D     R
 };
 
 class Card{
@@ -87,11 +87,12 @@ class Player{
 		vector <Card> cards;
 		Player(string, char, char, string, string, int);
 		Player();
-		int getUserChoice();
 		void addCard(vector <Card> &);
 		void addCard(Card);
 		int sendUserCards(char*);
-		int sendUserCardO(Card, char, char*);
+		int sendOtherCard(Card, char, char*);
+		int getUserBid(bid*, char*);
+		int sendOtherBid(bid*, char*);
 	private:
 };
 class Team{
@@ -110,8 +111,8 @@ class Game{
 		int score();
 		Player players[4];
 		string gameId;
-		char subTeamId;
-		char declarer, trump, dealer;
+		char subTeamId, trump;
+		int declarer, dealer;
 		bool dbl, redbl;
 		vector<bid> bids;
 		int goal;
