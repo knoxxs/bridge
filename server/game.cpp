@@ -577,7 +577,7 @@ Card::Card(){
 
 string Card::print(){
     std::ostringstream oss;
-    oss << "Card's Rank: '" << rank << "' and Suit: '"<< suit <<"'" <<endl;
+    oss << "Card's Rank: '" << rank << "' and Suit: '"<< suit <<"'";
     return oss.str();
 }
 
@@ -644,7 +644,7 @@ Trick::Trick(){
 
 string Trick::print(){
     std::ostringstream oss;
-    oss << "Card1 played by '"<< first << "': " << cards[0].print() << "Card2 played by '"<< nextPos(first) << "': " << cards[1].print() << "Card3 played by '"<< nextPos(first) << "': " << cards[2].print() << "Card4 played by '"<< nextPos(first) << "': " << cards[3].print() ; 
+    oss << "Card1 played by '"<< first << "': " << cards[0].print() << ", Card2 played by '"<< nextPos(first) << "': " << cards[1].print() << ", Card3 played by '"<< nextPos(first) << "': " << cards[2].print() << ", Card4 played by '"<< nextPos(first) << "': " << cards[3].print() ; 
     return oss.str();
 }
 
@@ -678,7 +678,7 @@ string Tricks::print(){
     std::ostringstream oss;
     int i;
     for(i = 0; i < 13; i++){
-        oss << "Trick" << i+1 << " (Winner:" << tricks[i].getWinner() << "): '" << tricks[i].print();
+        oss << "Trick" << i+1 << " (Winner:" << tricks[i].getWinner() << "): '" << tricks[i].print() << endl;
     }
     return oss.str();
 }
