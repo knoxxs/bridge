@@ -97,6 +97,7 @@ class Player{
 		int getUserBid(bid*, char*);
 		int sendOtherBid(bid*, char*);
 		int getUserCard(Card*, char*);
+		bool hasCard(Card*, char*);
 	private:
 };
 class Game{

@@ -308,15 +308,20 @@ void gameThread(void* arg)
         }
     }
 
-    Tricks tricks();
-    Card current_card();
+    Tricks tricks;
+    Card currentCard;
+    char currentSuit;
+
     for(i = 0; i < 13; i++){
         Trick trick(game.declarer);
 
         for(j = 0; j < 4; j++){
             player = (j + game.declarer) % 4;
+            game.players[j].getUserCard(&currentCard, identity);
 
+            if(game.players[j].hasCard(&currentCard, identity)){
 
+            }
         }
     }
 }
@@ -1011,6 +1016,21 @@ int Player::getUserCard(Card* c, char* identity){
         return -4;
     }
 
+}
+
+bool Player::hasCard(Card* c, char* identity){
+    char cmpltIdentity[CMPLT_IDENTITY_SIZE], buf[150];
+    strcpy(cmpltIdentity, identity);
+    strcat(cmpltIdentity,"-Player::hasCard");
+
+    vector<Card>::iterator it;
+    for(it = cards.begin(); it != cards.end(); it++){
+        if((*it).getSuit() == c->getSuit()  && (*it).getRank() == c->getRank() ){
+            return true;
+        }
+    }
+
+    return false;
 }
 
 //class Team
