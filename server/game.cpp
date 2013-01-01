@@ -39,7 +39,7 @@ char SUITS[] = {'C', 'D', 'H', 'S'};
 char RANKS[] = {'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K'};
 unordered_map <char, int> VALUES = {{'A',1}, {'2',2}, {'3',3}, {'4',4}, {'5',5}, {'6',6}, {'7',7}, {'8',8}, {'9',9}, {'T',10}, {'J',11}, {'Q',12}, {'K',13} }; 
 
-unordered_map <string, int> commandsDataLen= {{"CARDS",363}, {"CARDO", 47}, {"BIDOT", 31}, {"BIDMY", 31}};
+unordered_map <string, int> commandsDataLen= {{"CARDS",363}, {"CARDO", 59}, {"CARDM", 59}, {"BIDOT", 31}, {"BIDMY", 31}};
 
 unordered_map <string,pthread_t> mapThread={};
 unordered_map <string, long> mapMtype= {};
@@ -232,7 +232,7 @@ void gameThread(void* arg)
     game.dealer = 0;
     
     bid currentBid;
-    int continousPass = 0, i, j;
+    int continousPass = 0, i, j, player;
     bool flag = false;
 
     //inserting dummy bid
@@ -242,7 +242,7 @@ void gameThread(void* arg)
 
     while(continousPass < 3){
         for(i = 0; i < 4; i++ ){
-            int player = (i + game.dealer)%4;
+            player = (i + game.dealer)%4;
             flag = false;
 
             game.players[player].getUserBid(&currentBid, identity);
@@ -307,7 +307,18 @@ void gameThread(void* arg)
             }
         }
     }
+
     Tricks tricks();
+
+    for(i = 0; i < 13; i++){
+        Trick trick(game.declarer);
+
+        for(j = 0; j < 4; j++){
+            player = (j + game.declarer) % 4;
+
+
+        }
+    }
 }
 void shuffleThread(void* arg){
     playerMsg playerInfo;
@@ -665,15 +676,28 @@ string Card::print(){
 
 string Card::format_json(){
     std::ostringstream oss;
-    oss << "{\"rank\":\"" << rank << "\", \"suit\": \""<< suit <<"\"}";
+    char openChar = (open ? 'T' : 'F');
+
+    oss << "{\"rank\":\"" << rank << "\", \"suit\": \""<< suit <<"\", \"open\":\"" << openChar << "\"}";
     return oss.str();    
 }
 char Card::getRank(){
     return rank;
 }
-
 char Card::getSuit(){
     return suit;
+}
+void Card::setRank(char r){
+    rank = r;
+}
+void Card::setSuit(char s){
+    suit = s;
+}
+bool Card::getOpen(){
+    return open;
+}
+void Card::setOpen(bool b){
+    open = b;
 }
 
 
@@ -714,7 +738,7 @@ char nextPos(char pos){
 
 
 //class Trick
-Trick::Trick(char first) //N,W,E,S
+Trick::Trick(int first) //N,W,E,S = 0,1,2,3
     :first(first)
 {
     i = 0;
@@ -730,11 +754,11 @@ string Trick::print(){
     return oss.str();
 }
 
-void Trick::nextCard(Card c){
+void Trick::addCard(Card c){
     cards[i++] = c;
 }
 
-Card Trick::nextCard(int i){
+Card Trick::getCard(int i){
     return cards[i];
 }
 
@@ -824,7 +848,7 @@ int Player::sendOtherCard(Card c, char pos, char* identity){
     string s = oss.str();
     int ret, len = s.length();
 
-    sprintf(buf, "Sending card to client ,totalLength(%d), command(%s)",len, s.substr(0,5).c_str());//length is 368
+    sprintf(buf, "Sending card to client ,totalLength(%d), command(%s)",len, s.substr(0,5).c_str());//length is 47
     logp(identity,0,0,buf);
     if((ret = sendall(fd, s.c_str(), &len, 0) ) != 0){
         errorp(identity, 0, 0, "Unable to send complete data");
@@ -834,10 +858,6 @@ int Player::sendOtherCard(Card c, char pos, char* identity){
     logp(cmpltIdentity,0,0,buf);
     return ret;
 }
-
-// int Player::sendUserScore(int ){
-
-// }
 
 int Player::sendUserCards(char* identity){
     char cmpltIdentity[CMPLT_IDENTITY_SIZE], buf[150];
@@ -933,6 +953,56 @@ int Player::getUserBid(bid* bd, char* identity){
 
         bd->val = root["bid"]["val"].asInt();
         bd->trump = root["bid"]["trump"].asString().at(0);
+
+        return 0;
+    }else{//wrong command received
+        errorp(identity,0,0,"Wrong command recvd");
+        return -4;
+    }
+
+}
+
+int Player::getUserCard(Card* c, char* identity){
+    char cmpltIdentity[CMPLT_IDENTITY_SIZE], buf[150];
+    strcpy(cmpltIdentity, identity);
+    strcat(cmpltIdentity,"-Player::getUserCard");
+
+    int ret, len = 5;
+    char command[5];
+
+    logp(cmpltIdentity,0,0,"Receiving the command");
+    if((ret = recvall(fd, command, &len, 0)) != 0) {
+        errorp(identity,0,0,"Unable to recv the command");
+        debugp(identity,1,errno,"");
+        return -5;
+    }
+
+    if(strncmp(command, "CARDM", 5) == 0){
+        len = commandsDataLen["CARDM"];
+        char dataC[len];
+        logp(cmpltIdentity,0,0,"Receiving the data");
+        if((ret = recvall(fd, dataC, &len, 0)) != 0) {
+            errorp(identity,0,0,"Unable to recv the data");
+            debugp(identity,1,errno,"");
+            return -3;
+        }
+        
+        string data;
+        data.assign(dataC, len);
+
+        Json::Value root;
+        Json::Reader reader;        
+        
+        logp(cmpltIdentity,0,0,"Parsing data");
+        if( !reader.parse(data, root, false) ){
+            errorp(identity,0,0,"Error parsing the data");
+            debugp(identity,0,0,reader.getFormatedErrorMessages().c_str());
+            return -2;
+        }
+
+        c->setRank( root["card"]["rank"].asString().at(0) );
+        c->setSuit( root["card"]["suit"].asString().at(0) );
+        c->setOpen( (root["card"]["open"].asString().at(0) == 'T' ? true : false) );
 
         return 0;
     }else{//wrong command received

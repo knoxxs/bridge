@@ -29,6 +29,10 @@ class Card{
 		string print();
 		char getSuit();
 		char getRank();
+		void setRank(char);
+		void setSuit(char);
+		bool getOpen();
+		void setOpen(bool);
 		string format_json();
 	private:
 		char suit;
@@ -51,15 +55,14 @@ class Trick{
 		Trick(char);
 		Trick();
 		string print();
-		Card nextCard(int);
-		void nextCard(Card);
+		Card getCard(int);
+		void addCard(Card);
 		void setWinner();
 		char getWinner();
 		int score();
 	private:
 		Card cards[4];
-		char first;
-		int i;
+		int first, i;
 		char winner;
 };
 
@@ -93,6 +96,7 @@ class Player{
 		int sendOtherCard(Card, char, char*);
 		int getUserBid(bid*, char*);
 		int sendOtherBid(bid*, char*);
+		int getUserCard(Card*, char*);
 	private:
 };
 class Game{
