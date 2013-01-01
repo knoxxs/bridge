@@ -356,12 +356,13 @@ void gameThread(void* arg)
         winr = game.getLastTrickWinner();
         for(k = 0; k < 4; k++){
             if(k != player){
-                game.players[k].sendScore(game.team[0].getScore(),game.team[1].getScore(), identity);
+                game.players[k].sendScore(game.team[0].getScore(true),game.team[1].getScore(true), identity);
             }
         }
     }
 
     //now check for bonuses
+//    game.setBonus();
 }
 
 void shuffleThread(void* arg){
@@ -1152,14 +1153,16 @@ int Player::sendScore(int tm1Score, int tm2Score, char* identity){
 Team::Team(char team, string tid,int p1, int p2)
     :subTeamId(team), teamId(tid), pl1Pos(p1), pl2Pos(p2)
 {
-    score = 0;
+    scoreBTL = 0;
+    scoreATL = 0;
     goal = 6;
     done = 0;//starting from [1 , 13]
     vulnerable = false;
 }
 
 Team::Team(){
-    score = 0;
+    scoreBTL = 0;
+    scoreATL = 0;
     goal = 6;
     done = 0;
     vulnerable = false;
@@ -1188,12 +1191,20 @@ int Team::getDone(){
     return done;
 }
 
-void Team::increaseScore(int s){
-    score += s;
+void Team::increaseScore(int s, bool btl){
+    if(btl){
+        scoreBTL += s;
+    }else{
+        scoreATL += s;
+    }
 }
 
-int Team::getScore(){
-    return score;
+int Team::getScore(bool btl){
+    if(btl){
+        return scoreBTL;
+    }else{
+        return scoreATL;
+    }
 }
 //class game
 Game::Game(string gid, char stid)
@@ -1261,12 +1272,45 @@ void Game::setNextTrick(Trick* trick, char* identity){
         initial = false;
     }
     team[winTeam].setDone(team[winTeam].getDone() + 1);
-    trick->setScore(trump, dbl, redbl, initial, ( team[winTeam].getGoal() >= team[winTeam].getDone() ) , team[winTeam].vulnerable);
+
+    bool belowTheLine = ( team[winTeam].getGoal() >= team[winTeam].getDone() );
+    trick->setScore(trump, dbl, redbl, initial, belowTheLine , team[winTeam].vulnerable);
 
     tricks[index++] = *trick;
-    team[winTeam].increaseScore(trick->getScore());
+
+    team[winTeam].increaseScore(trick->getScore(), belowTheLine);
 }
 
 int Game::getLastTrickWinner(){
     return tricks[index - 1].getWinner();
+}
+
+void Game::setBonusPenalties(){
+    int overtricks = team[declarer % 2].getDone() - team[declarer % 2].getGoal();
+    int scoreATL, scoreBTL;
+    bool vulnerable = team[declarer % 2].vulnerable;
+
+    scoreBTL = team[declarer % 2].getScore(true);
+    scoreATL = team[declarer % 2].getScore(false);
+
+    if(overtricks >= 0){
+        if(scoreBTL >= 100){
+            scoreATL += vulnerable ? 500 : 300;
+        }
+
+        if(team[declarer % 2].getGoal() == 12){
+            scoreATL += vulnerable ? 750 : 500;
+        }else if(team[declarer % 2].getGoal() == 13){
+            scoreATL += vulnerable ? 1500 : 1000;
+        }
+
+        if(dbl){
+            scoreATL += 50;
+        }else if(redbl){
+            scoreATL += 100;
+        }
+
+    }else { //penalties
+
+    }
 }
