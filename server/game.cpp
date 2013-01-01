@@ -260,6 +260,7 @@ void gameThread(void* arg)
                     case 'r':
                         if( game.declarer == ( (player + 2) % 4) && !game.dbl && !game.redbl){
                             game.redbl = true;
+                            game.dbl = false;
                             continousPass = 0;
                         }else{
                             flag = true;
@@ -780,7 +781,7 @@ Trick::Trick(int first) //N,W,E,S = 0,1,2,3
 }
 
 Trick::Trick(){
-    i =0;
+    i = 0;
 }
 
 string Trick::print(){
@@ -797,43 +798,57 @@ Card Trick::getCard(int i){
     return cards[i];
 }
 
-void Trick::setScoreWinner(char trump, bool dbl, bool redbl, bool initial, bool belowTheLine, bool vulnerable){
+void Trick::setWinTeam(char trump){
     int i;
     char winRank = cards[0].getRank(), winSuit = cards[0].getSuit();
-    winner = 0;
+    winTeam = 0;
 
     for(i = 1; i < 4; i++){
         if(cards[i].getSuit() == winSuit){
             if(cards[i].getRank() > winRank){
                 winRank = cards[i].getRank();
                 winSuit = cards[i].getSuit();
-                winner = i;
+                winTeam = i;
             }
         }else if(cards[i].getSuit() == trump){
             winRank = cards[i].getRank();
             winSuit = cards[i].getSuit();
-            winner = i;
+            winTeam = i;
         }
-    }
-
-    int factor = 1;
-    factor = dbl ? 2 : 1 ;
-    factor = redbl ? 4 : 1 ;
-
-    if(trump = 'N'){
-        if(initial){
-            score = factor * 40;
-        }else{
-            score = factor * 30;
-        }
-    }else if(trump == 'C' || trump == 'D'){
-        score = factor * 20;
-    }else {
-        score = factor * 30;
     }
 }
 
+void Trick::setScore(char trump, bool dbl, bool redbl, bool initial, bool belowTheLine, bool vulnerable){
+    int factor = 1;
 
+    if(belowTheLine || (!belowTheLine && !dbl && !redbl)){
+        factor = dbl ? 2 : 1 ;
+        factor = redbl ? 4 : 1 ;
+
+        if(trump = 'N'){
+            if(initial){
+                score = factor * 40;
+            }else{
+                score = factor * 30;
+            }
+        }else if(trump == 'C' || trump == 'D'){
+            score = factor * 20;
+        }else {
+            score = factor * 30;
+        }
+    }else{
+        factor = vulnerable ? 2 : 1 ;
+        score = dbl ? factor * 100 : factor * 200;
+    }
+}
+
+int Trick::getWinTeam(){
+    return winTeam;
+}
+
+int Trick::getScore(){
+    return score;
+}
 
 //class Tricks
 Tricks::Tricks(){

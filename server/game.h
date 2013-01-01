@@ -57,12 +57,13 @@ class Trick{
 		string print();
 		Card getCard(int);
 		void addCard(Card*);
-		void setScoreWinner(char, bool, bool, bool, bool, bool);
-		char getWinner();
+		void setScore(char, bool, bool, bool, bool, bool);
+		void setWinTeam(char);
+		int getWinTeam();
 		int getScore();
 	private:
 		Card cards[4];
-		int first, i, winner, score;//winner = 0,1
+		int first, i, winTeam, score;//winTeam = 0,1
 };
 
 class Tricks{
