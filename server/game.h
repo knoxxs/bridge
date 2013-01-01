@@ -52,7 +52,7 @@ class Deck{
 
 class Trick{
 	public:
-		Trick(char);
+		Trick(int);
 		Trick();
 		string print();
 		Card getCard(int);
@@ -93,7 +93,7 @@ class Player{
 		void addCard(vector <Card> &);
 		void addCard(Card);
 		int sendUserCards(char*);
-		int sendOtherCard(Card, char, char*);
+		int sendOtherCard(Card* , int, char*);
 		int getUserBid(bid*, char*);
 		int sendOtherBid(bid*, char*);
 		int getUserCard(Card*, char*);

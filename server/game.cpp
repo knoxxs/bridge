@@ -39,7 +39,7 @@ char SUITS[] = {'C', 'D', 'H', 'S'};
 char RANKS[] = {'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K'};
 unordered_map <char, int> VALUES = {{'A',1}, {'2',2}, {'3',3}, {'4',4}, {'5',5}, {'6',6}, {'7',7}, {'8',8}, {'9',9}, {'T',10}, {'J',11}, {'Q',12}, {'K',13} }; 
 
-unordered_map <string, int> commandsDataLen= {{"CARDS",363}, {"CARDO", 59}, {"CARDM", 59}, {"BIDOT", 31}, {"BIDMY", 31}};
+unordered_map <string, int> commandsDataLen= {{"CARDS",363}, {"CARDO", 57}, {"CARDM", 57}, {"BIDOT", 31}, {"BIDMY", 31}};
 
 unordered_map <string,pthread_t> mapThread={};
 unordered_map <string, long> mapMtype= {};
@@ -309,7 +309,7 @@ void gameThread(void* arg)
     }
 
     Tricks tricks();
-
+    Card current_card();
     for(i = 0; i < 13; i++){
         Trick trick(game.declarer);
 
@@ -365,11 +365,12 @@ void shuffleThread(void* arg){
         bnsPos = true;
     }
 
-    bid bd;
-    bd.val = 1;
-    bd.trump = 'N';
+    // Card bd;
+    // bd.setRank('A');
+    // bd.setSuit('S');
+    // bd.setOpen(false); 
 
-    gameA.players[0].sendOtherBid(&bd, identity);
+    // gameA.players[0].sendOtherCard(&bd,0, identity);
     while( playerRecvd < 8 ){
         logp(identity,0,0,"Inside recving while loop");
         if(msgRecv(&playerInfo, mtype, identity) != 0){
@@ -835,14 +836,14 @@ Player::Player()
 
 // }
 
-int Player::sendOtherCard(Card c, char pos, char* identity){
+int Player::sendOtherCard(Card* c, int pos, char* identity){
     char cmpltIdentity[CMPLT_IDENTITY_SIZE], buf[150];
     strcpy(cmpltIdentity, identity);
     strcat(cmpltIdentity,"-Player::sendOtherCard");
 
     logp(cmpltIdentity,0,0,"Making the data to send");
     std::ostringstream oss;
-    oss << "CARDO{\"pos\":\"" << pos << "\", \"card\":\"" << c.format_json() << "\"}";
+    oss << "CARDO{\"pos\":\"" << pos << "\", \"card\":" << c->format_json() << "}";
      
     logp(cmpltIdentity,0,0,"Converting the data to string");
     string s = oss.str();
