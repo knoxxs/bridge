@@ -311,18 +311,39 @@ void gameThread(void* arg)
     Tricks tricks;
     Card currentCard;
     char currentSuit;
+    int winr = game.declarer, k;
 
     for(i = 0; i < 13; i++){
-        Trick trick(game.declarer);
+        Trick trick(winr);
 
         for(j = 0; j < 4; j++){
+            flag = false;
             player = (j + game.declarer) % 4;
-            game.players[j].getUserCard(&currentCard, identity);
+            game.players[player].getUserCard(&currentCard, identity);
 
-            if(game.players[j].hasCard(&currentCard, identity)){
-
+            if(game.players[player].hasCard(&currentCard, identity)){
+                if( j == 0){
+                    currentSuit = currentCard.getSuit();
+                }else{
+                    if(currentCard.getSuit() != currentSuit  && game.players[player].hasCardWithSuit(currentSuit, identity)){
+                        //wrong move by player
+                        flag = true;
+                    }
+                }
+                if(!flag){
+                    trick.addCard(&currentCard);
+                    for(k = 0; k < 4; k++){
+                        if(k != player){
+                            game.players[k].sendOtherCard(&currentCard, player, identity);
+                        }
+                    }
+                }
+            }else{
+                //wrong card by player
             }
         }
+
+        //trick done
     }
 }
 void shuffleThread(void* arg){
@@ -760,8 +781,8 @@ string Trick::print(){
     return oss.str();
 }
 
-void Trick::addCard(Card c){
-    cards[i++] = c;
+void Trick::addCard(Card* c){
+    cards[i++] = *c;
 }
 
 Card Trick::getCard(int i){
@@ -1023,16 +1044,37 @@ bool Player::hasCard(Card* c, char* identity){
     strcpy(cmpltIdentity, identity);
     strcat(cmpltIdentity,"-Player::hasCard");
 
+    logp(cmpltIdentity,0,0,"Starting the iteration");
     vector<Card>::iterator it;
     for(it = cards.begin(); it != cards.end(); it++){
         if((*it).getSuit() == c->getSuit()  && (*it).getRank() == c->getRank() ){
+            logp(cmpltIdentity,0,0,"Returning True");
             return true;
         }
     }
 
+    logp(cmpltIdentity,0,0,"Returning False");
     return false;
 }
 
+bool Player::hasCardWithSuit(char s, char* identity){
+    char cmpltIdentity[CMPLT_IDENTITY_SIZE], buf[150];
+    strcpy(cmpltIdentity, identity);
+    strcat(cmpltIdentity,"-Player::hasCard");
+
+    logp(cmpltIdentity,0,0,"Starting the iteration");
+    vector<Card>::iterator it;
+    for(it = cards.begin(); it != cards.end(); it++){
+        if((*it).getSuit() == s ){
+            logp(cmpltIdentity,0,0,"Returning False");
+            return false;
+        }
+    }
+
+    logp(cmpltIdentity,0,0,"Returning True");
+    return true;
+
+}
 //class Team
 Team::Team(char team, string tid,string plid1, string plid2)
     :team(team), tid(tid), plid1(plid1), plid2(plid2)

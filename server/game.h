@@ -56,14 +56,13 @@ class Trick{
 		Trick();
 		string print();
 		Card getCard(int);
-		void addCard(Card);
+		void addCard(Card*);
 		void setWinner();
 		char getWinner();
 		int score();
 	private:
 		Card cards[4];
-		int first, i;
-		char winner;
+		int first, i, winner;
 };
 
 class Tricks{
@@ -98,6 +97,7 @@ class Player{
 		int sendOtherBid(bid*, char*);
 		int getUserCard(Card*, char*);
 		bool hasCard(Card*, char*);
+		bool hasCardWithSuit(char, char*);
 	private:
 };
 class Game{
