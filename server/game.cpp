@@ -362,7 +362,13 @@ void gameThread(void* arg)
     }
 
     //now check for bonuses
-//    game.setBonus();
+    game.setBonusPenalties(identity);
+
+    //sending final score
+    for(k = 0; k < 4; k++){
+            game.players[k].sendScore(game.team[0].getScore(true),game.team[1].getScore(true), identity);
+    }
+
 }
 
 void shuffleThread(void* arg){
@@ -1283,6 +1289,11 @@ void Team::increaseScore(int s, bool btl){
     }
 }
 
+void Team::setScore(int btl, int atl){
+    scoreBTL = btl;
+    scoreATL = atl;
+}
+
 int Team::getScore(bool btl){
     if(btl){
         return scoreBTL;
@@ -1378,10 +1389,11 @@ void Game::setBonusPenalties(char *identity){
     int scoreATL, scoreBTL;
     bool vulnerable = team[declarer % 2].vulnerable;
 
-    scoreBTL = team[declarer % 2].getScore(true);
-    scoreATL = team[declarer % 2].getScore(false);
 
     if(overtricks >= 0){
+        scoreBTL = team[declarer % 2].getScore(true);
+        scoreATL = team[declarer % 2].getScore(false);
+
         if(scoreBTL >= 100){
             scoreATL += vulnerable ? 500 : 300;
         }
@@ -1398,17 +1410,45 @@ void Game::setBonusPenalties(char *identity){
             scoreATL += 100;
         }
 
-        if(game.players[declarer].fourTrumpHonor(trump, cmpltIdentity) || game.players[(declarer + 2) % 4].fourTrumpHonor(trump, cmpltIdentity) ){
+        if(players[declarer].fourTrumpHonor(trump, cmpltIdentity) || players[(declarer + 2) % 4].fourTrumpHonor(trump, cmpltIdentity) ){
             scoreATL += 100;
-        }else if(game.players[declarer].fiveTrumpHonor(trump, cmpltIdentity) || game.players[(declarer + 2) % 4].fiveTrumpHonor(trump, cmpltIdentity) ){
+        }else if(players[declarer].fiveTrumpHonor(trump, cmpltIdentity) || players[(declarer + 2) % 4].fiveTrumpHonor(trump, cmpltIdentity) ){
             scoreATL += 150;
         }
 
-        if(game.players[declarer].fourAces(trump, cmpltIdentity) || game.players[(declarer + 2) % 4].fourAces(trump, cmpltIdentity) ){
+        if(players[declarer].fourAces(trump, cmpltIdentity) || players[(declarer + 2) % 4].fourAces(trump, cmpltIdentity) ){
             scoreATL += 150;
         }    
     }else { //penalties
+        team[declarer % 2].setScore(0, 0);
+        
+        int factor, increment;
 
+        overtricks = -1 * overtricks;
+
+        if(redbl || dbl){
+            factor = dbl ? 1 : 2; //double and redbl
+            scoreATL = vulnerable ? factor * 200 : factor * 100;
+            increment = vulnerable ? factor * 300 : factor * 200;
+
+            overtricks--;
+            int i = 0;
+            if(overtricks <= 2){
+                for(; i < overtricks; i++){
+                    scoreATL += increment;
+                }
+            }else{
+                for(; i < 2; i++){
+                    scoreATL += increment;
+                }
+                increment = factor * 300;
+                for(; i < overtricks; i++){
+                    scoreATL += increment;
+                }
+            }
+        }
+
+        team[(declarer+1) % 2].setScore(0, scoreATL);
     }
 }
 

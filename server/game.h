@@ -104,6 +104,7 @@ class Team{
 		void setFields(char, string,int, int);
 		int getScore(bool);
 		void increaseScore(int, bool);
+		void setScore(int, int);
 		void setGoal(int);
 		int getGoal();
 		void setDone(int);
@@ -133,7 +134,7 @@ class Game{
 		Trick getTrick(int);
 		void setNextTrick(Trick*, char*);
 		int getLastTrickWinner();
-		void setBonusPenalties();
+		void setBonusPenalties(char*);
 	private:
 		Trick tricks[13];
 		int index;
