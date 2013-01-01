@@ -8,3 +8,4 @@ sendOtherCard: TotalL = 62,  method = CARDO, methodL = 5, DataL = 62-5  = 57
 getUserCard  : TotalL = 62,  method = CARDM, methodL = 5, DataL = 62-5  = 57
 sendOtherBid : TotalL = 36,  method = BIDOT, methodL = 5, DataL = 36-5  = 31
 getUserBid   : TotalL = 36,  method = BIDMY, methodL = 5, DataL = 36-5  = 31
+sendScore    : TotalL = Var, method = SCORE, methodL = 5, LengthL = 2, DataL = haveTo read at runtime  (SCORELL{....})

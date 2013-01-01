@@ -351,9 +351,19 @@ void gameThread(void* arg)
             }
         }
 
-        //trick done
+        //one trick done
+        game.setNextTrick(&trick, identity);
+        winr = game.getLastTrickWinner();
+        for(k = 0; k < 4; k++){
+            if(k != player){
+                game.players[k].sendScore(game.team[0].getScore(),game.team[1].getScore(), identity);
+            }
+        }
     }
+
+    //now check for bonuses
 }
+
 void shuffleThread(void* arg){
     playerMsg playerInfo;
     playerInfo = *( (playerMsg*) (arg) );
@@ -404,7 +414,7 @@ void shuffleThread(void* arg){
     // bd.setSuit('S');
     // bd.setOpen(false); 
 
-    // gameA.players[0].sendOtherCard(&bd,0, identity);
+    gameA.players[0].sendScore(12,12, identity);
     while( playerRecvd < 8 ){
         logp(identity,0,0,"Inside recving while loop");
         if(msgRecv(&playerInfo, mtype, identity) != 0){
@@ -859,7 +869,6 @@ int Trick::getScore(){
     return score;
 }
 
-
 //class Player
 Player::Player(string plid, char position, char team, string tid, string name, int fd)
     :plid(plid), position(position), subTeamId(team), tid(tid), name(name), fd(fd)
@@ -1111,6 +1120,33 @@ void Player::removeCard(Card* c, char* identity){
     return;
 }
 
+int Player::sendScore(int tm1Score, int tm2Score, char* identity){
+    char cmpltIdentity[CMPLT_IDENTITY_SIZE], buf[150];
+    strcpy(cmpltIdentity, identity);
+    strcat(cmpltIdentity,"-Player::sendScore");
+
+    string s;
+
+    logp(cmpltIdentity,0,0,"Making the data to send and Converting the data to string");
+    std::ostringstream oss1, oss2;
+    
+    oss1 << "{\"team1Score\":\"" << tm1Score << "\", \"team2Score\":\"" << tm2Score << "\"}";
+    s = oss1.str();
+    oss2 << "SCORE" << s.length();
+    s = oss2.str() + s; 
+    
+    int ret, len = s.length();
+    cout << s <<endl;
+    sprintf(buf, "Sending card to client ,totalLength(%d), command(%s)",len, s.substr(0,5).c_str());//length is 47
+    logp(identity,0,0,buf);
+    if((ret = sendall(fd, s.c_str(), &len, 0) ) != 0){
+        errorp(identity, 0, 0, "Unable to send complete data");
+        debugp(identity,1,errno,"");
+    }
+    sprintf(buf, "Returning with return value(%d)",ret);
+    logp(cmpltIdentity,0,0,buf);
+    return ret;
+}
 
 //class Team
 Team::Team(char team, string tid,int p1, int p2)
@@ -1152,11 +1188,13 @@ int Team::getDone(){
     return done;
 }
 
-// int Team::score(){
-    
-// }
+void Team::increaseScore(int s){
+    score += s;
+}
 
-
+int Team::getScore(){
+    return score;
+}
 //class game
 Game::Game(string gid, char stid)
     :gameId(gid), subTeamId(stid)
@@ -1226,6 +1264,7 @@ void Game::setNextTrick(Trick* trick, char* identity){
     trick->setScore(trump, dbl, redbl, initial, ( team[winTeam].getGoal() >= team[winTeam].getDone() ) , team[winTeam].vulnerable);
 
     tricks[index++] = *trick;
+    team[winTeam].increaseScore(trick->getScore());
 }
 
 int Game::getLastTrickWinner(){

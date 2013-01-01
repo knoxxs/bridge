@@ -88,6 +88,7 @@ class Player{
 		bool hasCard(Card*, char*);
 		bool hasCardWithSuit(char, char*);
 		void removeCard(Card*, char*);
+		int sendScore(int, int, char*);
 	private:
 };
 
@@ -97,7 +98,7 @@ class Team{
 		Team();
 		void setFields(char, string,int, int);
 		int getScore();
-		void setScore();
+		void increaseScore(int);
 		void setGoal(int);
 		int getGoal();
 		void setDone(int);
