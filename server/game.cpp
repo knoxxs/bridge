@@ -1122,6 +1122,89 @@ void Player::removeCard(Card* c, char* identity){
     return;
 }
 
+bool Player::fourTrumpHonor(char trump, char* identity){
+    char cmpltIdentity[CMPLT_IDENTITY_SIZE], buf[150];
+    strcpy(cmpltIdentity, identity);
+    strcat(cmpltIdentity,"-Player::fourTrumpHonor");
+
+    int cnt = 0;
+
+    logp(cmpltIdentity,0,0,"Starting the iteration");
+    vector<Card>::iterator it;
+    for(it = cards.begin(); it != cards.end(); it++){
+        if((*it).getSuit() == trump  && isHonor((*it).getRank()) ){
+            logp(cmpltIdentity,0,0,"found a honor Card");
+            cnt++;
+        }
+    }
+
+    sprintf(buf, "returning with cnt(%d), if four  = true", cnt);
+    logp(cmpltIdentity,0,0, buf);
+
+    if(cnt == 4){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+bool Player::fiveTrumpHonor(char trump, char* identity){
+    char cmpltIdentity[CMPLT_IDENTITY_SIZE], buf[150];
+    strcpy(cmpltIdentity, identity);
+    strcat(cmpltIdentity,"-Player::fiveTrumpHonor");
+
+    int cnt = 0;
+
+    logp(cmpltIdentity,0,0,"Starting the iteration");
+    vector<Card>::iterator it;
+    for(it = cards.begin(); it != cards.end(); it++){
+        if((*it).getSuit() == trump  && isHonor((*it).getRank()) ){
+            logp(cmpltIdentity,0,0,"found a honor Card");
+            cnt++;
+        }
+    }
+
+    sprintf(buf, "returning with cnt(%d), if five  = true", cnt);
+    logp(cmpltIdentity,0,0, buf);
+    
+    if(cnt == 5){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+bool Player::fourAces(char trump, char* identity){
+    char cmpltIdentity[CMPLT_IDENTITY_SIZE], buf[150];
+    strcpy(cmpltIdentity, identity);
+    strcat(cmpltIdentity,"-Player::fourAces");
+
+    if(trump == 'N'){
+        int cnt = 0;
+
+        logp(cmpltIdentity,0,0,"Starting the iteration");
+        vector<Card>::iterator it;
+        for(it = cards.begin(); it != cards.end(); it++){
+            if((*it).getRank() == 'A' ){
+                logp(cmpltIdentity,0,0,"found a Ace");
+                cnt++;
+            }
+        }
+
+        sprintf(buf, "returning with cnt(%d), if four  = true", cnt);
+        logp(cmpltIdentity,0,0, buf);
+        
+        if(cnt == 4){
+            return true;
+        }else{
+            return false;
+        }
+    }else{
+        logp(cmpltIdentity,0,0, "Trump is not no Trump, so returning false");
+        return false;
+    }
+}
+
 int Player::sendScore(int tm1Score, int tm2Score, char* identity){
     char cmpltIdentity[CMPLT_IDENTITY_SIZE], buf[150];
     strcpy(cmpltIdentity, identity);
@@ -1311,7 +1394,22 @@ void Game::setBonusPenalties(){
             scoreATL += 100;
         }
 
+
     }else { //penalties
 
+    }
+}
+
+bool isHonor(char r){
+    switch(r){
+        case 'T':
+        case 'J':
+        case 'Q':
+        case 'K':
+        case 'A':
+            return true;
+            break;
+        default:
+            return false;
     }
 }

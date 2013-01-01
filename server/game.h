@@ -16,6 +16,8 @@ void shuffleThread(void*);
 char nextPos(char);
 void setMtype(string, char*);
 void delSetMtype(string, char*);
+bool isHonor(char);
+
 
 struct bid{
 	int val;// A, 2 ... K  //pass,double,redouble = 0
@@ -89,6 +91,9 @@ class Player{
 		bool hasCardWithSuit(char, char*);
 		void removeCard(Card*, char*);
 		int sendScore(int, int, char*);
+		bool fourAces(char, char*);
+		bool fiveTrumpHonor(char, char*);
+		bool fourTrumpHonor(char, char*);
 	private:
 };
 
