@@ -90,7 +90,7 @@ class Player{
 		bool hasCard(Card*, char*);
 		bool hasCardWithSuit(char, char*);
 		void removeCard(Card*, char*);
-		int sendScore(int, int, char*);
+		int sendScore(int, int, int, int, char*);
 		bool fourAces(char, char*);
 		bool fiveTrumpHonor(char, char*);
 		bool fourTrumpHonor(char, char*);

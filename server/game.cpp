@@ -356,7 +356,7 @@ void gameThread(void* arg)
         winr = game.getLastTrickWinner();
         for(k = 0; k < 4; k++){
             if(k != player){
-                game.players[k].sendScore(game.team[0].getScore(true),game.team[1].getScore(true), identity);
+                game.players[k].sendScore(game.team[0].getScore(true), game.team[0].getScore(false), game.team[1].getScore(true), game.team[1].getScore(false), identity);
             }
         }
     }
@@ -366,7 +366,7 @@ void gameThread(void* arg)
 
     //sending final score
     for(k = 0; k < 4; k++){
-            game.players[k].sendScore(game.team[0].getScore(true),game.team[1].getScore(true), identity);
+        game.players[k].sendScore(game.team[0].getScore(true), game.team[0].getScore(false), game.team[1].getScore(true), game.team[1].getScore(false), identity);
     }
 
 }
@@ -421,7 +421,7 @@ void shuffleThread(void* arg){
     // bd.setSuit('S');
     // bd.setOpen(false); 
 
-    gameA.players[0].sendScore(12,12, identity);
+    gameA.players[0].sendScore(12,12,12,12, identity);
     while( playerRecvd < 8 ){
         logp(identity,0,0,"Inside recving while loop");
         if(msgRecv(&playerInfo, mtype, identity) != 0){
@@ -1211,7 +1211,7 @@ bool Player::fourAces(char trump, char* identity){
     }
 }
 
-int Player::sendScore(int tm1Score, int tm2Score, char* identity){
+int Player::sendScore(int tm1ScoreBTL, int tm1ScoreATL, int tm2ScoreBTL, int tm2ScoreATL, char* identity){
     char cmpltIdentity[CMPLT_IDENTITY_SIZE], buf[150];
     strcpy(cmpltIdentity, identity);
     strcat(cmpltIdentity,"-Player::sendScore");
@@ -1221,7 +1221,7 @@ int Player::sendScore(int tm1Score, int tm2Score, char* identity){
     logp(cmpltIdentity,0,0,"Making the data to send and Converting the data to string");
     std::ostringstream oss1, oss2;
     
-    oss1 << "{\"team1Score\":\"" << tm1Score << "\", \"team2Score\":\"" << tm2Score << "\"}";
+    oss1 << "{\"tm1ScrBTL\":\"" << tm1ScoreBTL << "\", \"tm1ScrATL\":\"" << tm1ScoreATL << "\", \"tm2ScrBTL\":\"" << tm2ScoreBTL << "\", \"tm2ScrATL\":\"" << tm2ScoreATL << "\"}";
     s = oss1.str();
     oss2 << "SCORE" << s.length();
     s = oss2.str() + s; 
