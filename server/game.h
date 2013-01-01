@@ -57,12 +57,12 @@ class Trick{
 		string print();
 		Card getCard(int);
 		void addCard(Card*);
-		void setWinner();
+		void setScoreWinner(char, bool, bool, bool, bool, bool);
 		char getWinner();
-		int score();
+		int getScore();
 	private:
 		Card cards[4];
-		int first, i, winner;
+		int first, i, winner, score;//winner = 0,1
 };
 
 class Tricks{
@@ -101,6 +101,22 @@ class Player{
 		void removeCard(Card*, char*);
 	private:
 };
+
+class Team{
+	public:
+		Team(char, string,int, int);
+		Team();
+		void setFields(char, string,int, int);
+		int getScore();
+		void setScore();
+		void setGoal(int);
+		int getGoal();
+	private:
+		char subTeamId;
+		string teamId;
+		int pl1Pos, pl2Pos, score, goal, done;
+};
+
 class Game{
 	public:
 		Game(string, char, Player, Player, Player, Player);
@@ -113,16 +129,16 @@ class Game{
 		int declarer, dealer;
 		bool dbl, redbl;
 		vector<bid> bids;
-		int goal;
+		Team team[2];
+		void setTeam(char, string,int, int, int);
+		void addTrick(Trick*);
+		Trick getTrick(int);
+		void setLastTrickScore(char*);
 	private:
-};
-class Team{
-	public:
-		Team(char, string,string, string);
-		int score();
-	private:
-		char team;
-		string tid, plid1, plid2;
+		Trick tricks[13];
+		int index;
+		char winner;
+
 };
 
 #endif

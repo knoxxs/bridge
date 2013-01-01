@@ -232,7 +232,7 @@ void gameThread(void* arg)
     game.dealer = 0;
     
     bid currentBid;
-    int continousPass = 0, i, j, player;
+    int continousPass = 0, i, j, player, goal;
     bool flag = false;
 
     //inserting dummy bid
@@ -277,7 +277,7 @@ void gameThread(void* arg)
                         char lastTrump = game.bids.back().trump;
                         if(currentBid.val > lastVal || (currentBid.val == lastVal  && (currentBid.trump > lastTrump  || currentBid.trump == 'N')) ){
                             game.trump = currentBid.trump;
-                            game.goal = 6 + currentBid.val;
+                            goal = 6 + currentBid.val;
                             game.dbl = false;
                             game.redbl = false;
                             continousPass = 0;
@@ -297,6 +297,7 @@ void gameThread(void* arg)
 
                     for(j = 0; j < 4; j++){
                         if(j != player){
+
                             game.players[j].sendOtherBid(&currentBid, identity);
                         }
                     }
@@ -307,6 +308,12 @@ void gameThread(void* arg)
             }
         }
     }
+
+    game.setTeam(game.subTeamId, game.players[0].tid, 0, 2, 0);
+    game.setTeam(game.subTeamId, game.players[1].tid, 1, 3, 1);
+
+    game.team[game.declarer % 2].setGoal(goal);
+    game.team[(game.declarer + 1) % 2].setGoal(13 - goal);
 
     Tricks tricks;
     Card currentCard;
@@ -790,17 +797,42 @@ Card Trick::getCard(int i){
     return cards[i];
 }
 
-int Trick::score(){
-    //TODO
+void Trick::setScoreWinner(char trump, bool dbl, bool redbl, bool initial, bool belowTheLine, bool vulnerable){
+    int i;
+    char winRank = cards[0].getRank(), winSuit = cards[0].getSuit();
+    winner = 0;
+
+    for(i = 1; i < 4; i++){
+        if(cards[i].getSuit() == winSuit){
+            if(cards[i].getRank() > winRank){
+                winRank = cards[i].getRank();
+                winSuit = cards[i].getSuit();
+                winner = i;
+            }
+        }else if(cards[i].getSuit() == trump){
+            winRank = cards[i].getRank();
+            winSuit = cards[i].getSuit();
+            winner = i;
+        }
+    }
+
+    int factor = 1;
+    factor = dbl ? 2 : 1 ;
+    factor = redbl ? 4 : 1 ;
+
+    if(trump = 'N'){
+        if(initial){
+            score = factor * 40;
+        }else{
+            score = factor * 30;
+        }
+    }else if(trump == 'C' || trump == 'D'){
+        score = factor * 20;
+    }else {
+        score = factor * 30;
+    }
 }
 
-void Trick::setWinner(){
-    //TODO
-}
-
-char Trick::getWinner(){
-    //TODO
-}
 
 
 //class Tricks
@@ -812,7 +844,7 @@ string Tricks::print(){
     std::ostringstream oss;
     int i;
     for(i = 0; i < 13; i++){
-        oss << "Trick" << i+1 << " (Winner:" << tricks[i].getWinner() << "): '" << tricks[i].print() << endl;
+       // oss << "Trick" << i+1 << " (Winner:" << tricks[i].getWinner() << "): '" << tricks[i].print() << endl;
     }
     return oss.str();
 }
@@ -825,22 +857,9 @@ Trick Tricks::get(int i){
     return tricks[i];
 }
 
-void Tricks::setWinner(){
-
-}
 
 char Tricks::getWinner(){
 
-}
-
-int Tricks::score(char team){
-    int i, score = 0;
-    for(i = 0; i < 13; i++){
-        if(tricks[i].getWinner() == team){
-            score += tricks[i].score();
-        }
-    }
-    return score;
 }
 
 
@@ -1097,13 +1116,39 @@ void Player::removeCard(Card* c, char* identity){
 
 
 //class Team
-Team::Team(char team, string tid,string plid1, string plid2)
-    :team(team), tid(tid), plid1(plid1), plid2(plid2)
-{}
-
-int Team::score(){
-    
+Team::Team(char team, string tid,int p1, int p2)
+    :subTeamId(team), teamId(tid), pl1Pos(p1), pl2Pos(p2)
+{
+    score = 0;
+    goal = 6;
+    done = 1;
 }
+
+Team::Team(){
+    score = 0;
+    goal = 6;
+    done = 1;
+}
+
+void Team::setFields(char stm, string tid,int p1, int p2){
+    subTeamId = stm;
+    teamId = tid;
+    pl1Pos = p1;
+    pl2Pos = p2;
+}
+
+void Team::setGoal(int g){
+    goal = g;
+}
+
+int Team::getGoal(){
+    return goal;
+}
+
+
+// int Team::score(){
+    
+// }
 
 
 //class game
@@ -1112,7 +1157,7 @@ Game::Game(string gid, char stid)
 {
     dbl = false;
     redbl = false;
-    goal = 6;
+    index = 0;
 }
 
 Game::Game(string gid, char stid, Player n,Player s, Player e, Player w)
@@ -1120,7 +1165,7 @@ Game::Game(string gid, char stid, Player n,Player s, Player e, Player w)
 {
     dbl = false;
     redbl = false;
-    goal = 6;
+    index = 0;
     players[0] = n;
     players[1] = s;
     players[2] = e;
@@ -1143,4 +1188,20 @@ void Game::setPlayer(Player& p, char pos){
             players[3] = p;
             break;
     }    
+}
+
+void Game::setTeam(char stm, string tid,int p1, int p2, int which){
+    team[which].setFields(stm, tid, p1, p2);
+}
+
+void Game::addTrick(Trick* t){
+    tricks[index++] = *t;
+}
+
+Trick Game::getTrick(int i){
+    return tricks[i];
+}
+
+void Game::setLastTrickScore(char* identity){
+
 }
