@@ -316,7 +316,6 @@ void gameThread(void* arg)
     game.team[game.declarer % 2].setGoal(goal);
     game.team[(game.declarer + 1) % 2].setGoal(13 - goal);
 
-    Tricks tricks;
     Card currentCard;
     char currentSuit;
     int winr = game.declarer, k;
@@ -858,33 +857,6 @@ int Trick::getWinner(){
 
 int Trick::getScore(){
     return score;
-}
-
-//class Tricks
-Tricks::Tricks(){
-    index = 0;
-}
-
-string Tricks::print(){
-    std::ostringstream oss;
-    int i;
-    for(i = 0; i < 13; i++){
-       // oss << "Trick" << i+1 << " (Winner:" << tricks[i].getWinner() << "): '" << tricks[i].print() << endl;
-    }
-    return oss.str();
-}
-
-void Tricks::add(Trick t){
-    tricks[index++] = t;
-}
-
-Trick Tricks::get(int i){
-    return tricks[i];
-}
-
-
-char Tricks::getWinner(){
-
 }
 
 

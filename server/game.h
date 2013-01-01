@@ -68,20 +68,6 @@ class Trick{
 		int first, i, winTeam, winner, score;//winTeam = 0,1
 };
 
-class Tricks{
-	public:
-		Tricks();
-		string print();
-		void add(Trick);
-		Trick get(int);
-		void setWinner();
-		char getWinner();
-		int score(char);
-	private:
-		Trick tricks[13];
-		int index;
-		char winner;
-};
 class Player{
 	public:
 		char position;
