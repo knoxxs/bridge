@@ -1074,7 +1074,7 @@ bool Player::hasCard(Card* c, char* identity){
     logp(cmpltIdentity,0,0,"Starting the iteration");
     vector<Card>::iterator it;
     for(it = cards.begin(); it != cards.end(); it++){
-        if((*it).getSuit() == c->getSuit()  && (*it).getRank() == c->getRank() ){
+        if((*it).getSuit() == c->getSuit()  && (*it).getRank() == c->getRank() && !(*it).getOpen()){
             logp(cmpltIdentity,0,0,"Returning True");
             return true;
         }
@@ -1092,7 +1092,7 @@ bool Player::hasCardWithSuit(char s, char* identity){
     logp(cmpltIdentity,0,0,"Starting the iteration");
     vector<Card>::iterator it;
     for(it = cards.begin(); it != cards.end(); it++){
-        if((*it).getSuit() == s ){
+        if((*it).getSuit() == s && !(*it).getOpen()){
             logp(cmpltIdentity,0,0,"Returning False");
             return false;
         }
@@ -1111,8 +1111,9 @@ void Player::removeCard(Card* c, char* identity){
     vector<Card>::iterator it;
     for(it = cards.begin(); it != cards.end(); it++){
         if((*it).getSuit() == c->getSuit()  && (*it).getRank() == c->getRank() ){
-            logp(cmpltIdentity,0,0,"Removing the Card");
-            cards.erase(it);
+            logp(cmpltIdentity,0,0,"Removing i.e. opening the Card");
+            //cards.erase(it);
+            (*it).setOpen(true);
             return;
         }
     }
