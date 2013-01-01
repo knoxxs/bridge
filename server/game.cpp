@@ -802,18 +802,20 @@ void Trick::setWinTeam(char trump){
     int i;
     char winRank = cards[0].getRank(), winSuit = cards[0].getSuit();
     winTeam = 0;
-
+    winner = 0;
     for(i = 1; i < 4; i++){
         if(cards[i].getSuit() == winSuit){
             if(cards[i].getRank() > winRank){
                 winRank = cards[i].getRank();
                 winSuit = cards[i].getSuit();
-                winTeam = i;
+                winTeam = i % 2;
+                winner = i;
             }
         }else if(cards[i].getSuit() == trump){
             winRank = cards[i].getRank();
             winSuit = cards[i].getSuit();
-            winTeam = i;
+            winTeam = i % 2;
+            winner = i;
         }
     }
 }
@@ -842,8 +844,16 @@ void Trick::setScore(char trump, bool dbl, bool redbl, bool initial, bool belowT
     }
 }
 
+void Trick::setScore(int sc){
+    score = sc;
+}
+
 int Trick::getWinTeam(){
     return winTeam;
+}
+
+int Trick::getWinner(){
+    return winner;
 }
 
 int Trick::getScore(){
@@ -1136,13 +1146,15 @@ Team::Team(char team, string tid,int p1, int p2)
 {
     score = 0;
     goal = 6;
-    done = 1;
+    done = 0;//starting from [1 , 13]
+    vulnerable = false;
 }
 
 Team::Team(){
     score = 0;
     goal = 6;
-    done = 1;
+    done = 0;
+    vulnerable = false;
 }
 
 void Team::setFields(char stm, string tid,int p1, int p2){
@@ -1160,6 +1172,13 @@ int Team::getGoal(){
     return goal;
 }
 
+void Team::setDone(int d){
+    done = d;
+}
+
+int Team::getDone(){
+    return done;
+}
 
 // int Team::score(){
     
@@ -1217,6 +1236,26 @@ Trick Game::getTrick(int i){
     return tricks[i];
 }
 
-void Game::setLastTrickScore(char* identity){
+void Game::setNextTrick(Trick* trick, char* identity){
+    int winner, winTeam;
+    bool initial;
+    trick->setWinTeam(trump);
+    winTeam = trick->getWinTeam();
+    winner = trick->getWinner();
 
+    if(team[winTeam].getDone() < 6){
+        trick->setScore(0);
+    }else if(team[winTeam].getDone() == 6){
+        initial = true;
+    }else{
+        initial = false;
+    }
+    team[winTeam].setDone(team[winTeam].getDone() + 1);
+    trick->setScore(trump, dbl, redbl, initial, ( team[winTeam].getGoal() >= team[winTeam].getDone() ) , team[winTeam].vulnerable);
+
+    tricks[index++] = *trick;
+}
+
+int Game::getLastTrickWinner(){
+    return tricks[index - 1].getWinner();
 }

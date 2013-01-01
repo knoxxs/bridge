@@ -58,12 +58,14 @@ class Trick{
 		Card getCard(int);
 		void addCard(Card*);
 		void setScore(char, bool, bool, bool, bool, bool);
-		void setWinTeam(char);
+		void setScore(int);
+		void setWinTeam(char);//also sets winner
 		int getWinTeam();
 		int getScore();
+		int getWinner();
 	private:
 		Card cards[4];
-		int first, i, winTeam, score;//winTeam = 0,1
+		int first, i, winTeam, winner, score;//winTeam = 0,1
 };
 
 class Tricks{
@@ -112,6 +114,9 @@ class Team{
 		void setScore();
 		void setGoal(int);
 		int getGoal();
+		void setDone(int);
+		int getDone();
+		bool vulnerable;
 	private:
 		char subTeamId;
 		string teamId;
@@ -134,7 +139,8 @@ class Game{
 		void setTeam(char, string,int, int, int);
 		void addTrick(Trick*);
 		Trick getTrick(int);
-		void setLastTrickScore(char*);
+		void setNextTrick(Trick*, char*);
+		int getLastTrickWinner();
 	private:
 		Trick tricks[13];
 		int index;
