@@ -1369,7 +1369,11 @@ int Game::getLastTrickWinner(){
     return tricks[index - 1].getWinner();
 }
 
-void Game::setBonusPenalties(){
+void Game::setBonusPenalties(char *identity){
+    char cmpltIdentity[CMPLT_IDENTITY_SIZE], buf[150];
+    strcpy(cmpltIdentity, identity);
+    strcat(cmpltIdentity,"-Game::setBonusPenalties");
+
     int overtricks = team[declarer % 2].getDone() - team[declarer % 2].getGoal();
     int scoreATL, scoreBTL;
     bool vulnerable = team[declarer % 2].vulnerable;
@@ -1394,7 +1398,15 @@ void Game::setBonusPenalties(){
             scoreATL += 100;
         }
 
+        if(game.players[declarer].fourTrumpHonor(trump, cmpltIdentity) || game.players[(declarer + 2) % 4].fourTrumpHonor(trump, cmpltIdentity) ){
+            scoreATL += 100;
+        }else if(game.players[declarer].fiveTrumpHonor(trump, cmpltIdentity) || game.players[(declarer + 2) % 4].fiveTrumpHonor(trump, cmpltIdentity) ){
+            scoreATL += 150;
+        }
 
+        if(game.players[declarer].fourAces(trump, cmpltIdentity) || game.players[(declarer + 2) % 4].fourAces(trump, cmpltIdentity) ){
+            scoreATL += 150;
+        }    
     }else { //penalties
 
     }
