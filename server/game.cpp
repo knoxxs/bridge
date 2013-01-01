@@ -332,6 +332,7 @@ void gameThread(void* arg)
                 }
                 if(!flag){
                     trick.addCard(&currentCard);
+                    game.players[player].removeCard(&currentCard, identity);
                     for(k = 0; k < 4; k++){
                         if(k != player){
                             game.players[k].sendOtherCard(&currentCard, player, identity);
@@ -1060,7 +1061,7 @@ bool Player::hasCard(Card* c, char* identity){
 bool Player::hasCardWithSuit(char s, char* identity){
     char cmpltIdentity[CMPLT_IDENTITY_SIZE], buf[150];
     strcpy(cmpltIdentity, identity);
-    strcat(cmpltIdentity,"-Player::hasCard");
+    strcat(cmpltIdentity,"-Player::hasCardWithSuit");
 
     logp(cmpltIdentity,0,0,"Starting the iteration");
     vector<Card>::iterator it;
@@ -1073,8 +1074,28 @@ bool Player::hasCardWithSuit(char s, char* identity){
 
     logp(cmpltIdentity,0,0,"Returning True");
     return true;
-
 }
+
+void Player::removeCard(Card* c, char* identity){
+    char cmpltIdentity[CMPLT_IDENTITY_SIZE], buf[150];
+    strcpy(cmpltIdentity, identity);
+    strcat(cmpltIdentity,"-Player::removeCard");
+
+    logp(cmpltIdentity,0,0,"Starting the iteration");
+    vector<Card>::iterator it;
+    for(it = cards.begin(); it != cards.end(); it++){
+        if((*it).getSuit() == c->getSuit()  && (*it).getRank() == c->getRank() ){
+            logp(cmpltIdentity,0,0,"Removing the Card");
+            cards.erase(it);
+            return;
+        }
+    }
+
+    errorp(cmpltIdentity,0,0,"No card found.This should not be happening");
+    return;
+}
+
+
 //class Team
 Team::Team(char team, string tid,string plid1, string plid2)
     :team(team), tid(tid), plid1(plid1), plid2(plid2)

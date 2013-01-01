@@ -98,6 +98,7 @@ class Player{
 		int getUserCard(Card*, char*);
 		bool hasCard(Card*, char*);
 		bool hasCardWithSuit(char, char*);
+		void removeCard(Card*, char*);
 	private:
 };
 class Game{
