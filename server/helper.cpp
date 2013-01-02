@@ -71,13 +71,15 @@ int getPlayerInfo(char *plid, char *name, char *team, int identity_fd ,int p_len
     int ret;
     char buf[100];
 
+    logp(identity,0,0,"3");
     sprintf(buf, "-getPlayerInfo-fd: %d -", identity_fd);
 
     char cmpltIdentity[CMPLT_IDENTITY_SIZE];
     strcpy(cmpltIdentity, identity);
     strcat(cmpltIdentity,buf);
     
-    sprintf(buf, "Connected to data Succesfully and calling getPlayerInfoFromDb with plid %s",plid);
+    logp(identity,0,0,"4");
+    sprintf(buf, "Calling getPlayerInfoFromDb with plid %s",plid);
     logp(cmpltIdentity,0,0,buf);
     ret = getPlayerInfoFromDb(plid, name, team, identity);
     logp(cmpltIdentity,0,0,"Returned from getPlayerInfoFromDb");
@@ -156,7 +158,7 @@ int recv_fd(int fd, ssize_t (*userfunc)(int, const void *, size_t), char *plid, 
                     errorp(cmpltIdentity,0,0,"Message Format error");
                 status = *ptr & 0xFF;  /* prevent sign extension */
                 if (status == 0) {
-                    sprintf(tempbuf,"msg_controllen recvd is(%zu) and must be is(%lu)\n",msg.msg_controllen, CONTROLLEN );
+                    sprintf(tempbuf,"msg_controllen recvd is(%zu) and must be is(%lu)",msg.msg_controllen, CONTROLLEN );
                     logp(cmpltIdentity,0,0,tempbuf);
                     if (msg.msg_controllen != CONTROLLEN)
                         logp(cmpltIdentity,0,0,"Status =0 but no fd");

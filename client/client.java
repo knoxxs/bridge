@@ -30,7 +30,7 @@ public class client {
         out.write("11111000\n",0,9);  //need to add \n not \0 as on client side using sscnf not strcpy
         out.write("abcd\n",0,5);
         out.write("0123456789\n",0,11);
-        out.write("check\n",0,6);
+        out.write("check\0",0,6);
 
        //out.println("sdgfdg");
         
@@ -47,6 +47,18 @@ public class client {
             }
         }
         */
+        int i;
+        for(i=0 ; i < 1000000; i++){
+
+        }
+        // try{
+        //     //do what you want to do before sleeping
+        //     Thread.currentThread().sleep(10000000);//sleep for 1000 ms
+        //     //do what you want to do after sleeptig
+        // }
+        //     catch(InterruptedException ie){
+        //     //If this thread was intrrupted by nother thread 
+        // }
 
         out.close();
         in.close();

@@ -51,10 +51,10 @@ player.o:player.cpp
 	g++ -I /usr/include/postgresql -lpq -fpermissive -c player.cpp
 
 game:game.o access.o psql.o helper.o msgQ.o
-	g++ game.o access.o psql.o helper.o msgQ.o /usr/lib/libjson_linux-gcc-4.6.1_libmt.so -pthread -I /usr/include/postgresql -lpq -o ./bin/game
+	g++ -g game.o access.o psql.o helper.o msgQ.o /usr/lib/libjson_linux-gcc-4.6.1_libmt.so -pthread -I /usr/include/postgresql -lpq -o ./bin/game
 
 game.o:game.cpp game.h
-	g++ -std=c++0x -I /usr/include/postgresql -lpq -fpermissive -c game.cpp
+	g++ -g -std=c++0x -I /usr/include/postgresql -lpq -fpermissive -c game.cpp
 
 msgQ.o:msgQ.cpp msgQ.h
 	g++ -c msgQ.cpp

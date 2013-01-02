@@ -373,7 +373,11 @@ void gameThread(void* arg)
 
 void shuffleThread(void* arg){
     playerMsg playerInfo;
-    playerInfo = *( (playerMsg*) (arg) );
+    playerInfo.mtype = (*( (playerMsg*) (arg) )).mtype;
+    playerInfo.plid = (*( (playerMsg*) (arg) )).plid;
+    playerInfo.fd = (*( (playerMsg*) (arg) )).fd;
+    playerInfo.gameId = (*( (playerMsg*) (arg) )).gameId;
+    playerInfo.subTeamId = (*( (playerMsg*) (arg) )).subTeamId;
 
     string gameId, plid, teamId, name;
     long mtype;
@@ -393,8 +397,9 @@ void shuffleThread(void* arg){
     sprintf(buf,"Player1 recvd: mtype(%ld), plid(%s), fd(%d), gameId(%s), subTeamId(%c)",mtype, plid.c_str(), fd, gameId.c_str(), subTeamId);
     logp(identity,0,0,buf);
 
+    logp(identity,0,0, "Calling getPlayerInfo");
     if(getPlayerInfo(plid.c_str(), nameTemp, team, fd, plid.length() + 1, sizeof(nameTemp), sizeof(team), identity) == 0 ){
-        sprintf(buf,"This is player info id(%s) name(%s) team(%s)\n", plid.c_str(), nameTemp, team);
+        sprintf(buf,"This is player info id(%s) name(%s) team(%s)", plid.c_str(), nameTemp, team);
         logp(identity,0,0,buf);
     }else{
         logp(identity,0,0,"Unable to retrieve the player info, exiting from this thread");
@@ -421,18 +426,22 @@ void shuffleThread(void* arg){
     // bd.setSuit('S');
     // bd.setOpen(false); 
 
-    gameA.players[0].sendScore(12,12,12,12, identity);
+//    gameA.players[0].sendScore(12,12,12,12, identity);
+
+    mtype = mapMtype[gameId];
     while( playerRecvd < 8 ){
         logp(identity,0,0,"Inside recving while loop");
         if(msgRecv(&playerInfo, mtype, identity) != 0){
             errorp(identity,0,0,"Unable to recv the msg");
         }else{
+            sprintf(buf,"mtype(%ld), mtype(%ld) ",mapMtype[gameId], mtype);
+            logp(identity,0,0,buf);
             plid = playerInfo.plid;
             fd = playerInfo.fd;
             subTeamId = playerInfo.subTeamId;
-
+            logp(identity,0,0,"2");
             if(getPlayerInfo(plid.c_str(), nameTemp, team, fd, plid.length() + 1, sizeof(nameTemp), sizeof(team), identity) == 0 ){
-                sprintf(buf,"This is player info id(%s) name(%s) team(%s)\n", plid.c_str(), nameTemp, team);
+                sprintf(buf,"This is player info id(%s) name(%s) team(%s)", plid.c_str(), nameTemp, team);
                 logp(identity,0,0,buf);
             }else{
                 logp(identity,0,0,"Unable to retrieve the player info, exiting from this thread");
@@ -608,7 +617,7 @@ void* checkThread(void* arg){
     else if(mapThread.count(gameId+subTeamId)){//running game
         msg.mtype = mapMtype[gameId+subTeamId];
 
-        sprintf(buf,"Sending msg to queue: mtype(%ld) plid(%s) fd(%d) gameId(%s) - %s", msg.mtype, msg.plid.c_str(), msg.fd, msg.gameId.c_str());
+        sprintf(buf,"Sending msg to queue: mtype(%ld) plid(%s) fd(%d) gameId(%s)", msg.mtype, msg.plid.c_str(), msg.fd, msg.gameId.c_str());
         logp(identity,0,0,buf);
         if(msgSend(&msg, identity) != 0){
             errorp(identity,0,0,"Unable to send the msg");
@@ -617,7 +626,7 @@ void* checkThread(void* arg){
     }else{
         msg.mtype = mapMtype[gameId];
 
-        sprintf(buf,"Sending msg to queue: mtype(%ld) plid(%s) fd(%d) gameId(%s) - %s", msg.mtype, msg.plid.c_str(), msg.fd, msg.gameId.c_str());
+        sprintf(buf,"Sending msg to queue: mtype(%ld) plid(%s) fd(%d) gameId(%s)", msg.mtype, msg.plid.c_str(), msg.fd, msg.gameId.c_str());
         logp(identity,0,0,buf);
         if(msgSend(&msg, identity) != 0){
             errorp(identity,0,0,"Unable to send the msg");
@@ -1227,7 +1236,7 @@ int Player::sendScore(int tm1ScoreBTL, int tm1ScoreATL, int tm2ScoreBTL, int tm2
     s = oss2.str() + s; 
     
     int ret, len = s.length();
-    cout << s <<endl;
+    //cout << s <<endl;
     sprintf(buf, "Sending card to client ,totalLength(%d), command(%s)",len, s.substr(0,5).c_str());//length is 47
     logp(identity,0,0,buf);
     if((ret = sendall(fd, s.c_str(), &len, 0) ) != 0){

@@ -47,7 +47,7 @@ int main(){
     }
     setLogFile(logfile);
 
-    logp("PLAYER-main",0,0,"Starting main");
+    logp("PLAYER-main",0,0,"\n\nStarting main");
 
     logp("PLAYER-main",0,0,"Calling unixSocket");
 	socket_fd = unixSocket(UNIX_SOCKET_FILE_DIS_TO_PLA,"PLAYER-main", LISTEN_QUEUE_SIZE);
@@ -139,6 +139,8 @@ void connection_handler(int connection_fd){
     logp(identity,0,0,"Closing fd_to_recv");
     close(fd_to_recv);
 
+    sleep(1);
+
     return;
 }
 
@@ -161,7 +163,7 @@ void* playerMain(void* arg){
     sprintf(buf, "Calling get player info with plid %s", plid);
     logp(identity,0,0,buf);
     if(getPlayerInfo(plid , name, team, fd, sizeof(plid), sizeof(name), sizeof(team), identity) == 0 ){
-        sprintf(buf,"This is player info id(%s) name(%s) team(%s)\n", plid, name, team);
+        sprintf(buf,"This is player info id(%s) name(%s) team(%s)", plid, name, team);
         logp(identity,0,0,buf);
     }else{
         logp(identity,0,0,"Unable to retrieve the player info, exiting from this thread");
@@ -173,7 +175,7 @@ void* playerMain(void* arg){
     //check for latest match
     string timestamp;
     if( getPlayerSchedule(plid , timestamp, identity) == 0){
-        sprintf(buf,"This is player next match timestamp (%s)\n", timestamp.c_str());
+        sprintf(buf,"This is player next match timestamp (%s)", timestamp.c_str());
         logp(identity,0,0,buf);
     }else{
         logp(identity,0,0,"Unable to retrieve next match timestamp, exiting from this thread");
@@ -210,10 +212,10 @@ void* playerMain(void* arg){
         dat = ctime(&now);
         dat = strtok(dat,"\n");
         cur_time.assign(dat);
-        sprintf(buf,"current time(%s)\n", cur_time.c_str());
+        sprintf(buf,"current time(%s)", cur_time.c_str());
         logp(identity,0,0,buf);
         string change_cur_time = date_conv(cur_time);
-        sprintf(buf,"change current time(%s)\n", change_cur_time.c_str());
+        sprintf(buf,"change current time(%s)", change_cur_time.c_str());
         logp(identity,0,0,buf);
         td.setParam(2,change_cur_time);
 
@@ -225,14 +227,14 @@ void* playerMain(void* arg){
         else
         if(td.getHour() >= 1)
         {
-            sprintf(buf,"Time remaining in hours(%d)\n", td.getHour());
+            sprintf(buf,"Time remaining in hours(%d)", td.getHour());
             logp(identity,0,0,buf);
             tv.tv_sec = 1800;
         }
         else
         if(td.getMin() >= 15)
         {
-            sprintf(buf,"Time remaining in minutes(%d)\n", td.getMin());
+            sprintf(buf,"Time remaining in minutes(%d)", td.getMin());
             logp(identity,0,0,buf);
             tv.tv_sec = 600;
        
@@ -240,13 +242,13 @@ void* playerMain(void* arg){
         else
         if(td.getMin() >= 5)    
         {
-            sprintf(buf,"Time remaining in minutes(%d)\n", td.getMin());
+            sprintf(buf,"Time remaining in minutes(%d)", td.getMin());
             logp(identity,0,0,buf);
             tv.tv_sec = 180;
         }
         else
         {
-            sprintf(buf,"Time remaining in minutes(%d)\n", td.getMin());
+            sprintf(buf,"Time remaining in minutes(%d)", td.getMin());
             logp(identity,0,0,buf);
             tv.tv_sec = 0;
         }

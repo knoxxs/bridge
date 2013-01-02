@@ -15,7 +15,7 @@
 #define DATABASE_PORT "5432"
 #define MAXLINE 2
 #define LOG_PATH "./log"
-#define CMPLT_IDENTITY_SIZE 100
+#define CMPLT_IDENTITY_SIZE 200
 
 using namespace std;
 
