@@ -373,11 +373,7 @@ void gameThread(void* arg)
 
 void shuffleThread(void* arg){
     playerMsg playerInfo;
-    playerInfo.mtype = (*( (playerMsg*) (arg) )).mtype;
-    playerInfo.plid = (*( (playerMsg*) (arg) )).plid;
-    playerInfo.fd = (*( (playerMsg*) (arg) )).fd;
-    playerInfo.gameId = (*( (playerMsg*) (arg) )).gameId;
-    playerInfo.subTeamId = (*( (playerMsg*) (arg) )).subTeamId;
+    playerInfo = *( (playerMsg*) (arg) );
 
     string gameId, plid, teamId, name;
     long mtype;
@@ -385,9 +381,9 @@ void shuffleThread(void* arg){
     char subTeamId, pos;
 
     mtype = playerInfo.mtype;
-    plid = playerInfo.plid;
+    plid.assign(playerInfo.plid, 8);
     fd = playerInfo.fd;
-    gameId = playerInfo.gameId;
+    gameId.assign(playerInfo.gameId, 16);
     subTeamId = playerInfo.subTeamId;
 
     char identity[40], buf[100], nameTemp[PLAYER_NAME_SIZE], team[PLAYER_TEAM_SIZE];
@@ -436,10 +432,9 @@ void shuffleThread(void* arg){
         }else{
             sprintf(buf,"mtype(%ld), mtype(%ld) ",mapMtype[gameId], mtype);
             logp(identity,0,0,buf);
-            plid = playerInfo.plid;
+            plid.assign(playerInfo.plid, 8);
             fd = playerInfo.fd;
             subTeamId = playerInfo.subTeamId;
-            logp(identity,0,0,"2");
             if(getPlayerInfo(plid.c_str(), nameTemp, team, fd, plid.length() + 1, sizeof(nameTemp), sizeof(team), identity) == 0 ){
                 sprintf(buf,"This is player info id(%s) name(%s) team(%s)", plid.c_str(), nameTemp, team);
                 logp(identity,0,0,buf);
@@ -488,7 +483,7 @@ void shuffleThread(void* arg){
             }
 
             playerRecvd++;
-            sprintf(buf,"Player%d recvd: mtype(%ld), plid(%s), fd(%d), gameId(%s), subTeamId(%c)",playerRecvd, playerInfo.mtype, playerInfo.plid.c_str(), playerInfo.fd, playerInfo.gameId.c_str(), subTeamId);
+            sprintf(buf,"Player%d recvd: mtype(%ld), plid(%s), fd(%d), gameId(%s), subTeamId(%c)",playerRecvd, playerInfo.mtype, playerInfo.plid, playerInfo.fd, playerInfo.gameId, subTeamId);
             logp(identity,0,0,buf);
         }
     }
@@ -585,9 +580,9 @@ void* checkThread(void* arg){
 
     playerMsg msg;
     msg.mtype = -1;
-    msg.plid = plid;
+    strncpy(msg.plid ,plid.c_str(), 8);
     msg.fd = fd;
-    msg.gameId = gameId;
+    strncpy(msg.gameId, gameId.c_str(), 16);
     msg.subTeamId = subTeamId;
 
     if( !mapThread.count(gameId) ){
@@ -617,7 +612,7 @@ void* checkThread(void* arg){
     else if(mapThread.count(gameId+subTeamId)){//running game
         msg.mtype = mapMtype[gameId+subTeamId];
 
-        sprintf(buf,"Sending msg to queue: mtype(%ld) plid(%s) fd(%d) gameId(%s)", msg.mtype, msg.plid.c_str(), msg.fd, msg.gameId.c_str());
+        sprintf(buf,"Sending msg to queue: mtype(%ld) plid(%s) fd(%d) gameId(%s)", msg.mtype, plid.c_str(), msg.fd, msg.gameId);
         logp(identity,0,0,buf);
         if(msgSend(&msg, identity) != 0){
             errorp(identity,0,0,"Unable to send the msg");
@@ -626,7 +621,7 @@ void* checkThread(void* arg){
     }else{
         msg.mtype = mapMtype[gameId];
 
-        sprintf(buf,"Sending msg to queue: mtype(%ld) plid(%s) fd(%d) gameId(%s)", msg.mtype, msg.plid.c_str(), msg.fd, msg.gameId.c_str());
+        sprintf(buf,"Sending msg to queue: mtype(%ld) plid(%s) fd(%d) gameId(%s)", msg.mtype, msg.plid, msg.fd, msg.gameId);
         logp(identity,0,0,buf);
         if(msgSend(&msg, identity) != 0){
             errorp(identity,0,0,"Unable to send the msg");

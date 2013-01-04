@@ -71,14 +71,12 @@ int getPlayerInfo(char *plid, char *name, char *team, int identity_fd ,int p_len
     int ret;
     char buf[100];
 
-    logp(identity,0,0,"3");
     sprintf(buf, "-getPlayerInfo-fd: %d -", identity_fd);
 
     char cmpltIdentity[CMPLT_IDENTITY_SIZE];
     strcpy(cmpltIdentity, identity);
     strcat(cmpltIdentity,buf);
     
-    logp(identity,0,0,"4");
     sprintf(buf, "Calling getPlayerInfoFromDb with plid %s",plid);
     logp(cmpltIdentity,0,0,buf);
     ret = getPlayerInfoFromDb(plid, name, team, identity);

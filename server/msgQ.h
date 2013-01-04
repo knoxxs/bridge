@@ -13,9 +13,9 @@ using namespace std;
 
 struct playerMsg{
     long mtype;
-    string plid;
+    char plid[8];
     int fd;
-    string gameId;
+    char gameId[16];
     char subTeamId;
 };
 
