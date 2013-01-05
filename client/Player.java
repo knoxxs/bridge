@@ -1,12 +1,18 @@
+
 import java.util.*;
 import java.io.*;
 import java.net.*;
 
-class Player{
-	char position;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+public class Player{
+	char position;    // how will i know my pos?
 	String plid;
 	//char subTeamId;
 	//String tid, name, country;
+	char declarer;   // will be assigned after getting the result from bid
+	char winnerPrevTrick;	// assigned after getting result from winning trick
 	String password;
 	int score;
 	int trickNum = 0;
@@ -16,6 +22,7 @@ class Player{
 	ArrayList<Card> myCards;
 	ArrayList<Card> curTrickCard;
 	ArrayList<Bid> bids;
+	char[] pos = {N,E,S,W};
 	Score score;
 	Socket kkSocket = null;
     PrintWriter out = null;
@@ -40,7 +47,7 @@ class Player{
         }
         this.login();
 	}
-	public getMsgFromServer()
+	public void getMsgFromServer()
 	{
 		String comm;
 		in.read(comm,0,5);
@@ -56,7 +63,7 @@ class Player{
 			else
 				if(comm == "BIDOT")
 				{
-					this.recvServerBid;
+					this.recvServerBid();
 				}
 				else
 					if(comm == "SCORE")
@@ -82,7 +89,7 @@ class Player{
 		for(i=0;i<13;i++)
 		{
 
-			this.recvAllChar(buf,0,what??)   //TODO: size of each card
+			this.recvAllChar(buf,0,what??);  //TODO: size of each card
 			Card newCard = gson.fromJson(json, Card.class); 
 			newCard.setOpen(true); 
 			myCards.add(newCard);
@@ -99,7 +106,7 @@ class Player{
 	public void recvServerOCard()
 	{
 		String card;
-		this.recvAllChar(card,0,card.length());
+		this.recvAllChar(card,0,53);
 		Gson gson = new Gson();
 		Card newCard = gson.fromJson(card, Card.class); 
 		this.AddToTrick(newCard);
@@ -129,7 +136,7 @@ class Player{
 	public void showMyCardOnScreen()
 	{
 		int i=0;
-		for(i=0;i<myCards.size(),i++)
+		for(i=0;i<myCards.size();i++)
 		{
 			myCards.get(i).print();
 		}
@@ -137,11 +144,15 @@ class Player{
 	}
 	public Bid recvServerBid()
 	{
-
+		Gson gson = new Gson();
+        Bid newBid = gson.fromJson(json, Bid.class); 
+        bids.add(newBid);
 	}
 	public int sendMyBid(Bid myBid)
 	{
+		bids.add(myBid);
 		String json = myBid.json_format();
+		out.write(json,0,json.length());
 		//send
 	}
 	public void showAllBids()
@@ -205,7 +216,6 @@ class Player{
 				return 0;
 			}
 		}
-		else
 			return 1;
 	}
 	public int recvServerScore()
@@ -282,11 +292,13 @@ class Player{
 	}
 	public void showBidResult()
 	{
-
+		// shud get trump, declarer
+		//and therefore shud initilise dese attributes
+		//and then  
 	}
 	public void showTrickResult()
 	{
-
+		//initialize winner attribute
 	}
 	public void getGameResult()
 	{
@@ -299,4 +311,9 @@ class Player{
 }
 
 
-// do we need to initialize every details of player
+// do we need to initialize every details of player.. lyk coutry, team n all
+			// but sending my positin os essential
+//determing position of the turn ...its not done yet
+// sending result and winner of tricks and bidding is left... so a separte command for it as well
+// do we need other array of cards fro the dummy player-  as they will be seen in my showMsgOnScreen
+//

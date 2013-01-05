@@ -2,21 +2,24 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 
-class Bid{
+public class Bid{
 	char suit;
 	char rank;
-	char pos;
-	public Bid(char a, char b, char c)
+	public Bid(char a, char b)
 	{
 		this.suit = a;
 		this.rank = b;
-		this.pos = c;
+	}/*
+	public Bid(String json)
+	{
+		Gson gson = new Gson();
+        Bid newBid = gson.fromJson(json, Bid.class); 
 	}
-	public Card(Card newBid)
+*/
+	public Bid(Bid newBid)
 	{
 		this.suit = newBid.suit;
 		this.rank = newBid.rank;
-		this.pos = newBid.pos;
 	}
 	public char getSuit()
 	{
@@ -26,21 +29,19 @@ class Bid{
 	{
 		return this.rank;
 	}
-	public char getPos()
-	{
-		return this.Pos;
-	}
+	
 	public String json_format()
 	{
 		Gson gson = new Gson();
         String jsonNames = gson.toJson(this);
-        return String;
+        return jsonNames;
 	}
-
+	/*
 	public Bid fromJson(String json)
 	{
-
-	}
+		Gson gson = new Gson();
+		Card newCard = gson.fromJson(json, Card.class); 
+	}*/
 	public void displayBid()
 	{
 

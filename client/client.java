@@ -9,7 +9,7 @@ public class client {
 
 
         Player player = new Player();
-        while(1)
+        while(true)
         {
             player.getMsgFromServer();
         }

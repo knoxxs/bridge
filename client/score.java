@@ -1,4 +1,6 @@
-class score{
+	
+
+public class score{
 	int tm1ScrBTL;
 	int tm1ScrATL;
 	int tm2ScrBTL;
