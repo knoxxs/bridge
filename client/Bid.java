@@ -1,7 +1,11 @@
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+
 class Bid{
 	char suit;
 	char rank;
-	char pos
+	char pos;
 	public Bid(char a, char b, char c)
 	{
 		this.suit = a;
@@ -26,7 +30,14 @@ class Bid{
 	{
 		return this.Pos;
 	}
-	public void json_format()
+	public String json_format()
+	{
+		Gson gson = new Gson();
+        String jsonNames = gson.toJson(this);
+        return String;
+	}
+
+	public Bid fromJson(String json)
 	{
 
 	}

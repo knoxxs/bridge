@@ -6,6 +6,17 @@ public class client {
 
     public static void main(String[] args) throws IOException {
 
+
+
+        Player player = new Player();
+        while(1)
+        {
+            player.getMsgFromServer();
+        }
+}
+
+
+/*
         Socket kkSocket = null;
         PrintWriter out = null;
         BufferedReader in = null;
@@ -47,8 +58,8 @@ public class client {
             }
         }
         */
-        int i;
-        for(i=0 ; i < 1000000; i++){
+     //   int i;
+       // for(i=0 ; i < 1000000; i++){
 
         }
         // try{
@@ -59,10 +70,13 @@ public class client {
         //     catch(InterruptedException ie){
         //     //If this thread was intrrupted by nother thread 
         // }
-
+/*
         out.close();
         in.close();
         stdIn.close();
         kkSocket.close();
     }
 }
+
+*/
+
