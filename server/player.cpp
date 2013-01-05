@@ -204,7 +204,7 @@ void* playerMain(void* arg){
         if((ret = select(0, NULL, NULL, NULL, &tv))== -1)
         {
              errorp(identity,0,0,"select not working");
-             debugp(identity,1,errno,"");
+             debugp(identity,1,ret,"");
         }
 
         //select(0, NULL, NULL, NULL, &tv);
